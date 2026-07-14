@@ -26,6 +26,7 @@
         <mysql.version>8.0.15</mysql.version>
         <mybatis-spring-boot-starter.verson>2.2.2</mybatis-spring-boot-starter.verson>
         <druid-spring-boot.version>1.2.16</druid-spring-boot.version>
+        <lombok.version>1.18.20</lombok.version>
     </properties>
     <!--项目依赖信息-->
     <!--在父项目中配置的依赖项，各个子项目可以直接继承得到，即：子项目不需要添加这些依赖-->
@@ -34,6 +35,12 @@
     <!--依赖管理版本信息-->
     <dependencyManagement>
         <dependencies>
+            <!--Lombok-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
             <!--druid数据库依赖项-->
             <dependency>
                 <groupId>com.alibaba</groupId>

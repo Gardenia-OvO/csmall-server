@@ -1,4 +1,4 @@
-package cn.hqu.csmallproduct;
+package cn.hqu.csmall.product;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

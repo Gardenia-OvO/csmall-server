@@ -1,4 +1,4 @@
-package cn.hqu.csmallproduct;
+package cn.hqu.csmall.product;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
