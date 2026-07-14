@@ -15,6 +15,16 @@
 
 
     <dependencies>
+        <!--MyBatis整合SpringBoot-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+        <!--Lombok-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <!--druid数据库依赖项-->
         <dependency>
             <groupId>com.alibaba</groupId>
