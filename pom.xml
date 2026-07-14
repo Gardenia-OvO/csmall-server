@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--模板版本，是相对固定的值-->
+    <modelVersion>4.0.0</modelVersion>
+    <!--项目的当前信息-->
+    <groupId>cn.hqu</groupId>
+    <artifactId>csmall-server</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>csmall-server</name>
+    <description>csmall-server</description>
+    <!--父项目配置packaging为pom-->
+    <!--如果不配置，默认值为jar，各子级项目可以不必配置此标签-->
+    <packaging>pom</packaging>
+    <!--子模块的项目清单-->
+    <modules>
+        <module>csmall-product</module>
+    </modules>
+
+    <!--项目属性信息-->
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring-boot.version>2.5.0</spring-boot.version>
+        <mysql.version>8.0.15</mysql.version>
+        <mybatis-spring-boot-starter.verson>2.2.2</mybatis-spring-boot-starter.verson>
+        <druid-spring-boot.version>1.2.16</druid-spring-boot.version>
+    </properties>
+    <!--项目依赖信息-->
+    <!--在父项目中配置的依赖项，各个子项目可以直接继承得到，即：子项目不需要添加这些依赖-->
+    <dependencies>
+    </dependencies>
+    <!--依赖管理版本信息-->
+    <dependencyManagement>
+        <dependencies>
+            <!--druid数据库依赖项-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid-spring-boot.version}</version>
+            </dependency>
+            <!--mybatis和spring boot整合的依赖项-->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis-spring-boot-starter.verson}</version>
+            </dependency>
+            <!--mysql驱动依赖-->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <!--构建项目的配置，build标签用来打包-->
+
+</project>
