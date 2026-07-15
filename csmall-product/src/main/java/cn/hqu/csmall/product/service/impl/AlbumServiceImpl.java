@@ -5,7 +5,7 @@ import cn.hqu.csmall.product.pojo.entity.Album;
 import cn.hqu.csmall.product.pojo.param.AlbumAddNewParam;
 import cn.hqu.csmall.product.service.IAlbumService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.protobuf.ServiceException;
+import cn.hqu.csmall.product.ex.ServiceException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

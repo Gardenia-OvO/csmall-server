@@ -36,7 +36,7 @@ public class Knife4jConfiguration {
     /**
      * 主机名
      */
-    private String host = "http://java.hqu.cn";
+    private String host = "http://localhost:8080";
     /**
      * 标题
      */
