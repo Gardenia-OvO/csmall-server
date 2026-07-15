@@ -1,6 +1,7 @@
 package cn.hqu.csmall.product.service;
 
 
+import cn.hqu.csmall.product.ex.ServiceException;
 import cn.hqu.csmall.product.pojo.param.AlbumAddNewParam;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,12 @@ public class AlbumServiceTests {
         try {
             albumService.addNew(albumAddNewParam);
             System.out.println("添加成功！");
-        }catch (Exception e){
-            System.out.println("添加失败！");
+        }catch (ServiceException e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }catch(Throwable e){
+            System.out.println("未知错误！");
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
 

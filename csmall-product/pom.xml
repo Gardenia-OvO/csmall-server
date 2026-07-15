@@ -41,6 +41,12 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
+        <!--SpringBoot支持Spring MVC的web开发依赖项-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
