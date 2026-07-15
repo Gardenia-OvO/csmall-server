@@ -1,0 +1,10 @@
+#数据库配置信息
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mall_pms?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+    username: root
+    password: 20050806
+
+logging:
+  level:
+    cn.hqu.csmall.product:  trace

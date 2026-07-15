@@ -28,7 +28,7 @@ public class Knife4jConfiguration {
     /**
      * 【重要】指定Controller包路径
      */
-    private String basePackage = "cn.huada.csmall.product.controller";
+    private String basePackage = "cn.hqu.csmall.product.controller";
     /**
      * 分组名称
      */
@@ -36,7 +36,7 @@ public class Knife4jConfiguration {
     /**
      * 主机名
      */
-    private String host = "http://java.huada.cn";
+    private String host = "http://java.hqu.cn";
     /**
      * 标题
      */
@@ -56,11 +56,11 @@ public class Knife4jConfiguration {
     /**
      * 联系网址
      */
-    private String contactUrl = "http://java.huada.cn";
+    private String contactUrl = "http://java.hqu.cn";
     /**
      * 联系邮箱
      */
-    private String contactEmail = "java@huada.cn";
+    private String contactEmail = "java@hqu.cn";
     /**
      * 版本号
      */
