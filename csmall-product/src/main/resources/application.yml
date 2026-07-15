@@ -9,5 +9,10 @@ spring:
     druid:
       initial-size: 5
       max-active: 10
+#指定mapper文件位置
 mybatis:
   mapper-location:  classpath:mapper/*.xml
+
+#启用knife4j
+knife4j:
+  enable: true

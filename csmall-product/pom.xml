@@ -15,6 +15,11 @@
 
 
     <dependencies>
+        <!--knife4依赖-->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+        </dependency>
         <!--MyBatis整合SpringBoot-->
         <dependency>
             <groupId>com.baomidou</groupId>
