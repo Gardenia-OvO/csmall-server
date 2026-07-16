@@ -10,4 +10,6 @@ public interface IAttributeTemplateService {
      */
 
     void addNew(AttributeTemplateAddNewParam attributeTemplateAddNewParam);
+
+    void delete(Long id);
 }

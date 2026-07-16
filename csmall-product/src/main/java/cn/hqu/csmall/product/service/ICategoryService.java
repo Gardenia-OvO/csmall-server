@@ -8,4 +8,6 @@ import cn.hqu.csmall.product.pojo.param.CategoryAddNewParam;
 public interface ICategoryService {
 
     void addNew(CategoryAddNewParam categoryAddNewParam) throws ServiceException;
+
+    void delete(Long id);
 }

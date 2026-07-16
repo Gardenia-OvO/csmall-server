@@ -12,4 +12,6 @@ public interface IAlbumService {
     void addNew(AlbumAddNewParam albumAddNewParam) throws ServiceException;
 
     void setSort(int i);
+
+    void delete(Long id);
 }

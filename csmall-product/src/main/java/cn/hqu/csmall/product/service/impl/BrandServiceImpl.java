@@ -53,6 +53,13 @@ public class BrandServiceImpl implements IBrandService {
     }
 
     @Override
+    public void delete(Long id) {
+        log.debug("开始处理【删除品牌】的业务，id为:{}", id);
+        brandMapper.deleteById(id);
+        log.debug("删除品牌成功");
+    }
+
+    @Override
     public void setSort(int i) {
 
     }

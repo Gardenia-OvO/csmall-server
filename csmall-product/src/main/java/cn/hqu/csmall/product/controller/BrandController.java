@@ -7,7 +7,6 @@ import cn.hqu.csmall.product.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
@@ -41,14 +40,14 @@ public class BrandController {
     }
 
     @PostMapping("/delete")
-    @ApiOperation("删除相册")
+    @ApiOperation("删除品牌")
     @ApiOperationSupport(order = 200)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "ID", value = "相册id", required = true, dataType = "long"),
-            @ApiImplicitParam(name = "UserID", value = "用户id", required = true, dataType = "long")
-    })
-    public String delete(@Range(min = 1, message = "根据id删除相册，请提供合法的id")
-                         @RequestParam long albumId) {
-        throw new RuntimeException("功能未实现");
+    @ApiImplicitParam(name = "id", value = "品牌id", required = true, dataType = "long")
+    public JsonResult delete(@Range(min = 1, message = "根据id删除品牌，请提供合法的id")
+                             @RequestParam Long id) {
+        log.debug("开始处理【删除品牌】的请求，id:{}", id);
+        brandService.delete(id);
+        log.debug("处理【删除品牌】的请求，完成！");
+        return JsonResult.ok();
     }
 }

@@ -49,6 +49,13 @@ public class AlbumServiceImpl implements IAlbumService {
     }
 
     @Override
+    public void delete(Long id) {
+        log.debug("开始处理【删除相册】的业务，id为:{}", id);
+        albumMapper.deleteById(id);
+        log.debug("删除相册成功");
+    }
+
+    @Override
     public void setSort(int i) {
 
     }

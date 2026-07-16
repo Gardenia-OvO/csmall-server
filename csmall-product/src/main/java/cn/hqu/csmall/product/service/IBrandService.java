@@ -11,4 +11,6 @@ public interface IBrandService {
 
 
     void setSort(int i);
+
+    void delete(Long id);
 }

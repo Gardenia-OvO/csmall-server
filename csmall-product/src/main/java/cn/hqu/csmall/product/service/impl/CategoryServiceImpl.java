@@ -43,4 +43,11 @@ public class CategoryServiceImpl implements ICategoryService {
         categoryMapper.insert(category);
         log.debug("新增类别成功");
     }
+
+    @Override
+    public void delete(Long id) {
+        log.debug("开始处理【删除类别】的业务，id为:{}", id);
+        categoryMapper.deleteById(id);
+        log.debug("删除类别成功");
+    }
 }

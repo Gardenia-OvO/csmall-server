@@ -43,4 +43,11 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         attributeTemplateMapper.insert(attributeTemplate);
         log.debug("新增属性模板成功");
     }
+
+    @Override
+    public void delete(Long id) {
+        log.debug("开始处理【删除属性模板】的业务，id为:{}", id);
+        attributeTemplateMapper.deleteById(id);
+        log.debug("删除属性模板成功");
+    }
 }
