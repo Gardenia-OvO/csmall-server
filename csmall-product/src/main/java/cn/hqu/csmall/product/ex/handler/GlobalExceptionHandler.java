@@ -2,6 +2,7 @@ package cn.hqu.csmall.product.ex.handler;
 
 import cn.hqu.csmall.product.ex.ServiceException;
 import cn.hqu.csmall.product.web.JsonResult;
+import cn.hqu.csmall.product.web.ServiceCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,7 +26,7 @@ public class GlobalExceptionHandler {
     public JsonResult handleServiceException(ServiceException e) {
         log.debug("处理ServiceException");
         log.warn("业务异常：{}", e.getMessage());
-        return JsonResult.fail(2, e.getMessage());
+        return JsonResult.fail(ServiceCode.ERR_CONFLICT, e.getMessage());
     }
 
     /**
@@ -38,7 +39,7 @@ public class GlobalExceptionHandler {
         String message = e.getFieldError() != null
                 ? e.getFieldError().getDefaultMessage()
                 : "请求参数校验失败";
-        return JsonResult.fail(3, message);
+        return JsonResult.fail(ServiceCode.ERR_BAD_REQUEST, message);
     }
 
     /**
@@ -53,7 +54,7 @@ public class GlobalExceptionHandler {
         for (ConstraintViolation<?> violation : violations) {
             message = violation.getMessage();
         }
-        return JsonResult.fail(3, message);
+        return JsonResult.fail(ServiceCode.ERR_BAD_REQUEST, message);
     }
 
     /**
@@ -63,6 +64,6 @@ public class GlobalExceptionHandler {
     public JsonResult handleThrowable(Throwable e) {
         log.debug("处理Throwable");
         log.error("未知异常", e);
-        return JsonResult.fail(99999, "服务器内部错误，请稍后重试");
+        return JsonResult.fail(ServiceCode.ERR_KNOWN, "服务器内部错误，请稍后重试");
     }
 }

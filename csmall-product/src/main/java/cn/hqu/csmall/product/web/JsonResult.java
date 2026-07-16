@@ -17,9 +17,9 @@ public class JsonResult implements Serializable {
         return result;
     }
 
-    public static JsonResult fail(Integer state, String message){
+    public static JsonResult fail(ServiceCode serviceCode, String message){
         JsonResult result = new JsonResult();
-        result.setState(state);
+        result.setState(serviceCode.getValue());
         result.setMessage(message);
         return result;
     }
