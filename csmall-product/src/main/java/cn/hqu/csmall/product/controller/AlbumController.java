@@ -1,10 +1,10 @@
 package cn.hqu.csmall.product.controller;
 
 
-import cn.hqu.csmall.product.ex.ServiceException;
 import cn.hqu.csmall.product.pojo.param.AlbumAddNewParam;
 import cn.hqu.csmall.product.service.IAlbumService;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.google.protobuf.ServiceException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -25,15 +25,9 @@ public class AlbumController {
     @PostMapping("/add-new")
     @ApiOperation("新增相册")
     @ApiOperationSupport(order = 100)
-    public String addNew(AlbumAddNewParam albumAddNewParam) {
-        try{
+    public String addNew(AlbumAddNewParam albumAddNewParam) throws ServiceException {
             albumService.addNew(albumAddNewParam);
             return "添加成功！";
-        }catch (ServiceException e){
-            return e.getMessage();
-        }catch (Throwable e){
-            return "添加失败，出现未知错误";
-        }
     }
     @PostMapping("/delete")
     @ApiOperation("删除相册")
