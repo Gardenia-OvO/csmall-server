@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hqu.csmall.product.mapper.BrandMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pms_brand(name, pinyin, logo, description, keywords, sort, enable,
+                              sales, product_count, comment_count, positive_comment_count,
+                              gmt_create, gmt_modified)
+        VALUES(#{name}, #{pinyin}, #{logo}, #{description}, #{keywords}, #{sort}, #{enable},
+               #{sales}, #{productCount}, #{commentCount}, #{positiveCommentCount},
+               #{gmtCreated}, #{gmtModified})
+    </insert>
+</mapper>
