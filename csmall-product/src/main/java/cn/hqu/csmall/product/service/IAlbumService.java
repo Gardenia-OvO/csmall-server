@@ -2,7 +2,7 @@ package cn.hqu.csmall.product.service;
 
 
 import cn.hqu.csmall.product.pojo.param.AlbumAddNewParam;
-import com.google.protobuf.ServiceException;
+import cn.hqu.csmall.product.ex.ServiceException;
 
 //相册业务接口
 public interface IAlbumService {

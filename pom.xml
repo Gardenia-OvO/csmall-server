@@ -37,7 +37,13 @@
     <!--依赖管理版本信息-->
     <dependencyManagement>
         <dependencies>
-            <!--knife4j依赖-->
+            <!--spring-boot依赖-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-validation</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <!--swagger依赖-->
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-spring-boot-starter</artifactId>
