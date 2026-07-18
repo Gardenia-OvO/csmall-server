@@ -1,6 +1,8 @@
 package cn.hqu.csmall.product.web;
 
 
+import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
+import cn.hqu.csmall.product.pojo.vo.PageData;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,20 +12,7 @@ public class JsonResult implements Serializable {
 
     private Integer state;
     private String message;
-
-    public static JsonResult ok(){
-        JsonResult result = new JsonResult();
-        result.setState(ServiceCode.OK.getValue());
-        result.setMessage("操作成功");
-        return result;
-    }
-
-    public static JsonResult ok(String message){
-        JsonResult result = new JsonResult();
-        result.setState(ServiceCode.OK.getValue());
-        result.setMessage(message);
-        return result;
-    }
+    private Object data;
 
     public static JsonResult created(String message){
         JsonResult result = new JsonResult();
@@ -32,7 +21,20 @@ public class JsonResult implements Serializable {
         return result;
     }
 
-    public static JsonResult fail(ServiceCode serviceCode, String message){
+    public static JsonResult ok(){
+        JsonResult result = new JsonResult();
+        result.setState(ServiceCode.OK.getValue());
+        return result;
+    }
+
+    public static JsonResult ok(Object data){
+        JsonResult result = new JsonResult();
+        result.setState(ServiceCode.OK.getValue());
+        result.setData(data);
+        return result;
+    }
+
+    public static JsonResult fail(ServiceCode serviceCode,String message){
         JsonResult result = new JsonResult();
         result.setState(serviceCode.getValue());
         result.setMessage(message);
