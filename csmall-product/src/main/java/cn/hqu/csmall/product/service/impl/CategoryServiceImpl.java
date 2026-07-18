@@ -1,6 +1,7 @@
 package cn.hqu.csmall.product.service.impl;
 
 import cn.hqu.csmall.product.ex.ServiceException;
+import cn.hqu.csmall.product.web.ServiceCode;
 import cn.hqu.csmall.product.mapper.CategoryMapper;
 import cn.hqu.csmall.product.pojo.entity.Category;
 import cn.hqu.csmall.product.pojo.param.CategoryAddNewParam;
@@ -47,7 +48,12 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public void delete(Long id) {
         log.debug("开始处理【删除类别】的业务，id为:{}", id);
-        categoryMapper.deleteById(id);
+        int rows = categoryMapper.deleteById(id);
+        if (rows == 0) {
+            String message = "删除类别失败，该数据已删除或不存在";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.NOT_FOUND, message);
+        }
         log.debug("删除类别成功");
     }
 }

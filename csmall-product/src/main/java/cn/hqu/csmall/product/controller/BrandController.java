@@ -36,7 +36,7 @@ public class BrandController {
         log.debug("开始处理【添加品牌】的请求，参数:{}", brandAddNewParam);
         brandService.addNew(brandAddNewParam);
         log.debug("处理【添加品牌】的请求，完成！");
-        return JsonResult.ok();
+        return JsonResult.created("新增品牌成功");
     }
 
     @PostMapping("/delete")
@@ -48,6 +48,6 @@ public class BrandController {
         log.debug("开始处理【删除品牌】的请求，id:{}", id);
         brandService.delete(id);
         log.debug("处理【删除品牌】的请求，完成！");
-        return JsonResult.ok();
+        return JsonResult.ok("删除品牌成功");
     }
 }

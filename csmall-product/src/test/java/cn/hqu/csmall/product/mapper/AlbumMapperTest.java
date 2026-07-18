@@ -2,6 +2,7 @@ package cn.hqu.csmall.product.mapper;
 
 
 import cn.hqu.csmall.product.pojo.entity.Album;
+import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -64,5 +65,13 @@ public class AlbumMapperTest {
     void testSelectByIds() {
         List<Album> list = albumMapper.selectBatchIds(Arrays.asList(5L, 6L, 7L));
         System.out.println(list);
+    }
+
+    @Test
+    void list(){
+        List<AlbumListItemVO> list = albumMapper.list();
+        for (AlbumListItemVO albumListItemVO : list) {
+            System.out.println(albumListItemVO);
+        }
     }
 }

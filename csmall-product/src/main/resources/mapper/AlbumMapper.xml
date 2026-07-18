@@ -6,4 +6,9 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO pms_album(name,description,sort,gmt_Create,gmt_Modified) VALUES(#{name},#{description},#{sort},#{gmtCreated},#{gmtModified})
     </insert>
+
+    <select id="list" resultType="cn.hqu.csmall.product.pojo.vo.AlbumListItemVO">
+            SELECT id,name,description,sort
+            FROM pms_album ORDER BY sort
+    </select>
 </mapper>

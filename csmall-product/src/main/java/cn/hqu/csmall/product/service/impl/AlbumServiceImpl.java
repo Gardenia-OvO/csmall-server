@@ -6,11 +6,18 @@ import cn.hqu.csmall.product.pojo.param.AlbumAddNewParam;
 import cn.hqu.csmall.product.service.IAlbumService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import cn.hqu.csmall.product.ex.ServiceException;
+import cn.hqu.csmall.product.web.ServiceCode;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
+import cn.hqu.csmall.product.pojo.vo.PageData;
+import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,12 +58,35 @@ public class AlbumServiceImpl implements IAlbumService {
     @Override
     public void delete(Long id) {
         log.debug("开始处理【删除相册】的业务，id为:{}", id);
-        albumMapper.deleteById(id);
+        int rows = albumMapper.deleteById(id);
+        if (rows == 0) {
+            String message = "删除相册失败，该数据已删除或不存在";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.NOT_FOUND, message);
+        }
         log.debug("删除相册成功");
     }
 
     @Override
     public void setSort(int i) {
 
+    }
+
+    @Override
+    public PageData<AlbumListItemVO> list(Integer pageNum, Integer pageSize) {
+        log.debug("开始处理【查询相册列表】的业务，页码：{}，每页记录数：{}",pageNum,pageSize);
+        PageHelper.startPage(pageNum,pageSize);
+        List<AlbumListItemVO> list = albumMapper.list();
+        PageInfo<AlbumListItemVO> pageInfo = new PageInfo<>(list);
+        PageData<AlbumListItemVO> pageData = PageInfoToPageDataConverter.convert(pageInfo);
+        log.debug("处理【查询相册列表】的业务完成，结果：{}",pageData);
+        return pageData;
+    }
+
+    @Override
+    public PageData<AlbumListItemVO> list(Integer pageNum) {
+        Integer pageSize = 5;
+        log.debug("开始处理【查询相册列表】的业务，页码：{}，每页记录数(默认)：{}",pageNum,pageSize);
+        return list(pageNum,pageSize);
     }
 }

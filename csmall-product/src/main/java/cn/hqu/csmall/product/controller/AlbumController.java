@@ -12,10 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -32,11 +29,11 @@ public class AlbumController {
     @PostMapping("/add-new")
     @ApiOperation("新增相册")
     @ApiOperationSupport(order = 100)
-    public JsonResult addNew(@Valid AlbumAddNewParam albumAddNewParam) {
+    public JsonResult addNew(@Valid @RequestBody AlbumAddNewParam albumAddNewParam) {
         log.debug("开始处理【添加相册】的请求，参数:{}", albumAddNewParam);
         albumService.addNew(albumAddNewParam);
         log.debug("处理【添加相册】的请求，完成！");
-        return JsonResult.ok();
+        return JsonResult.created("新增相册成功");
     }
 
     @PostMapping("/delete")
@@ -48,6 +45,6 @@ public class AlbumController {
         log.debug("开始处理【删除相册】的请求，id:{}", id);
         albumService.delete(id);
         log.debug("处理【删除相册】的请求，完成！");
-        return JsonResult.ok();
+        return JsonResult.ok("删除相册成功");
     }
 }

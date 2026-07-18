@@ -1,10 +1,14 @@
 package cn.hqu.csmall.product.web;
 
 public enum ServiceCode {
-    OK(20000),
-    ERR_BAD_REQUEST(40000),
-    ERR_CONFLICT(40900),
-    ERR_KNOWN(99999);
+    OK(200),
+    CREATED(201),
+    UNAUTHORIZED(401),
+    FORBIDDEN(403),
+    NOT_FOUND(404),
+    ERR_BAD_REQUEST(400),
+    ERR_CONFLICT(409),
+    ERR_KNOWN(500);
 
     private Integer value;
     ServiceCode(Integer value){

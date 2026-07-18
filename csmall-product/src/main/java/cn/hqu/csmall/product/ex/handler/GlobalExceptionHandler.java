@@ -26,7 +26,8 @@ public class GlobalExceptionHandler {
     public JsonResult handleServiceException(ServiceException e) {
         log.debug("处理ServiceException");
         log.warn("业务异常：{}", e.getMessage());
-        return JsonResult.fail(ServiceCode.ERR_CONFLICT, e.getMessage());
+        ServiceCode code = e.getServiceCode() != null ? e.getServiceCode() : ServiceCode.ERR_CONFLICT;
+        return JsonResult.fail(code, e.getMessage());
     }
 
     /**

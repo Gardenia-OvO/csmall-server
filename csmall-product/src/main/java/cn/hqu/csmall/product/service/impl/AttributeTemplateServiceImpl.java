@@ -1,6 +1,8 @@
 package cn.hqu.csmall.product.service.impl;
 
+import cn.hqu.csmall.product.ex.ServiceException;
 import cn.hqu.csmall.product.mapper.AttributeTemplateMapper;
+import cn.hqu.csmall.product.web.ServiceCode;
 import cn.hqu.csmall.product.pojo.entity.AttributeTemplate;
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateAddNewParam;
 import cn.hqu.csmall.product.service.IAttributeTemplateService;
@@ -30,7 +32,7 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         if (count > 0) {
             String message = "属性模板名称已经被占用，请更换";
             log.warn(message);
-            throw new RuntimeException(message);
+            throw new ServiceException(message);
         }
 
         // 向数据库中插入属性模板数据
@@ -47,7 +49,12 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
     @Override
     public void delete(Long id) {
         log.debug("开始处理【删除属性模板】的业务，id为:{}", id);
-        attributeTemplateMapper.deleteById(id);
+        int rows = attributeTemplateMapper.deleteById(id);
+        if (rows == 0) {
+            String message = "删除属性模板失败，该数据已删除或不存在";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.NOT_FOUND, message);
+        }
         log.debug("删除属性模板成功");
     }
 }

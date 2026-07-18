@@ -28,7 +28,7 @@ public class AttributeTemplateController {
     public JsonResult addNew(AttributeTemplateAddNewParam attributeTemplateAddNewParam) {
         log.debug("开始处理【新增属性模板】的请求，参数为:{}", attributeTemplateAddNewParam);
         attributeTemplateService.addNew(attributeTemplateAddNewParam);
-        return JsonResult.ok();
+        return JsonResult.created("新增属性模板成功");
     }
 
     @PostMapping("/delete")
@@ -40,6 +40,6 @@ public class AttributeTemplateController {
         log.debug("开始处理【删除属性模板】的请求，id:{}", id);
         attributeTemplateService.delete(id);
         log.debug("处理【删除属性模板】的请求，完成！");
-        return JsonResult.ok();
+        return JsonResult.ok("删除属性模板成功");
     }
 }

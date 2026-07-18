@@ -36,7 +36,7 @@ public class CategoryController {
         log.debug("开始处理【添加类别】的请求，参数:{}", categoryAddNewParam);
         categoryService.addNew(categoryAddNewParam);
         log.debug("处理【添加类别】的请求，完成！");
-        return JsonResult.ok();
+        return JsonResult.created("新增类别成功");
     }
 
     @PostMapping("/delete")
@@ -48,6 +48,6 @@ public class CategoryController {
         log.debug("开始处理【删除类别】的请求，id:{}", id);
         categoryService.delete(id);
         log.debug("处理【删除类别】的请求，完成！");
-        return JsonResult.ok();
+        return JsonResult.ok("删除类别成功");
     }
 }

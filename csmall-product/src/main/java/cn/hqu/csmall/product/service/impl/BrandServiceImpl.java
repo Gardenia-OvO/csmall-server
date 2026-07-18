@@ -1,6 +1,7 @@
 package cn.hqu.csmall.product.service.impl;
 
 import cn.hqu.csmall.product.ex.ServiceException;
+import cn.hqu.csmall.product.web.ServiceCode;
 import cn.hqu.csmall.product.mapper.BrandMapper;
 import cn.hqu.csmall.product.pojo.entity.Brand;
 import cn.hqu.csmall.product.pojo.param.BrandAddNewParam;
@@ -55,7 +56,12 @@ public class BrandServiceImpl implements IBrandService {
     @Override
     public void delete(Long id) {
         log.debug("开始处理【删除品牌】的业务，id为:{}", id);
-        brandMapper.deleteById(id);
+        int rows = brandMapper.deleteById(id);
+        if (rows == 0) {
+            String message = "删除品牌失败，该数据已删除或不存在";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.NOT_FOUND, message);
+        }
         log.debug("删除品牌成功");
     }
 

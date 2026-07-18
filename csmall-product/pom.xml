@@ -15,6 +15,11 @@
 
 
     <dependencies>
+        <!--基于MyBatis或者MyBatis-plus的分页查询框架-->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+        </dependency>
         <!--spring-boot依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
