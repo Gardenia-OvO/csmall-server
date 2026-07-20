@@ -1,11 +1,15 @@
 package cn.hqu.csmall.product.controller;
 
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateAddNewParam;
+import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
+import cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO;
+import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.service.IAttributeTemplateService;
 import cn.hqu.csmall.product.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
@@ -41,5 +45,21 @@ public class AttributeTemplateController {
         attributeTemplateService.delete(id);
         log.debug("处理【删除属性模板】的请求，完成！");
         return JsonResult.ok("删除属性模板成功");
+    }
+
+    @GetMapping("/list")
+    @ApiOperation("查询属性模版列表")
+    @ApiOperationSupport(order = 420)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
+    })
+    public JsonResult list(@Range(min = 1, message = "查询属性模版列表失败，请提供正确的页码值！")
+                           @RequestParam Integer pageNum) {
+        log.debug("开始处理【查询属性模版列表】的业务，参数：{}", pageNum);
+        if (pageNum == null || pageNum < 1) {
+            pageNum = 1;
+        }
+        PageData<AttributeTemplateListItemVO> pageData = attributeTemplateService.list(pageNum);
+        return JsonResult.ok(pageData);
     }
 }

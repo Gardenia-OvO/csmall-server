@@ -58,7 +58,7 @@ public class AlbumController {
             @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
     })
     public JsonResult list(@Range(min = 1, message = "查询相册列表失败，请提供正确的页码值！")
-                           @RequestParam Integer pageNum) {
+                           @RequestParam(defaultValue = "1") Integer pageNum) {
         log.debug("开始处理【查询相册列表】的业务，参数：{}", pageNum);
         if (pageNum == null || pageNum < 1) {
             pageNum = 1;

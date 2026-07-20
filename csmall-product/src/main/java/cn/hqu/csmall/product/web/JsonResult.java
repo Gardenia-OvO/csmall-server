@@ -4,9 +4,11 @@ package cn.hqu.csmall.product.web;
 import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
+@Accessors(chain = true)
 @Data
 public class JsonResult implements Serializable {
 
