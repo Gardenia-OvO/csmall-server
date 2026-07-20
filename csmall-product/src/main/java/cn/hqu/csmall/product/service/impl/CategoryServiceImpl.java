@@ -48,12 +48,27 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public void delete(Long id) {
         log.debug("开始处理【删除类别】的业务，id为:{}", id);
-        int rows = categoryMapper.deleteById(id);
-        if (rows == 0) {
-            String message = "删除类别失败，该数据已删除或不存在";
+        // 检查类别是否存在
+        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", id);
+        int count = categoryMapper.selectCount(queryWrapper);
+        log.debug("根据类别id查询类别表中是否存在该类别，检测结果为：{}", count);
+        if (count == 0) {
+            String message = "删除类别失败，类别数据不存在！";
             log.warn(message);
             throw new ServiceException(ServiceCode.NOT_FOUND, message);
         }
-        log.debug("删除类别成功");
+        // 检查是否有子级类别与该类别关联
+        QueryWrapper<Category> queryWrapper02 = new QueryWrapper<>();
+        queryWrapper02.eq("parent_id", id);
+        count = categoryMapper.selectCount(queryWrapper02);
+        log.debug("根据类别ID查询是否存在子级类别，查询结果：{}", count);
+        if (count > 0) {
+            String message = "删除类别失败，该类别存在子级类别！";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+        }
+        categoryMapper.deleteById(id);
+        log.debug("处理【根据id删除类别】的业务完成！");
     }
 }

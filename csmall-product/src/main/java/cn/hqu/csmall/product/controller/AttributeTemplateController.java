@@ -1,7 +1,6 @@
 package cn.hqu.csmall.product.controller;
 
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateAddNewParam;
-import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
 import cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.service.IAttributeTemplateService;

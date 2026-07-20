@@ -3,7 +3,9 @@ package cn.hqu.csmall.product.service.impl;
 import cn.hqu.csmall.product.ex.ServiceException;
 import cn.hqu.csmall.product.web.ServiceCode;
 import cn.hqu.csmall.product.mapper.BrandMapper;
+import cn.hqu.csmall.product.mapper.SpuMapper;
 import cn.hqu.csmall.product.pojo.entity.Brand;
+import cn.hqu.csmall.product.pojo.entity.Spu;
 import cn.hqu.csmall.product.pojo.param.BrandAddNewParam;
 import cn.hqu.csmall.product.service.IBrandService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -20,6 +22,9 @@ import java.time.LocalDateTime;
 public class BrandServiceImpl implements IBrandService {
     @Autowired
     private BrandMapper brandMapper;
+
+    @Autowired
+    private SpuMapper spuMapper;
     @Override
     public void addNew(BrandAddNewParam brandAddNewParam) throws ServiceException {
         log.debug("开始处理【新增品牌】的业务，参数为:{}",brandAddNewParam);
@@ -56,13 +61,28 @@ public class BrandServiceImpl implements IBrandService {
     @Override
     public void delete(Long id) {
         log.debug("开始处理【删除品牌】的业务，id为:{}", id);
-        int rows = brandMapper.deleteById(id);
-        if (rows == 0) {
-            String message = "删除品牌失败，该数据已删除或不存在";
+        // 检查品牌是否存在
+        QueryWrapper<Brand> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", id);
+        int count = brandMapper.selectCount(queryWrapper);
+        log.debug("根据品牌id查询品牌表中是否存在该品牌，检测结果为：{}", count);
+        if (count == 0) {
+            String message = "删除品牌失败，品牌数据不存在！";
             log.warn(message);
             throw new ServiceException(ServiceCode.NOT_FOUND, message);
         }
-        log.debug("删除品牌成功");
+        // 检查是否有SPU与该品牌关联
+        QueryWrapper<Spu> queryWrapper02 = new QueryWrapper<>();
+        queryWrapper02.eq("brand_id", id);
+        count = spuMapper.selectCount(queryWrapper02);
+        log.debug("根据品牌ID查询SPU表是否存在关联的SPU，查询结果：{}", count);
+        if (count > 0) {
+            String message = "删除品牌失败，该品牌存在关联SPU！";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+        }
+        brandMapper.deleteById(id);
+        log.debug("处理【根据id删除品牌】的业务完成！");
     }
 
     @Override

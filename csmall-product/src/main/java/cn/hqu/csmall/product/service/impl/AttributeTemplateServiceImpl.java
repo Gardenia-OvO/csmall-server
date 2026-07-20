@@ -2,12 +2,13 @@ package cn.hqu.csmall.product.service.impl;
 
 import cn.hqu.csmall.product.ex.ServiceException;
 import cn.hqu.csmall.product.mapper.AttributeTemplateMapper;
-import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
+import cn.hqu.csmall.product.mapper.SpuMapper;
+import cn.hqu.csmall.product.pojo.entity.AttributeTemplate;
+import cn.hqu.csmall.product.pojo.entity.Spu;
 import cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
 import cn.hqu.csmall.product.web.ServiceCode;
-import cn.hqu.csmall.product.pojo.entity.AttributeTemplate;
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateAddNewParam;
 import cn.hqu.csmall.product.service.IAttributeTemplateService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -26,6 +27,9 @@ import java.util.List;
 public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
     @Autowired
     private AttributeTemplateMapper attributeTemplateMapper;
+
+    @Autowired
+    private SpuMapper spuMapper;
 
     @Override
     public void addNew(AttributeTemplateAddNewParam attributeTemplateAddNewParam) {
@@ -56,13 +60,28 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
     @Override
     public void delete(Long id) {
         log.debug("开始处理【删除属性模板】的业务，id为:{}", id);
-        int rows = attributeTemplateMapper.deleteById(id);
-        if (rows == 0) {
-            String message = "删除属性模板失败，该数据已删除或不存在";
+        // 检查属性模板是否存在
+        QueryWrapper<AttributeTemplate> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", id);
+        int count = attributeTemplateMapper.selectCount(queryWrapper);
+        log.debug("根据属性模板id查询属性模板表中是否存在该模板，检测结果为：{}", count);
+        if (count == 0) {
+            String message = "删除属性模板失败，属性模板数据不存在！";
             log.warn(message);
             throw new ServiceException(ServiceCode.NOT_FOUND, message);
         }
-        log.debug("删除属性模板成功");
+        // 检查是否有SPU与该属性模板关联
+        QueryWrapper<Spu> queryWrapper02 = new QueryWrapper<>();
+        queryWrapper02.eq("attribute_template_id", id);
+        count = spuMapper.selectCount(queryWrapper02);
+        log.debug("根据属性模板ID查询SPU表是否存在关联的SPU，查询结果：{}", count);
+        if (count > 0) {
+            String message = "删除属性模板失败，该属性模板存在关联SPU！";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+        }
+        attributeTemplateMapper.deleteById(id);
+        log.debug("处理【根据id删除属性模板】的业务完成！");
     }
 
     @Override
