@@ -14,7 +14,7 @@ public interface IAlbumService {
      */
     void addNew(AlbumAddNewParam albumAddNewParam) ;
 
-    void delete(Long id);
+    void deleteById(Long id);
 
     void setSort(int i);
 

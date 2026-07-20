@@ -60,6 +60,6 @@ public class AttributeTemplateController {
             pageNum = 1;
         }
         PageData<AttributeTemplateListItemVO> pageData = attributeTemplateService.list(pageNum);
-        return JsonResult.ok(pageData);
+        return JsonResult.ok(pageData).setMessage("查询属性模板列表成功");
     }
 }

@@ -39,7 +39,7 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         if (count > 0) {
             String message = "属性模板名称已经被占用，请更换";
             log.warn(message);
-            throw new ServiceException(message);
+            throw new ServiceException(ServiceCode.ERR_CONFLICT,message);
         }
 
         // 向数据库中插入属性模板数据

@@ -46,9 +46,9 @@ public class AlbumController {
     public JsonResult delete(@Range(min = 1, message = "根据id删除相册，请提供合法的id")
                              @RequestParam Long id) {
         log.debug("开始处理【删除相册】的请求，id:{}", id);
-        albumService.delete(id);
+        albumService.deleteById(id);
         log.debug("处理【删除相册】的请求，完成！");
-        return JsonResult.ok();
+        return JsonResult.ok().setMessage("删除成功");
     }
 
     @GetMapping("/list")

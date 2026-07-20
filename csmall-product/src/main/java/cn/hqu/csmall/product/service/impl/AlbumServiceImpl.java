@@ -1,7 +1,9 @@
 package cn.hqu.csmall.product.service.impl;
 
 import cn.hqu.csmall.product.mapper.AlbumMapper;
+import cn.hqu.csmall.product.mapper.PictureMapper;
 import cn.hqu.csmall.product.pojo.entity.Album;
+import cn.hqu.csmall.product.pojo.entity.Picture;
 import cn.hqu.csmall.product.pojo.param.AlbumAddNewParam;
 import cn.hqu.csmall.product.service.IAlbumService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -27,6 +29,10 @@ import lombok.extern.slf4j.Slf4j;
 public class AlbumServiceImpl implements IAlbumService {
     @Autowired
     private AlbumMapper albumMapper;
+
+    @Autowired
+    private PictureMapper pictureMapper;
+
     @Override
     public void addNew(AlbumAddNewParam albumAddNewParam) throws ServiceException {
         log.debug("开始处理【新增相册】的业务，参数为:{}",albumAddNewParam);
@@ -38,7 +44,7 @@ public class AlbumServiceImpl implements IAlbumService {
         if(count > 0){
             String message = "相册名称已经被占用，请更换";
             log.warn(message);
-            throw new ServiceException(message);
+            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
         }
         //select * from tb_album where name = #{name}
 
@@ -56,15 +62,33 @@ public class AlbumServiceImpl implements IAlbumService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         log.debug("开始处理【删除相册】的业务，id为:{}", id);
-        int rows = albumMapper.deleteById(id);
-        if (rows == 0) {
-            String message = "删除相册失败，该数据已删除或不存在";
+        //检查相册是否存在
+        QueryWrapper<Album> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",id);
+        int count = albumMapper.selectCount(queryWrapper);
+
+        log.debug("根据相册id查询相册表中是否存在该相册，检测结果为：{}",count);
+
+        if (count == 0){
+            String message = "删除相册失败，相册数据不存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.NOT_FOUND, message);
+            throw new ServiceException(ServiceCode.NOT_FOUND,message);
         }
-        log.debug("删除相册成功");
+        //检查是否有图片与该相册相连
+        QueryWrapper<Picture> queryWrapper02 = new QueryWrapper<>();
+        queryWrapper02.eq("album_id",id);
+
+        count = pictureMapper.selectCount(queryWrapper02);
+        log.debug("根据相册ID查询图片表是否存在关联的图片，查询结果：{}",count);
+        if (count >0 ){
+            String message = "删除相册失败，该相册存在关联图片!";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_CONFLICT,message);
+        }
+        albumMapper.deleteById(id);
+        log.debug("处理【根据id删除相册】的业务完成！");
     }
 
     @Override

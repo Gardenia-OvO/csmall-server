@@ -51,4 +51,21 @@ public class AlbumServiceTests {
             System.out.println(albumListItemVO);
         }
     }
+
+    @Test
+    void deleteById() {
+        try {
+            Long id = 7L;
+            albumService.deleteById(id);
+            System.out.println("删除成功");
+        } catch (ServiceException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getServiceCode().getValue());
+            // e.printStackTrace();
+        } catch (Throwable e) {
+            System.out.println("未知异常");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

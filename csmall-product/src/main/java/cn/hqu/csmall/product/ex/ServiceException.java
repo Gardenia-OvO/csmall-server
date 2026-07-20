@@ -5,6 +5,8 @@ import cn.hqu.csmall.product.web.ServiceCode;
 public class ServiceException extends RuntimeException{
     private ServiceCode serviceCode;
 
+
+
     public ServiceException(){
     }
 
