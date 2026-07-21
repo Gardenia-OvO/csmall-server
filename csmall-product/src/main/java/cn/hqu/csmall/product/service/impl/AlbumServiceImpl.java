@@ -143,7 +143,7 @@ public class AlbumServiceImpl implements IAlbumService {
             throw new ServiceException(ServiceCode.NOT_FOUND,message);
         }
         //检查是否有图片与该相册相连
-        QueryWrapper<Picture> queryWrapper02 = new QueryWrapper<>();
+        QueryWrapper<Album> queryWrapper02 = new QueryWrapper<>();
         queryWrapper02.eq("name",albumUpdateParam.getName())
                 .ne("id",id);
 
@@ -161,7 +161,6 @@ public class AlbumServiceImpl implements IAlbumService {
         album.setId(id);
         album.setGmtModified(LocalDateTime.now());
         albumMapper.updateById(album);
-        albumMapper.deleteById(id);
         log.debug("处理【根据id修改相册】的业务完成！");
     }
 }

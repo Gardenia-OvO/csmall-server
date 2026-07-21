@@ -56,11 +56,9 @@ public class AlbumController {
     @PostMapping("/update")
     @ApiOperation("修改相册")
     @ApiOperationSupport(order = 300)
-    @ApiImplicitParam(name = "id", value = "相册id", required = true, dataType = "long")
-    public JsonResult update(@Range(min = 1, message = "根据id修改相册，请提供合法的id" )
-                                 @RequestParam Long id,@Valid AlbumUpdateParam albumUpdateParam) {
-        log.debug("开始处理【修改相册】的请求，参数为：{},{}", id,albumUpdateParam);
-        albumService.updateById(id, albumUpdateParam);
+    public JsonResult update(@Valid @RequestBody AlbumUpdateParam albumUpdateParam) {
+        log.debug("开始处理【修改相册】的请求，参数为：{}", albumUpdateParam);
+        albumService.updateById(albumUpdateParam.getId(), albumUpdateParam);
         log.debug("处理【修改相册】的请求，完成！");
         return JsonResult.ok();
     }

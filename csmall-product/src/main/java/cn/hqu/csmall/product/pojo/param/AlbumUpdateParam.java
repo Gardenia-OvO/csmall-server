@@ -8,6 +8,9 @@ import java.io.Serializable;
 
 @Data
 public class AlbumUpdateParam implements Serializable {
+    @NotNull(message = "相册ID不能为空")
+    @ApiModelProperty(value = "相册ID", required = true, example = "1")
+    private Long id;
     @NotNull(message = "相册名不能为空")
     @ApiModelProperty(value = "相册名称",required = true,example = "相册1")
     private String name;

@@ -15,6 +15,7 @@
     <!--子模块的项目清单-->
     <modules>
         <module>csmall-product</module>
+        <module>csmall-passport</module>
     </modules>
 
     <!--项目属性信息-->

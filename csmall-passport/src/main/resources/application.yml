@@ -17,3 +17,7 @@ mybatis:
 #启用knife4j
 knife4j:
   enable: true
+
+#服务器端口
+server:
+  port: 9181
