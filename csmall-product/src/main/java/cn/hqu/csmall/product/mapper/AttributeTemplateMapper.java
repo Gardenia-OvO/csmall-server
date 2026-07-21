@@ -1,7 +1,6 @@
 package cn.hqu.csmall.product.mapper;
 
 import cn.hqu.csmall.product.pojo.entity.AttributeTemplate;
-import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
 import cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO;
 import cn.hqu.csmall.product.pojo.vo.AttributeTemplateStandardVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

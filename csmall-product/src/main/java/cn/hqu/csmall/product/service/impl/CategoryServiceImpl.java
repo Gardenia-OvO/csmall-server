@@ -1,7 +1,9 @@
 package cn.hqu.csmall.product.service.impl;
 
 import cn.hqu.csmall.product.ex.ServiceException;
+import cn.hqu.csmall.product.pojo.param.CategoryUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.CategoryListItemVO;
+import cn.hqu.csmall.product.pojo.vo.CategoryStandardVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.web.ServiceCode;
 import cn.hqu.csmall.product.mapper.CategoryMapper;
@@ -98,5 +100,53 @@ public class CategoryServiceImpl implements ICategoryService {
         Integer pageSize = 5;
         log.debug("开始处理【查询类别列表】的业务，页码：{}，每页记录数(默认)：{}", pageNum, pageSize);
         return list(pageNum, pageSize);
+    }
+
+    @Override
+    public CategoryStandardVO getStandardById(Long id) {
+        log.debug("开始处理【根据id查询商品类别】的业务，id：{}",id);
+        CategoryStandardVO categoryStandardVO = categoryMapper.getStandardById(id);
+        if(categoryStandardVO == null){
+            log.warn("商品类别不存在");
+            throw new ServiceException(ServiceCode.NOT_FOUND,"商品类别不存在");
+        }
+        return categoryStandardVO;
+    }
+
+    @Override
+    public void updateById(Long id, CategoryUpdateParam categoryUpdateParam) {
+        log.debug("开始处理【根据ID修改商品类别信息】的业务，id为:{}", id);
+        //检查商品类别是否存在
+        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",id);
+        int count = categoryMapper.selectCount(queryWrapper);
+
+        log.debug("根据id查询商品类别表中是否存在该商品类别，检测结果为：{}",count);
+
+        if (count == 0){
+            String message = "修改商品类别失败，商品类别数据不存在!";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.NOT_FOUND,message);
+        }
+        //检查商品类别名称是否重复
+        QueryWrapper<Category> queryWrapper02 = new QueryWrapper<>();
+        queryWrapper02.eq("name",categoryUpdateParam.getName())
+                .ne("id",id);
+
+
+        count = categoryMapper.selectCount(queryWrapper02);
+        log.debug("根据商品类别名称查询是否存在同名商品类别，查询结果：{}",count);
+        if (count >0 ){
+            String message = "修改商品类别失败，商品类别名称已存在!";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_CONFLICT,message);
+        }
+
+        Category category = new Category();
+        BeanUtils.copyProperties(categoryUpdateParam,category);
+        category.setId(id);
+        category.setGmtModified(LocalDateTime.now());
+        categoryMapper.updateById(category);
+        log.debug("处理【根据id修改商品类别】的业务完成！");
     }
 }

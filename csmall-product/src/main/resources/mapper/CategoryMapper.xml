@@ -14,4 +14,9 @@
         SELECT id, parent_id AS parentId, name, keywords, sort, enable
         FROM pms_category ORDER BY sort
     </select>
+
+    <select id="getStandardById" resultType="cn.hqu.csmall.product.pojo.vo.CategoryStandardVO">
+        SELECT id, parent_id AS parentId, name, keywords, sort, enable
+        FROM pms_category WHERE id=#{id}
+    </select>
 </mapper>

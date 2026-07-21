@@ -10,6 +10,7 @@ import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
 import cn.hqu.csmall.product.web.ServiceCode;
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateAddNewParam;
+import cn.hqu.csmall.product.pojo.param.AttributeTemplateUpdateParam;
 import cn.hqu.csmall.product.service.IAttributeTemplateService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
@@ -82,6 +83,42 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         }
         attributeTemplateMapper.deleteById(id);
         log.debug("处理【根据id删除属性模板】的业务完成！");
+    }
+
+    @Override
+    public void updateById(Long id, AttributeTemplateUpdateParam attributeTemplateUpdateParam) {
+        log.debug("开始处理【根据ID修改属性模版信息】的业务，id为:{}", id);
+        //检查属性模版是否存在
+        QueryWrapper<AttributeTemplate> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", id);
+        int count = attributeTemplateMapper.selectCount(queryWrapper);
+
+        log.debug("根据id查询属性模版表中是否存在该属性模版，检测结果为：{}", count);
+
+        if (count == 0) {
+            String message = "修改属性模版失败，属性模版数据不存在!";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.NOT_FOUND, message);
+        }
+        //检查属性模版名称是否重复
+        QueryWrapper<AttributeTemplate> queryWrapper02 = new QueryWrapper<>();
+        queryWrapper02.eq("name", attributeTemplateUpdateParam.getName())
+                .ne("id", id);
+
+        count = attributeTemplateMapper.selectCount(queryWrapper02);
+        log.debug("根据属性模版名称查询是否存在同名属性模版，查询结果：{}", count);
+        if (count > 0) {
+            String message = "修改属性模版失败，属性模版名称已存在!";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+        }
+
+        AttributeTemplate attributeTemplate = new AttributeTemplate();
+        BeanUtils.copyProperties(attributeTemplateUpdateParam, attributeTemplate);
+        attributeTemplate.setId(id);
+        attributeTemplate.setGmtModified(LocalDateTime.now());
+        attributeTemplateMapper.updateById(attributeTemplate);
+        log.debug("处理【根据id修改属性模版】的业务完成！");
     }
 
     @Override

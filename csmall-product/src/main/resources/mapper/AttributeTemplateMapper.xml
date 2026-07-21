@@ -9,4 +9,9 @@
             FROM pms_attribute_template ORDER BY sort
     </select>
 
+    <select id="getStandardById" resultType="cn.hqu.csmall.product.pojo.vo.AttributeTemplateStandardVO">
+            SELECT id,name,pinyin,sort,keywords
+            FROM pms_attribute_template WHERE id=#{id}
+    </select>
+
 </mapper>

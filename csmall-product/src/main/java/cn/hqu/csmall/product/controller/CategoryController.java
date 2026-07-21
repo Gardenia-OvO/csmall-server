@@ -2,7 +2,7 @@ package cn.hqu.csmall.product.controller;
 
 
 import cn.hqu.csmall.product.pojo.param.CategoryAddNewParam;
-import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
+import cn.hqu.csmall.product.pojo.param.CategoryUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.CategoryListItemVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.service.ICategoryService;
@@ -50,6 +50,16 @@ public class CategoryController {
         categoryService.delete(id);
         log.debug("处理【删除类别】的请求，完成！");
         return JsonResult.ok("删除类别成功");
+    }
+
+    @PostMapping("/update")
+    @ApiOperation("修改商品类别")
+    @ApiOperationSupport(order = 300)
+    public JsonResult update(@Valid @RequestBody CategoryUpdateParam categoryUpdateParam) {
+        log.debug("开始处理【修改商品类别】的请求，参数为：{}", categoryUpdateParam);
+        categoryService.updateById(categoryUpdateParam.getId(), categoryUpdateParam);
+        log.debug("处理【修改商品类别】的请求，完成！");
+        return JsonResult.ok();
     }
 
     @GetMapping("/list")

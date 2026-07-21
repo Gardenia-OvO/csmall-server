@@ -19,9 +19,4 @@ public class AttributeTemplate implements Serializable {
     private Integer sort;
     private LocalDateTime gmtCreate;
     private LocalDateTime gmtModified;
-    public void setGmtCreated(LocalDateTime now) {
-    }
-
-    public void getGmtModified(LocalDateTime now) {
-    }
 }
