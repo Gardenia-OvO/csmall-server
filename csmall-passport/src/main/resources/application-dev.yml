@@ -7,7 +7,7 @@ spring:
 
 logging:
   level:
-    cn.hqu.csmallpassport:  trace
+    cn.hqu.csmall.passport:  trace
 
 server:
   port: 9181

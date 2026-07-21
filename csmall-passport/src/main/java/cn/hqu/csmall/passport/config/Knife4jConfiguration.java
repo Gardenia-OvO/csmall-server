@@ -1,4 +1,4 @@
-package cn.hqu.csmallpassport.config;
+package cn.hqu.csmall.passport.config;
 
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class Knife4jConfiguration {
     /**
      * 【重要】指定Controller包路径
      */
-    private String basePackage = "cn.hqu.csmallpassport.controller";
+    private String basePackage = "cn.hqu.csmall.passport.controller";
     /**
      * 分组名称
      */

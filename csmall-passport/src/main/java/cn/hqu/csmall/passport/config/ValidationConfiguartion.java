@@ -1,4 +1,4 @@
-package cn.hqu.csmallpassport.config;
+package cn.hqu.csmall.passport.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.HibernateValidator;

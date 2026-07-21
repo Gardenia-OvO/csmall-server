@@ -47,7 +47,7 @@ java.sql.SQLSyntaxErrorException: Unknown database 'mall_passport'
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:307) ~[spring-boot-2.6.13.jar:2.6.13]
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1317) ~[spring-boot-2.6.13.jar:2.6.13]
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1306) ~[spring-boot-2.6.13.jar:2.6.13]
-	at cn.hqu.csmallpassport.CsmallPassportApplication.main(CsmallPassportApplication.java:10) ~[classes/:na]
+	at cn.hqu.csmall.passport.CsmallPassportApplication.main(CsmallPassportApplication.java:10) ~[classes/:na]
 
 2026-07-21 14:42:41.240 ERROR 6434 --- [main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} init error
 
@@ -84,7 +84,7 @@ java.sql.SQLSyntaxErrorException: Unknown database 'mall_passport'
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:307) ~[spring-boot-2.6.13.jar:2.6.13]
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1317) ~[spring-boot-2.6.13.jar:2.6.13]
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1306) ~[spring-boot-2.6.13.jar:2.6.13]
-	at cn.hqu.csmallpassport.CsmallPassportApplication.main(CsmallPassportApplication.java:10) ~[classes/:na]
+	at cn.hqu.csmall.passport.CsmallPassportApplication.main(CsmallPassportApplication.java:10) ~[classes/:na]
 
 2026-07-21 14:42:41.241  INFO 6434 --- [main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
 2026-07-21 14:42:41.241  WARN 6434 --- [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSource' defined in class path resource [com/alibaba/druid/spring/boot/autoconfigure/DruidDataSourceAutoConfigure.class]: Invocation of init method failed; nested exception is java.sql.SQLSyntaxErrorException: Unknown database 'mall_passport'
@@ -140,7 +140,7 @@ org.springframework.beans.factory.BeanCreationException: Error creating bean wit
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:307) [spring-boot-2.6.13.jar:2.6.13]
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1317) [spring-boot-2.6.13.jar:2.6.13]
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1306) [spring-boot-2.6.13.jar:2.6.13]
-	at cn.hqu.csmallpassport.CsmallPassportApplication.main(CsmallPassportApplication.java:10) [classes/:na]
+	at cn.hqu.csmall.passport.CsmallPassportApplication.main(CsmallPassportApplication.java:10) [classes/:na]
 Caused by: java.sql.SQLSyntaxErrorException: Unknown database 'mall_passport'
 	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120) ~[mysql-connector-java-8.0.15.jar:8.0.15]
 	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97) ~[mysql-connector-java-8.0.15.jar:8.0.15]
