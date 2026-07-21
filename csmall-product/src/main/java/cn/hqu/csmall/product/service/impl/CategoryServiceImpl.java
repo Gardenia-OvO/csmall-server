@@ -1,18 +1,24 @@
 package cn.hqu.csmall.product.service.impl;
 
 import cn.hqu.csmall.product.ex.ServiceException;
+import cn.hqu.csmall.product.pojo.vo.CategoryListItemVO;
+import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.web.ServiceCode;
 import cn.hqu.csmall.product.mapper.CategoryMapper;
 import cn.hqu.csmall.product.pojo.entity.Category;
 import cn.hqu.csmall.product.pojo.param.CategoryAddNewParam;
 import cn.hqu.csmall.product.service.ICategoryService;
+import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -74,5 +80,23 @@ public class CategoryServiceImpl implements ICategoryService {
         }
         categoryMapper.deleteById(id);
         log.debug("处理【根据id删除类别】的业务完成！");
+    }
+
+    @Override
+    public PageData<CategoryListItemVO> list(Integer pageNum, Integer pageSize) {
+        log.debug("开始处理【查询类别列表】的业务，页码：{}，每页记录数：{}", pageNum, pageSize);
+        PageHelper.startPage(pageNum, pageSize);
+        List<CategoryListItemVO> list = categoryMapper.list();
+        PageInfo<CategoryListItemVO> pageInfo = new PageInfo<>(list);
+        PageData<CategoryListItemVO> pageData = PageInfoToPageDataConverter.convert(pageInfo);
+        log.debug("处理【查询类别列表】的业务完成，结果：{}", pageData);
+        return pageData;
+    }
+
+    @Override
+    public PageData<CategoryListItemVO> list(Integer pageNum) {
+        Integer pageSize = 5;
+        log.debug("开始处理【查询类别列表】的业务，页码：{}，每页记录数(默认)：{}", pageNum, pageSize);
+        return list(pageNum, pageSize);
     }
 }

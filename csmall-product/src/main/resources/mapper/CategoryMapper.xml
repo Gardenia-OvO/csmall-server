@@ -9,4 +9,9 @@
         VALUES(#{name}, #{parentId}, #{depth}, #{keywords}, #{sort}, #{icon}, #{enable},
                #{isParent}, #{isDisplay}, #{gmtCreate}, #{gmtModified})
     </insert>
+
+    <select id="list" resultType="cn.hqu.csmall.product.pojo.vo.CategoryListItemVO">
+        SELECT id, parent_id AS parentId, name, keywords, sort, enable
+        FROM pms_category ORDER BY sort
+    </select>
 </mapper>
