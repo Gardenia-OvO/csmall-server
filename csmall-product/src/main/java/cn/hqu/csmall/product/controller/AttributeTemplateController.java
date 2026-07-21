@@ -1,6 +1,7 @@
 package cn.hqu.csmall.product.controller;
 
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateAddNewParam;
+import cn.hqu.csmall.product.pojo.param.AttributeTemplateUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.service.IAttributeTemplateService;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 @Api(tags = "属性模板管理模块")
@@ -28,7 +31,7 @@ public class AttributeTemplateController {
     @PostMapping("/add-new")
     @ApiOperation("添加属性模版")
     @ApiOperationSupport(order = 100)
-    public JsonResult addNew(AttributeTemplateAddNewParam attributeTemplateAddNewParam) {
+    public JsonResult addNew(@Valid @RequestBody AttributeTemplateAddNewParam attributeTemplateAddNewParam) {
         log.debug("开始处理【新增属性模板】的请求，参数为:{}", attributeTemplateAddNewParam);
         attributeTemplateService.addNew(attributeTemplateAddNewParam);
         return JsonResult.created("新增属性模板成功");
@@ -44,6 +47,16 @@ public class AttributeTemplateController {
         attributeTemplateService.delete(id);
         log.debug("处理【删除属性模板】的请求，完成！");
         return JsonResult.ok("删除属性模板成功");
+    }
+
+    @PostMapping("/update")
+    @ApiOperation("修改属性模版")
+    @ApiOperationSupport(order = 300)
+    public JsonResult update(@Valid @RequestBody AttributeTemplateUpdateParam attributeTemplateUpdateParam) {
+        log.debug("开始处理【修改属性模版】的请求，参数为：{}", attributeTemplateUpdateParam);
+        attributeTemplateService.updateById(attributeTemplateUpdateParam);
+        log.debug("处理【修改属性模版】的请求，完成！");
+        return JsonResult.ok();
     }
 
     @GetMapping("/list")

@@ -1,8 +1,8 @@
 package cn.hqu.csmall.passport.ex.handler;
 
-import cn.hqu.csmall.product.ex.ServiceException;
-import cn.hqu.csmall.product.web.JsonResult;
-import cn.hqu.csmall.product.web.ServiceCode;
+import cn.hqu.csmall.passport.ex.ServiceException;
+import cn.hqu.csmall.passport.web.JsonResult;
+import cn.hqu.csmall.passport.web.ServiceCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
