@@ -5,14 +5,11 @@ import cn.hqu.csmall.product.mapper.AttributeTemplateMapper;
 import cn.hqu.csmall.product.mapper.SpuMapper;
 import cn.hqu.csmall.product.pojo.entity.AttributeTemplate;
 import cn.hqu.csmall.product.pojo.entity.Spu;
-import cn.hqu.csmall.product.pojo.vo.AlbumStandardVO;
 import cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO;
-import cn.hqu.csmall.product.pojo.vo.AttributeTemplateStandardVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
 import cn.hqu.csmall.product.web.ServiceCode;
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateAddNewParam;
-import cn.hqu.csmall.product.pojo.param.AttributeTemplateUpdateParam;
 import cn.hqu.csmall.product.service.IAttributeTemplateService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
@@ -88,22 +85,6 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
     }
 
     @Override
-    public void updateById(AttributeTemplateUpdateParam attributeTemplateUpdateParam) {
-        log.debug("开始处理【修改属性模板】的业务，参数：{}", attributeTemplateUpdateParam);
-        Long id = attributeTemplateUpdateParam.getId();
-        AttributeTemplate attributeTemplate = attributeTemplateMapper.selectById(id);
-        if (attributeTemplate == null) {
-            String message = "修改属性模板失败，属性模板不存在！";
-            log.warn(message);
-            throw new ServiceException(ServiceCode.NOT_FOUND, message);
-        }
-        BeanUtils.copyProperties(attributeTemplateUpdateParam, attributeTemplate);
-        attributeTemplate.setGmtModified(LocalDateTime.now());
-        attributeTemplateMapper.updateById(attributeTemplate);
-        log.debug("处理【修改属性模板】的业务完成！");
-    }
-
-    @Override
     public PageData<AttributeTemplateListItemVO> list(Integer pageNum, Integer pageSize) {
         log.debug("开始处理【查询属性模版列表】的业务，页码：{}，每页记录数：{}",pageNum,pageSize);
         PageHelper.startPage(pageNum,pageSize);
@@ -119,16 +100,5 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         Integer pageSize = 5;
         log.debug("开始处理【查询属性模版列表】的业务，页码：{}，每页记录数(默认)：{}",pageNum,pageSize);
         return list(pageNum,pageSize);
-    }
-
-    @Override
-    public AttributeTemplateStandardVO getStandardById(Long id) {
-        log.debug("开始处理【根据id查询属性模版】的业务，id：{}",id);
-        AttributeTemplateStandardVO attributeTemplateStandardVO = attributeTemplateMapper.getStandardById(id);
-        if(attributeTemplateStandardVO == null){
-            log.warn("属性模版不存在");
-            throw new ServiceException(ServiceCode.NOT_FOUND,"属性模版不存在");
-        }
-        return attributeTemplateStandardVO;
     }
 }

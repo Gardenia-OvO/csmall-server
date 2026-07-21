@@ -37,6 +37,10 @@ public class CategoryServiceImpl implements ICategoryService {
         //将类别信息插入到数据库中
         Category category = new Category();
         BeanUtils.copyProperties(categoryAddNewParam, category);
+        // 父级ID为null时默认为0（根级目录）
+        if (category.getParentId() == null) {
+            category.setParentId(0L);
+        }
         //设置创建时间和修改时间
         category.setGmtCreate(LocalDateTime.now());
         category.setGmtModified(LocalDateTime.now());

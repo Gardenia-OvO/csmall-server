@@ -13,8 +13,8 @@ public class CategoryAddNewParam implements Serializable {
     @ApiModelProperty(value = "类别名称", required = true, example = "类别1")
     private String name;
 
-    @NotNull(message = "父级ID不能为空")
-    @ApiModelProperty(value = "父级ID", required = true, example = "0")
+    @NotNull
+    @ApiModelProperty(value = "父级ID，为0或null时表示根级目录", example = "0")
     private Long parentId;
 
     @ApiModelProperty(value = "关键词", example = "关键词1,关键词2")
@@ -28,7 +28,8 @@ public class CategoryAddNewParam implements Serializable {
     @ApiModelProperty(value = "图标", example = "http://example.com/icon.png")
     private String icon;
 
-    @NotNull(message = "启用状态不能为空")
+
+    @NotNull
     @Range(min = 0, max = 1, message = "启用状态必须在0-1之间")
     @ApiModelProperty(value = "启用状态", required = true, example = "1")
     private Integer enable;

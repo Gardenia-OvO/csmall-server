@@ -1,8 +1,9 @@
 package cn.hqu.csmall.product.service;
 
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateAddNewParam;
-import cn.hqu.csmall.product.pojo.param.AttributeTemplateUpdateParam;
-import cn.hqu.csmall.product.pojo.vo.*;
+import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
+import cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO;
+import cn.hqu.csmall.product.pojo.vo.PageData;
 
 
 public interface IAttributeTemplateService {
@@ -15,11 +16,7 @@ public interface IAttributeTemplateService {
 
     void delete(Long id);
 
-    void updateById(AttributeTemplateUpdateParam attributeTemplateUpdateParam);
-
     PageData<AttributeTemplateListItemVO> list(Integer pageNum, Integer pageSize);
 
     PageData<AttributeTemplateListItemVO> list(Integer pageNum);
-
-    AttributeTemplateStandardVO getStandardById(Long id);
 }

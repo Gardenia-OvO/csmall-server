@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +33,7 @@ public class CategoryController {
     @PostMapping("/add-new")
     @ApiOperation("新增类别")
     @ApiOperationSupport(order = 100)
-    public JsonResult addNew(@Valid CategoryAddNewParam categoryAddNewParam) {
+    public JsonResult addNew(@Valid @RequestBody CategoryAddNewParam categoryAddNewParam) {
         log.debug("开始处理【添加类别】的请求，参数:{}", categoryAddNewParam);
         categoryService.addNew(categoryAddNewParam);
         log.debug("处理【添加类别】的请求，完成！");
