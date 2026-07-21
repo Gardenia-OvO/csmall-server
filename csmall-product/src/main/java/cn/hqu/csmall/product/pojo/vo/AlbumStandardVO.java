@@ -1,0 +1,16 @@
+package cn.hqu.csmall.product.pojo.vo;
+
+
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+
+@Data
+@Accessors(chain = true)
+public class AlbumStandardVO implements Serializable {
+    private Long id;
+    private String name;
+    private String description;
+    private Integer sort;
+}

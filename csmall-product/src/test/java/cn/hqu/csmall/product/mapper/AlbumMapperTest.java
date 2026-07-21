@@ -3,6 +3,7 @@ package cn.hqu.csmall.product.mapper;
 
 import cn.hqu.csmall.product.pojo.entity.Album;
 import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
+import cn.hqu.csmall.product.pojo.vo.AlbumStandardVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -73,5 +74,12 @@ public class AlbumMapperTest {
         for (AlbumListItemVO albumListItemVO : list) {
             System.out.println(albumListItemVO);
         }
+    }
+
+    @Test
+    void testgetStandardById() {
+        Long id = 1L;
+        AlbumStandardVO albumStandardVO = albumMapper.getStandardById(id);
+        System.out.println("根据id"+id+"查询相册信息：" + albumStandardVO);
     }
 }

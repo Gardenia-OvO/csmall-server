@@ -11,4 +11,10 @@
             SELECT id,name,description,sort
             FROM pms_album ORDER BY sort
     </select>
+
+    <select id="getStandardById" resultType="cn.hqu.csmall.product.pojo.vo.AlbumStandardVO">
+            SELECT id,name,description,sort
+            FROM pms_album WHERE id=#{id}
+    </select>
+
 </mapper>

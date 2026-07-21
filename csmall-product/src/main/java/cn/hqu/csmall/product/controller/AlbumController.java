@@ -3,6 +3,7 @@ package cn.hqu.csmall.product.controller;
 
 import cn.hqu.csmall.product.pojo.param.AlbumAddNewParam;
 import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
+import cn.hqu.csmall.product.pojo.vo.AlbumStandardVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.service.IAlbumService;
 import cn.hqu.csmall.product.web.JsonResult;
@@ -65,5 +66,18 @@ public class AlbumController {
         }
         PageData<AlbumListItemVO> pageData = albumService.list(pageNum);
         return JsonResult.ok(pageData);
+    }
+
+
+    @GetMapping("/standard")
+    @ApiOperation("根据id查询相册详细信息")
+    @ApiOperationSupport(order = 450)
+    @ApiImplicitParam(name = "id", value = "相册id", required = true, dataType = "long")
+    public JsonResult standard(@Range(min = 1, message = "根据id删除相册，请提供合法的id")
+                             @RequestParam Long id) {
+        log.debug("开始处理【查询相册信息】的请求，id:{}", id);
+        AlbumStandardVO result = albumService.getStandardById(id);
+        log.debug("处理【查询相册信息】的请求，完成！");
+        return JsonResult.ok(result);
     }
 }

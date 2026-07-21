@@ -5,6 +5,7 @@ import cn.hqu.csmall.product.mapper.PictureMapper;
 import cn.hqu.csmall.product.pojo.entity.Album;
 import cn.hqu.csmall.product.pojo.entity.Picture;
 import cn.hqu.csmall.product.pojo.param.AlbumAddNewParam;
+import cn.hqu.csmall.product.pojo.vo.AlbumStandardVO;
 import cn.hqu.csmall.product.service.IAlbumService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import cn.hqu.csmall.product.ex.ServiceException;
@@ -112,5 +113,16 @@ public class AlbumServiceImpl implements IAlbumService {
         Integer pageSize = 5;
         log.debug("开始处理【查询相册列表】的业务，页码：{}，每页记录数(默认)：{}",pageNum,pageSize);
         return list(pageNum,pageSize);
+    }
+
+    @Override
+    public AlbumStandardVO getStandardById(Long id) {
+        log.debug("开始处理【根据id查询相册】的业务，id：{}",id);
+        AlbumStandardVO albumStandardVO = albumMapper.getStandardById(id);
+        if(albumStandardVO == null){
+            log.warn("相册不存在");
+            throw new ServiceException(ServiceCode.NOT_FOUND,"相册不存在");
+        }
+        return albumStandardVO;
     }
 }
