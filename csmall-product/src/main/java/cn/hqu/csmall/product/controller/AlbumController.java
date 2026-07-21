@@ -2,6 +2,7 @@ package cn.hqu.csmall.product.controller;
 
 
 import cn.hqu.csmall.product.pojo.param.AlbumAddNewParam;
+import cn.hqu.csmall.product.pojo.param.AlbumUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
 import cn.hqu.csmall.product.pojo.vo.AlbumStandardVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
@@ -52,6 +53,18 @@ public class AlbumController {
         return JsonResult.ok();
     }
 
+    @PostMapping("/update")
+    @ApiOperation("修改相册")
+    @ApiOperationSupport(order = 300)
+    @ApiImplicitParam(name = "id", value = "相册id", required = true, dataType = "long")
+    public JsonResult update(@Range(min = 1, message = "根据id修改相册，请提供合法的id" )
+                                 @RequestParam Long id,@Valid AlbumUpdateParam albumUpdateParam) {
+        log.debug("开始处理【修改相册】的请求，参数为：{},{}", id,albumUpdateParam);
+        albumService.updateById(id, albumUpdateParam);
+        log.debug("处理【修改相册】的请求，完成！");
+        return JsonResult.ok();
+    }
+
     @GetMapping("/list")
     @ApiOperation("查询相册列表")
     @ApiOperationSupport(order = 420)
@@ -80,4 +93,5 @@ public class AlbumController {
         log.debug("处理【查询相册信息】的请求，完成！");
         return JsonResult.ok(result);
     }
+
 }

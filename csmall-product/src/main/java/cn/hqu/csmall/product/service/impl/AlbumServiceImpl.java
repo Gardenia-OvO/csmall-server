@@ -5,6 +5,7 @@ import cn.hqu.csmall.product.mapper.PictureMapper;
 import cn.hqu.csmall.product.pojo.entity.Album;
 import cn.hqu.csmall.product.pojo.entity.Picture;
 import cn.hqu.csmall.product.pojo.param.AlbumAddNewParam;
+import cn.hqu.csmall.product.pojo.param.AlbumUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.AlbumStandardVO;
 import cn.hqu.csmall.product.service.IAlbumService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -124,5 +125,43 @@ public class AlbumServiceImpl implements IAlbumService {
             throw new ServiceException(ServiceCode.NOT_FOUND,"相册不存在");
         }
         return albumStandardVO;
+    }
+
+    @Override
+    public void updateById(Long id, AlbumUpdateParam albumUpdateParam) {
+        log.debug("开始处理【根据ID修改相册信息】的业务，id为:{}", id);
+        //检查相册是否存在
+        QueryWrapper<Album> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",id);
+        int count = albumMapper.selectCount(queryWrapper);
+
+        log.debug("根据相册id查询相册表中是否存在该相册，检测结果为：{}",count);
+
+        if (count == 0){
+            String message = "修改相册失败，相册数据不存在!";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.NOT_FOUND,message);
+        }
+        //检查是否有图片与该相册相连
+        QueryWrapper<Picture> queryWrapper02 = new QueryWrapper<>();
+        queryWrapper02.eq("name",albumUpdateParam.getName())
+                .ne("id",id);
+
+
+        count = albumMapper.selectCount(queryWrapper02);
+        log.debug("根据相册ID查询图片表是否存在关联的图片，查询结果：{}",count);
+        if (count >0 ){
+            String message = "修改相册失败，相册名称已存在!";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_CONFLICT,message);
+        }
+
+        Album album = new Album();
+        BeanUtils.copyProperties(albumUpdateParam,album);
+        album.setId(id);
+        album.setGmtModified(LocalDateTime.now());
+        albumMapper.updateById(album);
+        albumMapper.deleteById(id);
+        log.debug("处理【根据id修改相册】的业务完成！");
     }
 }

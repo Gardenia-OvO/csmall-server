@@ -2,6 +2,7 @@ package cn.hqu.csmall.product.service;
 
 import cn.hqu.csmall.product.ex.ServiceException;
 import cn.hqu.csmall.product.pojo.param.AlbumAddNewParam;
+import cn.hqu.csmall.product.pojo.param.AlbumUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import org.junit.jupiter.api.Test;
@@ -63,6 +64,26 @@ public class AlbumServiceTests {
             System.out.println(e.getServiceCode().getValue());
             // e.printStackTrace();
         } catch (Throwable e) {
+            System.out.println("未知异常");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void updateById() {
+        try {
+            Long id = 1L;
+            AlbumUpdateParam data = new AlbumUpdateParam();
+            data.setName ("华为Mate20的相册");
+            data.setDescription("测试相册9日的描述");
+            data.setSort(100);
+            albumService.updateById(id, data) ;
+            System.out.println("修改成功");
+        }catch (ServiceException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getServiceCode().getValue());
+        }catch (Throwable e) {
             System.out.println("未知异常");
             System.out.println(e.getMessage());
             e.printStackTrace();
