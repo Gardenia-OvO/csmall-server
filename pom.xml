@@ -51,6 +51,12 @@
                 <artifactId>spring-boot-starter-validation</artifactId>
                 <version>${spring-boot.version}</version>
             </dependency>
+            <!--springboot支持spring security的依赖项-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
             <!--swagger依赖-->
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>

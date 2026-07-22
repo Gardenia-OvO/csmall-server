@@ -11,4 +11,16 @@
                #{sales}, #{productCount}, #{commentCount}, #{positiveCommentCount},
                #{gmtCreated}, #{gmtModified})
     </insert>
+
+    <select id="list" resultType="cn.hqu.csmall.product.pojo.vo.BrandListItemVO">
+        SELECT id, name, pinyin, logo, keywords, sort, enable, sales, product_count
+        FROM pms_brand ORDER BY sort
+    </select>
+
+    <select id="getStandardById" resultType="cn.hqu.csmall.product.pojo.vo.BrandStandardVO">
+        SELECT id, name, pinyin, logo, description, keywords, sort, enable, sales,
+               product_count, comment_count, positive_comment_count
+        FROM pms_brand WHERE id=#{id}
+    </select>
+
 </mapper>

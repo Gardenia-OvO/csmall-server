@@ -21,6 +21,11 @@
         <spring-boot.version>2.6.13</spring-boot.version>
     </properties>
     <dependencies>
+        <!--springboot支持spring security的依赖项-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
         <!--基于MyBatis或者MyBatis-plus的分页查询框架-->
         <dependency>
             <groupId>com.github.pagehelper</groupId>

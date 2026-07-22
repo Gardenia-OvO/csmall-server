@@ -7,14 +7,22 @@ import cn.hqu.csmall.product.mapper.SpuMapper;
 import cn.hqu.csmall.product.pojo.entity.Brand;
 import cn.hqu.csmall.product.pojo.entity.Spu;
 import cn.hqu.csmall.product.pojo.param.BrandAddNewParam;
+import cn.hqu.csmall.product.pojo.param.BrandUpdateParam;
+import cn.hqu.csmall.product.pojo.vo.BrandListItemVO;
+import cn.hqu.csmall.product.pojo.vo.BrandStandardVO;
+import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.service.IBrandService;
+import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 //@Service表示这是业务层组件
 @Slf4j
@@ -36,7 +44,7 @@ public class BrandServiceImpl implements IBrandService {
         if(count > 0){
             String message = "品牌名称已经被占用，请更换";
             log.warn(message);
-            throw new ServiceException(message);
+            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
         }
         //select * from tb_album where name = #{name}
 
@@ -86,7 +94,68 @@ public class BrandServiceImpl implements IBrandService {
     }
 
     @Override
-    public void setSort(int i) {
+    public void updateById(Long id, BrandUpdateParam brandUpdateParam) {
+        log.debug("开始处理【根据ID修改品牌信息】的业务，id为:{}", id);
+        //检查品牌是否存在
+        QueryWrapper<Brand> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",id);
+        int count = brandMapper.selectCount(queryWrapper);
 
+        log.debug("根据品牌id查询品牌表中是否存在该品牌，检测结果为：{}",count);
+
+        if (count == 0){
+            String message = "修改品牌失败，品牌数据不存在!";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.NOT_FOUND,message);
+        }
+        //检查品牌名称是否重复
+        QueryWrapper<Brand> queryWrapper02 = new QueryWrapper<>();
+        queryWrapper02.eq("name",brandUpdateParam.getName())
+                .ne("id",id);
+
+
+        count = brandMapper.selectCount(queryWrapper02);
+        log.debug("根据品牌名称查询是否存在同名品牌，查询结果：{}",count);
+        if (count >0 ){
+            String message = "修改品牌失败，品牌名称已存在!";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_CONFLICT,message);
+        }
+
+        Brand brand = new Brand();
+        BeanUtils.copyProperties(brandUpdateParam,brand);
+        brand.setId(id);
+        brand.setGmtModified(LocalDateTime.now());
+        brandMapper.updateById(brand);
+        log.debug("处理【根据id修改品牌】的业务完成！");
+    }
+
+    @Override
+    public PageData<BrandListItemVO> list(Integer pageNum, Integer pageSize) {
+        log.debug("开始处理【查询品牌列表】的业务，页码：{}，每页记录数：{}",pageNum,pageSize);
+        PageHelper.startPage(pageNum,pageSize);
+        List<BrandListItemVO> list = brandMapper.list();
+        PageInfo<BrandListItemVO> pageInfo = new PageInfo<>(list);
+        PageData<BrandListItemVO> pageData = PageInfoToPageDataConverter.convert(pageInfo);
+        log.debug("处理【查询品牌列表】的业务完成，结果：{}",pageData);
+        return pageData;
+    }
+
+    @Override
+    public PageData<BrandListItemVO> list(Integer pageNum) {
+        Integer pageSize = 5;
+        log.debug("开始处理【查询品牌列表】的业务，页码：{}，每页记录数(默认)：{}",pageNum,pageSize);
+        return list(pageNum,pageSize);
+    }
+
+    @Override
+    public BrandStandardVO getStandardById(Long id) {
+        log.debug("开始处理【根据id查询品牌】的业务，id：{}",id);
+        BrandStandardVO brandStandardVO = brandMapper.getStandardById(id);
+        if(brandStandardVO == null){
+            log.warn("品牌不存在");
+            throw new ServiceException(ServiceCode.NOT_FOUND,"品牌不存在");
+        }
+        return brandStandardVO;
     }
 }

@@ -2,20 +2,22 @@ package cn.hqu.csmall.product.controller;
 
 
 import cn.hqu.csmall.product.pojo.param.BrandAddNewParam;
+import cn.hqu.csmall.product.pojo.param.BrandUpdateParam;
+import cn.hqu.csmall.product.pojo.vo.BrandListItemVO;
+import cn.hqu.csmall.product.pojo.vo.BrandStandardVO;
+import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.service.IBrandService;
 import cn.hqu.csmall.product.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -32,7 +34,7 @@ public class BrandController {
     @PostMapping("/add-new")
     @ApiOperation("新增品牌")
     @ApiOperationSupport(order = 100)
-    public JsonResult addNew(@Valid BrandAddNewParam brandAddNewParam) {
+    public JsonResult addNew(@Valid @RequestBody BrandAddNewParam brandAddNewParam) {
         log.debug("开始处理【添加品牌】的请求，参数:{}", brandAddNewParam);
         brandService.addNew(brandAddNewParam);
         log.debug("处理【添加品牌】的请求，完成！");
@@ -50,4 +52,43 @@ public class BrandController {
         log.debug("处理【删除品牌】的请求，完成！");
         return JsonResult.ok("删除品牌成功");
     }
+
+    @PostMapping("/update")
+    @ApiOperation("修改品牌")
+    @ApiOperationSupport(order = 300)
+    public JsonResult update(@Valid @RequestBody BrandUpdateParam brandUpdateParam) {
+        log.debug("开始处理【修改品牌】的请求，参数为：{}", brandUpdateParam);
+        brandService.updateById(brandUpdateParam.getId(), brandUpdateParam);
+        log.debug("处理【修改品牌】的请求，完成！");
+        return JsonResult.ok();
+    }
+
+    @GetMapping("/list")
+    @ApiOperation("查询品牌列表")
+    @ApiOperationSupport(order = 420)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
+    })
+    public JsonResult list(@Range(min = 1, message = "查询品牌列表失败，请提供正确的页码值！")
+                           @RequestParam(defaultValue = "1") Integer pageNum) {
+        log.debug("开始处理【查询品牌列表】的业务，参数：{}", pageNum);
+        if (pageNum == null || pageNum < 1) {
+            pageNum = 1;
+        }
+        PageData<BrandListItemVO> pageData = brandService.list(pageNum);
+        return JsonResult.ok(pageData);
+    }
+
+    @GetMapping("/standard")
+    @ApiOperation("查询品牌详细信息")
+    @ApiOperationSupport(order = 450)
+    @ApiImplicitParam(name = "id", value = "品牌id", required = true, dataType = "long")
+    public JsonResult standard(@Range(min = 1, message = "根据id查询品牌，请提供合法的id")
+                             @RequestParam Long id) {
+        log.debug("开始处理【查询品牌信息】的请求，id:{}", id);
+        BrandStandardVO result = brandService.getStandardById(id);
+        log.debug("处理【查询品牌信息】的请求，完成！");
+        return JsonResult.ok(result);
+    }
+
 }
