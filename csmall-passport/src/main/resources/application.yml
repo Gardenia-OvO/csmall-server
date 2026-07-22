@@ -16,6 +16,14 @@ spring:
 mybatis:
   mapper-location:  classpath:mapper/*.xml
 
+# MyBatis-Plus配置
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 #启用knife4j
 knife4j:
   enable: true

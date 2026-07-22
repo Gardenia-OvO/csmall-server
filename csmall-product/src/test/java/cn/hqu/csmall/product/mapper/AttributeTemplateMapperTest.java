@@ -20,8 +20,8 @@ public class AttributeTemplateMapperTest {
        data.setPinyin("ceshixiangce05");
        data.setKeywords("key01,key02,key03");
        data.setSort(5);
-       data.setGmtCreated(LocalDateTime.now());
-       data.getGmtModified(LocalDateTime.now());
+       data.setGmtCreate(LocalDateTime.now());
+       data.setGmtModified(LocalDateTime.now());
        System.out.println("插入之前：ID=" + data.getId());
        int rows = mapper.insert(data);
        System.out.println("插入之后：ID=" + data.getId());

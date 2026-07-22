@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hqu.csmall.passport.mapper.AdminMapper">
+
+    <select id="list" resultType="cn.hqu.csmall.passport.pojo.vo.AdminListItemVO">
+        SELECT id, username, nickname, avatar, phone, email, enable, description
+        FROM ams_admin ORDER BY id
+    </select>
+
+    <!-- 自定义插入，明确排除id列，使用数据库自增主键 -->
+    <insert id="insertAdmin" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ams_admin (
+            username, password, nickname, avatar, phone, email,
+            description, enable, last_login_ip, login_count,
+            gmt_last_login, gmt_create, gmt_modified
+        ) VALUES (
+            #{username}, #{password}, #{nickname}, #{avatar}, #{phone}, #{email},
+            #{description}, #{enable}, #{lastLoginIp}, #{loginCount},
+            #{gmtLastLogin}, #{gmtCreate}, #{gmtModified}
+        )
+    </insert>
+
+</mapper>

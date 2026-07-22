@@ -5,6 +5,11 @@ spring:
     username: root
     password: 20050806
 
+# MyBatis-Plus配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 logging:
   level:
     cn.hqu.csmall.passport:  trace

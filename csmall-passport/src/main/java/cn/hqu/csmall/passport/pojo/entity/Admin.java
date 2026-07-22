@@ -1,5 +1,6 @@
 package cn.hqu.csmall.passport.pojo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -14,12 +15,12 @@ import java.time.LocalDateTime;
 @TableName("ams_admin")
 public class Admin implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+
 
     /**
      * 主键id
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**

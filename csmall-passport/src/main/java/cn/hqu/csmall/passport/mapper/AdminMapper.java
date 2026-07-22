@@ -2,10 +2,14 @@ package cn.hqu.csmall.passport.mapper;
 
 
 import cn.hqu.csmall.passport.pojo.entity.Admin;
+import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface AdminMapper  extends BaseMapper<Admin> {
+import java.util.List;
 
+@Repository
+public interface AdminMapper extends BaseMapper<Admin> {
+
+    List<AdminListItemVO> list();
 }
