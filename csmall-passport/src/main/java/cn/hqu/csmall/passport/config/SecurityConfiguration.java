@@ -19,7 +19,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         // 白名单：放行Knife4j文档及API接口
         String[] urls = {
                 "/doc.html", "/**/*.css", "/**/*.js", "/swagger-resources", "/v2/api-docs",
-                "/admin/**"  // 暂时放行管理员相关接口
+                "/admin/**",  // 暂时放行管理员相关接口
+                "/role/**"    // 暂时放行角色相关接口
         };
         http.authorizeRequests()
                 .mvcMatchers(urls)
