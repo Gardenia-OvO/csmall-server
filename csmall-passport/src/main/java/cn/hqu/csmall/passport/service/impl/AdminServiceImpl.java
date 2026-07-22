@@ -2,7 +2,9 @@ package cn.hqu.csmall.passport.service.impl;
 
 import cn.hqu.csmall.passport.ex.ServiceException;
 import cn.hqu.csmall.passport.mapper.AdminMapper;
+import cn.hqu.csmall.passport.mapper.AdminRoleMapper;
 import cn.hqu.csmall.passport.pojo.entity.Admin;
+import cn.hqu.csmall.passport.pojo.entity.AdminRole;
 import cn.hqu.csmall.passport.pojo.param.AdminAddNewParam;
 import cn.hqu.csmall.passport.service.IAdminService;
 import cn.hqu.csmall.passport.web.ServiceCode;
@@ -22,6 +24,8 @@ import java.util.List;
 public class AdminServiceImpl implements IAdminService {
     @Autowired
     private AdminMapper adminMapper;
+    @Autowired
+    private AdminRoleMapper adminRoleMapper;
 
     @Override
     public void addNew(AdminAddNewParam adminAddNewParam) {
@@ -51,9 +55,18 @@ public class AdminServiceImpl implements IAdminService {
         admin.setGmtLastLogin(null);
         admin.setGmtCreate(LocalDateTime.now());
         admin.setGmtModified(LocalDateTime.now());
-        log.debug("准备将新的管理员数据插入数据库中，{}",admin);
-        //调用管理员数据表的mapper接口中的insert方法，将管理员信息插入到管理员表中
-        adminMapper.insert(admin);
+        log.debug("准备将新的管理员数据插入数据库中");
+        Long[] roleIds = adminAddNewParam.getRoleIds();
+        AdminRole[] adminRoles = new AdminRole[roleIds.length];
+        for (long i = 0; i < roleIds.length; i++) {
+            AdminRole date = new AdminRole();
+            date.setAdminId(admin.getId());
+            date.setRoleId(roleIds[(int)i]);
+            date.setGmtCreate(LocalDateTime.now());
+            date.setGmtModified(LocalDateTime.now());
+            adminRoles[(int)i] = date;
+        }
+        adminRoleMapper.insertBatch(adminRoles);
         log.debug("新的管理员数据插入数据库中，完成！");
     }
 

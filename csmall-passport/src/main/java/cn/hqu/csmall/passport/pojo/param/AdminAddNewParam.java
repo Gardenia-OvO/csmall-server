@@ -61,4 +61,11 @@ public class AdminAddNewParam implements Serializable {
     @ApiModelProperty(value = "是否启用",required = true,example = "0")
     private Integer enable;
 
+    /**
+     * 角色ID数组
+     */
+    @NotNull(message = "添加管理员失败，角色不能为空")
+    @ApiModelProperty(value = "角色ID数组",required = true,example = "[1,2,3]")
+    private Long[] roleIds;
+
 }

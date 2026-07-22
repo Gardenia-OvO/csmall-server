@@ -14,12 +14,13 @@ public class AdminServiceTests {
     //单元测试
     //测试相册新增
     @Test
-    public void testSaveNewAlbum() {
+    public void testSaveNewAdmin() {
         AdminAddNewParam data = new AdminAddNewParam();
-        data.setUsername("test04");
+        data.setUsername("test48");
         data.setPassword("123456");
         data.setAvatar("test04.jpg");
         data.setDescription("test04的描述");
+        data.setRoleIds(new Long[]{1L,2L,3L});
         try {
             service.addNew(data);
             System.out.println("添加成功");
