@@ -9,10 +9,7 @@ import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.service.IBrandService;
 import cn.hqu.csmall.product.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,16 +76,23 @@ public class BrandController {
         return JsonResult.ok(pageData);
     }
 
-    @GetMapping("/standard")
-    @ApiOperation("查询品牌详细信息")
-    @ApiOperationSupport(order = 450)
-    @ApiImplicitParam(name = "id", value = "品牌id", required = true, dataType = "long")
-    public JsonResult standard(@Range(min = 1, message = "根据id查询品牌，请提供合法的id")
-                             @RequestParam Long id) {
-        log.debug("开始处理【查询品牌信息】的请求，id:{}", id);
-        BrandStandardVO result = brandService.getStandardById(id);
-        log.debug("处理【查询品牌信息】的请求，完成！");
-        return JsonResult.ok(result);
+    @GetMapping("/search")
+    @ApiOperation("搜索品牌")
+    @ApiOperationSupport(order = 430)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "品牌名称（精确匹配）", paramType = "query"),
+            @ApiImplicitParam(name = "id", value = "品牌ID（精确匹配）", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
+    })
+    public JsonResult search(@RequestParam(required = false) String name,
+                             @RequestParam(required = false) Long id,
+                             @Range(min = 1, message = "搜索品牌失败，请提供正确的页码值！")
+                             @RequestParam(defaultValue = "1") Integer pageNum) {
+        log.debug("开始处理【搜索品牌】的请求，名称：{}，ID：{}，页码：{}", name, id, pageNum);
+        if (pageNum == null || pageNum < 1) {
+            pageNum = 1;
+        }
+        PageData<BrandListItemVO> pageData = brandService.search(name, id, pageNum);
+        return JsonResult.ok(pageData);
     }
-
 }

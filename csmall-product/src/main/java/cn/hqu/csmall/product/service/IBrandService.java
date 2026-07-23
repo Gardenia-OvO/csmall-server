@@ -22,4 +22,8 @@ public interface IBrandService {
     PageData<BrandListItemVO> list(Integer pageNum);
 
     BrandStandardVO getStandardById(Long id);
+
+    PageData<BrandListItemVO> search(String name, Long id, Integer pageNum, Integer pageSize);
+
+    PageData<BrandListItemVO> search(String name, Long id, Integer pageNum);
 }
