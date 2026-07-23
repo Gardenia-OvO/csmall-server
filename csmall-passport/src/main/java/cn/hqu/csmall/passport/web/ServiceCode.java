@@ -11,8 +11,9 @@ public enum ServiceCode {
     ERR_INSERT(50000),
     ERR_UPDATE(50001),
     ERR_DELETE(50002),
-    ERR_KNOWN(99999);
-
+    ERR_KNOWN(99999),
+    ERR_UNAUTHORIZED(40100),
+    ERR_UNAUTHORIZED_DISABLED(40101);
 
     private Integer value;
     ServiceCode(Integer value){
