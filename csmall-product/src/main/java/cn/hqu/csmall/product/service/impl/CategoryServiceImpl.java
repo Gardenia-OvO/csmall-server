@@ -103,6 +103,28 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
+    public PageData<CategoryListItemVO> search(String name, Long id, Integer pageNum, Integer pageSize) {
+        log.debug("开始处理【搜索类别】的业务，名称：{}，ID：{}，页码：{}，每页记录数：{}", name, id, pageNum, pageSize);
+        if ((name == null || name.trim().isEmpty()) && id == null) {
+            log.debug("搜索参数（名称和ID）均为空，返回空结果");
+            return PageData.empty();
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<CategoryListItemVO> list = categoryMapper.search(name, id);
+        PageInfo<CategoryListItemVO> pageInfo = new PageInfo<>(list);
+        PageData<CategoryListItemVO> pageData = PageInfoToPageDataConverter.convert(pageInfo);
+        log.debug("处理【搜索类别】的业务完成，结果：{}", pageData);
+        return pageData;
+    }
+
+    @Override
+    public PageData<CategoryListItemVO> search(String name, Long id, Integer pageNum) {
+        Integer pageSize = 5;
+        log.debug("开始处理【搜索类别】的业务，名称：{}，ID：{}，页码：{}，每页记录数(默认)：{}", name, id, pageNum, pageSize);
+        return search(name, id, pageNum, pageSize);
+    }
+
+    @Override
     public CategoryStandardVO getStandardById(Long id) {
         log.debug("开始处理【根据id查询商品类别】的业务，id：{}",id);
         CategoryStandardVO categoryStandardVO = categoryMapper.getStandardById(id);

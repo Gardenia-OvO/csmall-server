@@ -4,6 +4,7 @@ import cn.hqu.csmall.product.pojo.entity.Category;
 import cn.hqu.csmall.product.pojo.vo.CategoryListItemVO;
 import cn.hqu.csmall.product.pojo.vo.CategoryStandardVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface CategoryMapper extends BaseMapper<Category> {
     List<CategoryListItemVO> list();
 
     CategoryStandardVO getStandardById(Long id);
+
+    List<CategoryListItemVO> search(@Param("name") String name, @Param("id") Long id);
 }

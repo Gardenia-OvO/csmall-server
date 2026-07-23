@@ -4,6 +4,7 @@ package cn.hqu.csmall.product.controller;
 import cn.hqu.csmall.product.pojo.param.CategoryAddNewParam;
 import cn.hqu.csmall.product.pojo.param.CategoryUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.CategoryListItemVO;
+import cn.hqu.csmall.product.pojo.vo.CategoryStandardVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.service.ICategoryService;
 import cn.hqu.csmall.product.web.JsonResult;
@@ -77,4 +78,39 @@ public class CategoryController {
         PageData<CategoryListItemVO> pageData = categoryService.list(pageNum);
         return JsonResult.ok(pageData);
     }
+
+
+    @GetMapping("/search")
+    @ApiOperation("搜索类别")
+    @ApiOperationSupport(order = 430)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "类别名称（精确匹配）", paramType = "query"),
+            @ApiImplicitParam(name = "id", value = "类别ID（精确匹配）", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
+    })
+    public JsonResult search(@RequestParam(required = false) String name,
+                             @RequestParam(required = false) Long id,
+                             @Range(min = 1, message = "搜索类别失败，请提供正确的页码值！")
+                             @RequestParam(defaultValue = "1") Integer pageNum) {
+        log.debug("开始处理【搜索类别】的请求，名称：{}，ID：{}，页码：{}", name, id, pageNum);
+        if (pageNum == null || pageNum < 1) {
+            pageNum = 1;
+        }
+        PageData<CategoryListItemVO> pageData = categoryService.search(name, id, pageNum);
+        return JsonResult.ok(pageData);
+    }
+
+
+    @GetMapping("/standard")
+    @ApiOperation("查询类别详细信息")
+    @ApiOperationSupport(order = 450)
+    @ApiImplicitParam(name = "id", value = "类别id", required = true, dataType = "long")
+    public JsonResult standard(@Range(min = 1, message = "根据id查询类别，请提供合法的id")
+                             @RequestParam Long id) {
+        log.debug("开始处理【查询类别信息】的请求，id:{}", id);
+        CategoryStandardVO result = categoryService.getStandardById(id);
+        log.debug("处理【查询类别信息】的请求，完成！");
+        return JsonResult.ok(result);
+    }
+
 }

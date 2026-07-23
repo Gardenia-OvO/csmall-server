@@ -21,5 +21,9 @@ public interface ICategoryService {
 
     PageData<CategoryListItemVO> list(Integer pageNum);
 
+    PageData<CategoryListItemVO> search(String name, Long id, Integer pageNum, Integer pageSize);
+
+    PageData<CategoryListItemVO> search(String name, Long id, Integer pageNum);
+
     CategoryStandardVO getStandardById(Long id);
 }
