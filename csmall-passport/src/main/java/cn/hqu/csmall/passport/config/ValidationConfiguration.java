@@ -1,4 +1,4 @@
-package cn.hqu.csmall.product.config;
+package cn.hqu.csmall.passport.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.HibernateValidator;
@@ -9,9 +9,9 @@ import javax.validation.Validation;
 
 @Slf4j
 @Configuration
-public class ValidationConfiguartion {
-    public ValidationConfiguartion(){
-        log.debug("创建配置类对象：ValidationConfiguartion");
+public class ValidationConfiguration {
+    public ValidationConfiguration(){
+        log.debug("创建配置类对象：ValidationConfiguration");
     }
     @Bean
     public javax.validation.Validator validator(){

@@ -9,7 +9,6 @@ import cn.hqu.csmall.passport.pojo.param.AdminAddNewParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.service.IAdminService;
 import cn.hqu.csmall.passport.web.ServiceCode;
-import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
