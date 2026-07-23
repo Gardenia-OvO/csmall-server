@@ -138,4 +138,27 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         log.debug("开始处理【查询属性模版列表】的业务，页码：{}，每页记录数(默认)：{}",pageNum,pageSize);
         return list(pageNum,pageSize);
     }
+
+    @Override
+    public PageData<AttributeTemplateListItemVO> search(String name, Long id, Integer pageNum, Integer pageSize) {
+        log.debug("开始处理【搜索属性模版】的业务，名称：{}，ID：{}，页码：{}，每页记录数：{}", name, id, pageNum, pageSize);
+        if ((name == null || name.trim().isEmpty()) && id == null) {
+            log.debug("搜索参数（名称和ID）均为空，返回空结果");
+            return PageData.empty();
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<AttributeTemplateListItemVO> list = attributeTemplateMapper.search(name, id);
+        PageInfo<AttributeTemplateListItemVO> pageInfo = new PageInfo<>(list);
+        PageData<AttributeTemplateListItemVO> pageData = PageInfoToPageDataConverter.convert(pageInfo);
+        log.debug("处理【搜索属性模版】的业务完成，结果：{}", pageData);
+        return pageData;
+    }
+
+    @Override
+    public PageData<AttributeTemplateListItemVO> search(String name, Long id, Integer pageNum) {
+        Integer pageSize = 5;
+        log.debug("开始处理【搜索属性模版】的业务，名称：{}，ID：{}，页码：{}，每页记录数(默认)：{}", name, id, pageNum, pageSize);
+        return search(name, id, pageNum, pageSize);
+    }
+
 }

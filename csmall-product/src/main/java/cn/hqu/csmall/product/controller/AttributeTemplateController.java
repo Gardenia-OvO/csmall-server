@@ -74,4 +74,24 @@ public class AttributeTemplateController {
         PageData<AttributeTemplateListItemVO> pageData = attributeTemplateService.list(pageNum);
         return JsonResult.ok(pageData).setMessage("查询属性模板列表成功");
     }
+
+    @GetMapping("/search")
+    @ApiOperation("搜索属性模版")
+    @ApiOperationSupport(order = 430)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "属性模版名称（精确匹配）", paramType = "query"),
+            @ApiImplicitParam(name = "id", value = "属性模版ID（精确匹配）", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
+    })
+    public JsonResult search(@RequestParam(required = false) String name,
+                             @RequestParam(required = false) Long id,
+                             @Range(min = 1, message = "搜索属性模版失败，请提供正确的页码值！")
+                             @RequestParam(defaultValue = "1") Integer pageNum) {
+        log.debug("开始处理【搜索属性模版】的请求，名称：{}，ID：{}，页码：{}", name, id, pageNum);
+        if (pageNum == null || pageNum < 1) {
+            pageNum = 1;
+        }
+        PageData<AttributeTemplateListItemVO> pageData = attributeTemplateService.search(name, id, pageNum);
+        return JsonResult.ok(pageData);
+    }
 }

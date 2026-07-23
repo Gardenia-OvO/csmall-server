@@ -4,6 +4,7 @@ import cn.hqu.csmall.product.pojo.entity.AttributeTemplate;
 import cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO;
 import cn.hqu.csmall.product.pojo.vo.AttributeTemplateStandardVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface AttributeTemplateMapper extends BaseMapper<AttributeTemplate> {
     List<AttributeTemplateListItemVO> list();
 
     AttributeTemplateStandardVO getStandardById(Long id);
+
+    List<AttributeTemplateListItemVO> search(@Param("name") String name, @Param("id") Long id);
 }

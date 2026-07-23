@@ -14,4 +14,12 @@
             FROM pms_attribute_template WHERE id=#{id}
     </select>
 
+    <select id="search" resultType="cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO">
+            SELECT id,name,keywords,pinyin,sort
+            FROM pms_attribute_template Where 1=1
+            <if test="name != null and name != ''"> AND name=#{name}</if>
+            <if test="id != null"> AND id=#{id}</if>
+            ORDER BY sort
+    </select>
+
 </mapper>

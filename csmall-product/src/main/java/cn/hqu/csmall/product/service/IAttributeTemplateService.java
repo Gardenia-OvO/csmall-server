@@ -21,4 +21,9 @@ public interface IAttributeTemplateService {
     PageData<AttributeTemplateListItemVO> list(Integer pageNum, Integer pageSize);
 
     PageData<AttributeTemplateListItemVO> list(Integer pageNum);
+
+    PageData<AttributeTemplateListItemVO> search(String name, Long id, Integer pageNum, Integer pageSize);
+
+    PageData<AttributeTemplateListItemVO> search(String name, Long id, Integer pageNum);
+
 }
