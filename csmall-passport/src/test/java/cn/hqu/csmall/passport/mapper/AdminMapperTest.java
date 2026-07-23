@@ -3,6 +3,7 @@ package cn.hqu.csmall.passport.mapper;
 
 import cn.hqu.csmall.passport.mapper.AdminMapper;
 import cn.hqu.csmall.passport.pojo.entity.Admin;
+import cn.hqu.csmall.passport.pojo.vo.AdminLoginInfoVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,5 +28,10 @@ public class AdminMapperTest {
         System.out.println("受影响的行数：" + rows);
     }
 
+    @Test
+    void testGetLoginInfoByUsername(){
+        AdminLoginInfoVO loginInfo = mapper.getLoginInfoByUsername("root");
+        System.out.println(loginInfo);
+    }
 
 }
