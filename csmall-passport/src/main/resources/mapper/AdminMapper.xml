@@ -9,19 +9,6 @@
         FROM ams_admin ORDER BY id
     </select>
 
-    <!-- 自定义插入，明确排除id列，使用数据库自增主键 -->
-    <insert id="insertAdmin" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO ams_admin (
-            username, password, nickname, avatar, phone, email,
-            description, enable, last_login_ip, login_count,
-            gmt_last_login, gmt_create, gmt_modified
-        ) VALUES (
-            #{username}, #{password}, #{nickname}, #{avatar}, #{phone}, #{email},
-            #{description}, #{enable}, #{lastLoginIp}, #{loginCount},
-            #{gmtLastLogin}, #{gmtCreate}, #{gmtModified}
-        )
-    </insert>
-
     <!-- AdminLoginInfoVO getLoginInfoByUsername(String username); -->
     <select id="getLoginInfoByUsername" resultType="cn.hqu.csmall.passport.pojo.vo.AdminLoginInfoVO">
     SELECT username, password, enable
