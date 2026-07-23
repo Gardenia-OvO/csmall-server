@@ -95,4 +95,18 @@ public class BrandController {
         PageData<BrandListItemVO> pageData = brandService.search(name, id, pageNum);
         return JsonResult.ok(pageData);
     }
+
+
+    @GetMapping("/standard")
+    @ApiOperation("查询品牌详细信息")
+    @ApiOperationSupport(order = 450)
+    @ApiImplicitParam(name = "id", value = "品牌id", required = true, dataType = "long")
+    public JsonResult standard(@Range(min = 1, message = "根据id查询品牌，请提供合法的id")
+                             @RequestParam Long id) {
+        log.debug("开始处理【查询品牌信息】的请求，id:{}", id);
+        BrandStandardVO result = brandService.getStandardById(id);
+        log.debug("处理【查询品牌信息】的请求，完成！");
+        return JsonResult.ok(result);
+    }
+
 }

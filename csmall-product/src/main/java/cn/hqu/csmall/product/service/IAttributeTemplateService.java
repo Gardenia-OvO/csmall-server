@@ -3,6 +3,7 @@ package cn.hqu.csmall.product.service;
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateAddNewParam;
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO;
+import cn.hqu.csmall.product.pojo.vo.AttributeTemplateStandardVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 
 
@@ -25,5 +26,7 @@ public interface IAttributeTemplateService {
     PageData<AttributeTemplateListItemVO> search(String name, Long id, Integer pageNum, Integer pageSize);
 
     PageData<AttributeTemplateListItemVO> search(String name, Long id, Integer pageNum);
+
+    AttributeTemplateStandardVO getStandardById(Long id);
 
 }

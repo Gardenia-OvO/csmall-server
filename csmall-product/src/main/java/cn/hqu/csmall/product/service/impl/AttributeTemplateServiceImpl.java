@@ -6,6 +6,7 @@ import cn.hqu.csmall.product.mapper.SpuMapper;
 import cn.hqu.csmall.product.pojo.entity.AttributeTemplate;
 import cn.hqu.csmall.product.pojo.entity.Spu;
 import cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO;
+import cn.hqu.csmall.product.pojo.vo.AttributeTemplateStandardVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
 import cn.hqu.csmall.product.web.ServiceCode;
@@ -159,6 +160,17 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         Integer pageSize = 5;
         log.debug("开始处理【搜索属性模版】的业务，名称：{}，ID：{}，页码：{}，每页记录数(默认)：{}", name, id, pageNum, pageSize);
         return search(name, id, pageNum, pageSize);
+    }
+
+    @Override
+    public AttributeTemplateStandardVO getStandardById(Long id) {
+        log.debug("开始处理【根据id查询属性模版】的业务，id：{}", id);
+        AttributeTemplateStandardVO result = attributeTemplateMapper.getStandardById(id);
+        if (result == null) {
+            log.warn("属性模版不存在");
+            throw new ServiceException(ServiceCode.NOT_FOUND, "属性模版不存在");
+        }
+        return result;
     }
 
 }

@@ -3,6 +3,7 @@ package cn.hqu.csmall.product.controller;
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateAddNewParam;
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO;
+import cn.hqu.csmall.product.pojo.vo.AttributeTemplateStandardVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import cn.hqu.csmall.product.service.IAttributeTemplateService;
 import cn.hqu.csmall.product.web.JsonResult;
@@ -31,7 +32,7 @@ public class AttributeTemplateController {
     @PostMapping("/add-new")
     @ApiOperation("添加属性模版")
     @ApiOperationSupport(order = 100)
-    public JsonResult addNew(@Valid AttributeTemplateAddNewParam attributeTemplateAddNewParam) {
+    public JsonResult addNew(@Valid @RequestBody AttributeTemplateAddNewParam attributeTemplateAddNewParam) {
         log.debug("开始处理【新增属性模板】的请求，参数为:{}", attributeTemplateAddNewParam);
         attributeTemplateService.addNew(attributeTemplateAddNewParam);
         return JsonResult.created("新增属性模板成功");
@@ -94,4 +95,18 @@ public class AttributeTemplateController {
         PageData<AttributeTemplateListItemVO> pageData = attributeTemplateService.search(name, id, pageNum);
         return JsonResult.ok(pageData);
     }
+
+
+    @GetMapping("/standard")
+    @ApiOperation("查询属性模版详细信息")
+    @ApiOperationSupport(order = 450)
+    @ApiImplicitParam(name = "id", value = "属性模版id", required = true, dataType = "long")
+    public JsonResult standard(@Range(min = 1, message = "根据id查询属性模版，请提供合法的id")
+                             @RequestParam Long id) {
+        log.debug("开始处理【查询属性模版信息】的请求，id:{}", id);
+        AttributeTemplateStandardVO result = attributeTemplateService.getStandardById(id);
+        log.debug("处理【查询属性模版信息】的请求，完成！");
+        return JsonResult.ok(result);
+    }
+
 }
