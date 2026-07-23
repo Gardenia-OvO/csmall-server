@@ -1,6 +1,7 @@
 package cn.hqu.csmall.passport.controller;
 
 import cn.hqu.csmall.passport.pojo.param.AdminAddNewParam;
+import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.service.IAdminService;
 import cn.hqu.csmall.passport.web.JsonResult;
@@ -26,13 +27,24 @@ import javax.validation.Valid;
 public class AdminController {
     @Autowired
     private IAdminService adminService;
+
+    @PostMapping("/login")
+    @ApiOperation("管理员登录")
+    @ApiOperationSupport(order = 500)   //
+    public JsonResult login(@Valid @RequestBody AdminLoginInfoParam adminLoginInfoParam)  {
+        log.debug("开始处理【管理员登录】的请求，参数：{}",adminLoginInfoParam);
+        adminService.login(adminLoginInfoParam);
+        log.debug("处理【管理员登录】的请求结束");
+        return JsonResult.ok();
+    }
+
     @PostMapping("/add-new")
     @ApiOperation("添加管理员")
     @ApiOperationSupport(order = 100)   //
     public JsonResult addNew(@Valid @RequestBody AdminAddNewParam adminAddNewParam)  {
-        log.debug("开始处理【添加管理员】的业务，参数：{}",adminAddNewParam);
+        log.debug("开始处理【添加管理员】的请求，参数：{}",adminAddNewParam);
         adminService.addNew(adminAddNewParam);
-        log.debug("处理【添加管理员】的业务结束");
+        log.debug("处理【添加管理员】的请求结束");
         return JsonResult.created("新增管理员成功");
     }
 
@@ -44,11 +56,12 @@ public class AdminController {
     })
     public JsonResult list(@Range(min = 1, message = "查询管理员列表失败，请提供正确的页码值！")
                            @RequestParam(defaultValue = "1") Integer pageNum) {
-        log.debug("开始处理【查询管理员列表】的业务，参数：{}", pageNum);
+        log.debug("开始处理【查询管理员列表】的请求，参数：{}", pageNum);
         if (pageNum == null || pageNum < 1) {
             pageNum = 1;
         }
         PageData<AdminListItemVO> pageData = adminService.list(pageNum);
         return JsonResult.ok(pageData);
     }
+
 }

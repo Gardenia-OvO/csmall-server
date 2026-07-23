@@ -6,6 +6,7 @@ import cn.hqu.csmall.passport.mapper.AdminRoleMapper;
 import cn.hqu.csmall.passport.pojo.entity.Admin;
 import cn.hqu.csmall.passport.pojo.entity.AdminRole;
 import cn.hqu.csmall.passport.pojo.param.AdminAddNewParam;
+import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.service.IAdminService;
 import cn.hqu.csmall.passport.web.ServiceCode;
@@ -17,6 +18,9 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +34,8 @@ public class AdminServiceImpl implements IAdminService {
     private AdminMapper adminMapper;
     @Autowired
     private AdminRoleMapper adminRoleMapper;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Transactional
     @Override
@@ -120,4 +126,14 @@ public class AdminServiceImpl implements IAdminService {
         return list(pageNum,pageSize);
     }
 
+    @Override
+    public void login(AdminLoginInfoParam adminLoginInfoParam) {
+        log.debug("开始处理【管理员登录】的业务，参数：{}",adminLoginInfoParam);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                adminLoginInfoParam.getUsername(), adminLoginInfoParam.getPassword()
+        );
+        authenticationManager.authenticate(authentication);
+        log.debug("认证登陆完成");
+    }
 }
