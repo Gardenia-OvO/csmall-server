@@ -117,6 +117,28 @@ public class AlbumServiceImpl implements IAlbumService {
     }
 
     @Override
+    public PageData<AlbumListItemVO> search(String name, Long id, Integer pageNum, Integer pageSize) {
+        log.debug("开始处理【搜索相册】的业务，名称：{}，ID：{}，页码：{}，每页记录数：{}", name, id, pageNum, pageSize);
+        if ((name == null || name.trim().isEmpty()) && id == null) {
+            log.debug("搜索参数（名称和ID）均为空，返回空结果");
+            return PageData.empty();
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<AlbumListItemVO> list = albumMapper.search(name, id);
+        PageInfo<AlbumListItemVO> pageInfo = new PageInfo<>(list);
+        PageData<AlbumListItemVO> pageData = PageInfoToPageDataConverter.convert(pageInfo);
+        log.debug("处理【搜索相册】的业务完成，结果：{}", pageData);
+        return pageData;
+    }
+
+    @Override
+    public PageData<AlbumListItemVO> search(String name, Long id, Integer pageNum) {
+        Integer pageSize = 5;
+        log.debug("开始处理【搜索相册】的业务，名称：{}，ID：{}，页码：{}，每页记录数(默认)：{}", name, id, pageNum, pageSize);
+        return search(name, id, pageNum, pageSize);
+    }
+
+    @Override
     public AlbumStandardVO getStandardById(Long id) {
         log.debug("开始处理【根据id查询相册】的业务，id：{}",id);
         AlbumStandardVO albumStandardVO = albumMapper.getStandardById(id);

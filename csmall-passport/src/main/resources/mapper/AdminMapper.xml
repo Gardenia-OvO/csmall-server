@@ -15,5 +15,12 @@
     FROM ams_admin WHERE username=#{username}
     </select>
 
+    <!-- List<String> getRolesByUsername(String username); -->
+    <select id="getRolesByUsername" resultType="java.lang.String">
+    SELECT r.name FROM ams_role r
+    JOIN ams_admin_role ar ON r.id = ar.role_id
+    JOIN ams_admin a ON a.id = ar.admin_id
+    WHERE a.username = #{username}
+    </select>
 
 </mapper>

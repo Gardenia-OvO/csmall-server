@@ -16,4 +16,6 @@ public interface AdminMapper extends BaseMapper<Admin> {
 
     AdminLoginInfoVO getLoginInfoByUsername(String username);
 
+    List<String> getRolesByUsername(String username);
+
 }

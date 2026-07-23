@@ -26,6 +26,10 @@ public interface IAlbumService {
 
     PageData<AlbumListItemVO> list(Integer pageNum);
 
+    PageData<AlbumListItemVO> search(String name, Long id, Integer pageNum, Integer pageSize);
+
+    PageData<AlbumListItemVO> search(String name, Long id, Integer pageNum);
+
     AlbumStandardVO getStandardById(Long id);
 
 

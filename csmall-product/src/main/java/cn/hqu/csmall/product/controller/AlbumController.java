@@ -79,6 +79,26 @@ public class AlbumController {
         return JsonResult.ok(pageData);
     }
 
+    @GetMapping("/search")
+    @ApiOperation("搜索相册")
+    @ApiOperationSupport(order = 430)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "相册名称（精确匹配）", paramType = "query"),
+            @ApiImplicitParam(name = "id", value = "相册ID（精确匹配）", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
+    })
+    public JsonResult search(@RequestParam(required = false) String name,
+                             @RequestParam(required = false) Long id,
+                             @Range(min = 1, message = "搜索相册失败，请提供正确的页码值！")
+                             @RequestParam(defaultValue = "1") Integer pageNum) {
+        log.debug("开始处理【搜索相册】的请求，名称：{}，ID：{}，页码：{}", name, id, pageNum);
+        if (pageNum == null || pageNum < 1) {
+            pageNum = 1;
+        }
+        PageData<AlbumListItemVO> pageData = albumService.search(name, id, pageNum);
+        return JsonResult.ok(pageData);
+    }
+
 
     @GetMapping("/standard")
     @ApiOperation("查询相册详细信息")

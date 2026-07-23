@@ -2,6 +2,7 @@ package cn.hqu.csmall.passport.controller;
 
 import cn.hqu.csmall.passport.pojo.param.AdminAddNewParam;
 import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
+import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.service.IAdminService;
 import cn.hqu.csmall.passport.web.JsonResult;
@@ -46,6 +47,16 @@ public class AdminController {
         adminService.addNew(adminAddNewParam);
         log.debug("处理【添加管理员】的请求结束");
         return JsonResult.created("新增管理员成功");
+    }
+
+    @PostMapping("/update")
+    @ApiOperation("修改管理员")
+    @ApiOperationSupport(order = 200)
+    public JsonResult update(@Valid @RequestBody AdminUpdateParam adminUpdateParam) {
+        log.debug("开始处理【修改管理员】的请求，参数：{}", adminUpdateParam);
+        adminService.update(adminUpdateParam);
+        log.debug("处理【修改管理员】的请求结束");
+        return JsonResult.ok();
     }
 
     @GetMapping("/list")

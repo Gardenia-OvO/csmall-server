@@ -7,6 +7,7 @@ import cn.hqu.csmall.passport.pojo.entity.Admin;
 import cn.hqu.csmall.passport.pojo.entity.AdminRole;
 import cn.hqu.csmall.passport.pojo.param.AdminAddNewParam;
 import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
+import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.service.IAdminService;
 import cn.hqu.csmall.passport.web.ServiceCode;
@@ -21,12 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -143,5 +146,65 @@ public class AdminServiceImpl implements IAdminService {
         //将认证结果存入SecurityContext中
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authenticateResult);
+    }
+
+    @Override
+    public void update(AdminUpdateParam adminUpdateParam) {
+        log.debug("开始处理【修改管理员】的业务，参数：{}", adminUpdateParam);
+        // 权限校验：仅系统管理员和超级管理员可修改
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+        boolean hasPermission = authorities.stream()
+                .anyMatch(a -> a.getAuthority().equals("系统管理员")
+                        || a.getAuthority().equals("超级管理员"));
+        if (!hasPermission) {
+            String message = "仅系统管理员和超级管理员可修改管理员信息";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.FORBIDDEN, message);
+        }
+        log.debug("权限校验通过，当前用户：{}", auth.getName());
+
+        // 检查要修改的管理员是否存在
+        Admin existAdmin = adminMapper.selectById(adminUpdateParam.getId());
+        if (existAdmin == null) {
+            String message = "管理员不存在，修改失败";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.NOT_FOUND, message);
+        }
+
+        // 检查手机号是否与其他管理员冲突（排除自身）
+        QueryWrapper<Admin> phoneQuery = new QueryWrapper<>();
+        phoneQuery.eq("phone", adminUpdateParam.getPhone());
+        phoneQuery.ne("id", adminUpdateParam.getId());
+        int phoneCount = adminMapper.selectCount(phoneQuery);
+        if (phoneCount > 0) {
+            String message = "管理员手机号被占用，请更换手机号后重试";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+        }
+
+        // 检查邮箱是否与其他管理员冲突（排除自身）
+        QueryWrapper<Admin> emailQuery = new QueryWrapper<>();
+        emailQuery.eq("email", adminUpdateParam.getEmail());
+        emailQuery.ne("id", adminUpdateParam.getId());
+        int emailCount = adminMapper.selectCount(emailQuery);
+        if (emailCount > 0) {
+            String message = "管理员邮箱被占用，请更换邮箱后重试";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+        }
+
+        // 构造更新对象
+        Admin admin = new Admin();
+        BeanUtils.copyProperties(adminUpdateParam, admin);
+        admin.setGmtModified(LocalDateTime.now());
+        log.debug("准备更新管理员数据，管理员信息：{}", admin);
+        int rows = adminMapper.updateById(admin);
+        if (rows != 1) {
+            String message = "修改管理员失败，服务器忙，请稍后再试";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_UPDATE, message);
+        }
+        log.debug("修改管理员完成");
     }
 }

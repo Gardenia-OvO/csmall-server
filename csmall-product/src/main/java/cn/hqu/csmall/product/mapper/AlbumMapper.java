@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 @Repository
@@ -15,6 +17,8 @@ public interface AlbumMapper extends BaseMapper<Album>{
     AlbumStandardVO getStandardById(Long id);
 
     List<AlbumListItemVO> list();
+
+    List<AlbumListItemVO> search(@Param("name") String name, @Param("id") Long id);
 
     int selectCount(QueryWrapper<Picture> queryWrapper02);
 }
