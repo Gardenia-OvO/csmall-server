@@ -9,12 +9,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Slf4j
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         log.debug("配置Spring Security的HttpSecurity");
         // 禁用CSRF（用于API服务），启用CORS
         http.csrf().disable()
                 .cors();
+
+        // 启用表单登录（提供 /login 页面）
+        http.formLogin();
 
         // 白名单：放行Knife4j文档及API接口
         String[] urls = {
