@@ -5,6 +5,7 @@ import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.service.IAdminService;
 import cn.hqu.csmall.passport.web.JsonResult;
+import cn.hqu.csmall.passport.web.ServiceCode;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
@@ -14,8 +15,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 
@@ -46,6 +50,14 @@ public class AdminController {
         adminService.addNew(adminAddNewParam);
         log.debug("处理【添加管理员】的请求结束");
         return JsonResult.created("新增管理员成功");
+    }
+
+    @PostMapping("/list")
+    @ApiOperation("管理员列表")
+    @ApiOperationSupport(order = 400)
+    public JsonResult list(@ApiIgnore @AuthenticationPrincipal UserDetails user)  {
+        log.debug("当事人用户名:{}",user.getUsername());
+        return JsonResult.fail(ServiceCode.ERR_KNOWN,"此功能未开放!");
     }
 
     @GetMapping("/list")

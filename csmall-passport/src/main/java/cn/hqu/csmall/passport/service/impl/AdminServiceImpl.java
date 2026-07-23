@@ -131,15 +131,17 @@ public class AdminServiceImpl implements IAdminService {
     @Override
     public void login(AdminLoginInfoParam adminLoginInfoParam) {
         log.debug("开始处理【管理员登录】的业务，参数：{}",adminLoginInfoParam);
-
-        Authentication authenticationResult = new UsernamePasswordAuthenticationToken(
-                adminLoginInfoParam.getUsername(), adminLoginInfoParam.getPassword()
+        //将用户输入的用户名和密码封装成Authentication对象
+        Authentication authentication =  new UsernamePasswordAuthenticationToken(
+                adminLoginInfoParam.getUsername(),
+                adminLoginInfoParam.getPassword()
         );
-        authenticationManager.authenticate(authenticationResult);
-        log.debug("验证登陆完成，认证结果是:{}",authenticationResult);
+        //调用认证管理器对象的方法，进行认证
+        Authentication authenticateResult = authenticationManager.authenticate(authentication);
+        log.debug("验证登录完成,认证结果：{}",authenticateResult);
 
-        //将认证结果存入Security Context中
+        //将认证结果存入SecurityContext中
         SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(authenticationResult);
+        context.setAuthentication(authenticateResult);
     }
 }
