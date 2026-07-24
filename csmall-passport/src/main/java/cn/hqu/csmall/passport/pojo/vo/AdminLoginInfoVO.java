@@ -4,6 +4,7 @@ package cn.hqu.csmall.passport.pojo.vo;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class AdminLoginInfoVO implements Serializable {
@@ -11,4 +12,5 @@ public class AdminLoginInfoVO implements Serializable {
     private String username;
     private String password;
     private Integer enable;
+    private List<String> permissions;
 }

@@ -30,8 +30,8 @@ public class AdminMapperTest {
 
     @Test
     void testGetLoginInfoByUsername(){
-        AdminLoginInfoVO loginInfo = mapper.getLoginInfoByUsername("root");
-        System.out.println(loginInfo);
+        AdminLoginInfoVO adminLoginInfoVO = mapper.getLoginInfoByUsername("root");
+        System.out.println(adminLoginInfoVO);
     }
 
 }
