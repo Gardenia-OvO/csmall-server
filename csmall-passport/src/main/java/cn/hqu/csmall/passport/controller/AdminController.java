@@ -37,9 +37,9 @@ public class AdminController {
     @ApiOperationSupport(order = 500)   //
     public JsonResult login(@Valid @RequestBody AdminLoginInfoParam adminLoginInfoParam)  {
         log.debug("开始处理【管理员登录】的请求，参数：{}",adminLoginInfoParam);
-        adminService.login(adminLoginInfoParam);
+        AdminDetail adminDetail = adminService.login(adminLoginInfoParam);
         log.debug("处理【管理员登录】的请求结束");
-        return JsonResult.ok();
+        return JsonResult.ok(adminDetail);
     }
 
     @PostMapping("/add-new")
@@ -76,6 +76,10 @@ public class AdminController {
             AdminDetail user
     ) {
         log.debug("开始处理【查询管理员列表】的请求，参数：{}", pageNum);
+
+        log.debug("当事人用户名:{}",user.getUsername());
+
+        log.debug("当事人的ID：{}",user.getId());
 
         if (pageNum == null || pageNum < 1) {
             pageNum = 1;

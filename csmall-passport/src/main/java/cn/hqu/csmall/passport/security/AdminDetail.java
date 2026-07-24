@@ -1,5 +1,6 @@
 package cn.hqu.csmall.passport.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -15,5 +16,11 @@ public class AdminDetail extends User {
         super(username, password, enabled, true, true,
                 true, authorities);
         this.id = id;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getPassword() {
+        return super.getPassword();
     }
 }

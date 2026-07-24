@@ -1,6 +1,7 @@
 package cn.hqu.csmall.passport.service.impl;
 
 import cn.hqu.csmall.passport.ex.ServiceException;
+import cn.hqu.csmall.passport.security.AdminDetail;
 import cn.hqu.csmall.passport.mapper.AdminMapper;
 import cn.hqu.csmall.passport.mapper.AdminRoleMapper;
 import cn.hqu.csmall.passport.pojo.entity.Admin;
@@ -132,7 +133,7 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public void login(AdminLoginInfoParam adminLoginInfoParam) {
+    public AdminDetail login(AdminLoginInfoParam adminLoginInfoParam) {
         log.debug("开始处理【管理员登录】的业务，参数：{}",adminLoginInfoParam);
         //将用户输入的用户名和密码封装成Authentication对象
         Authentication authentication =  new UsernamePasswordAuthenticationToken(
@@ -146,6 +147,11 @@ public class AdminServiceImpl implements IAdminService {
         //将认证结果存入SecurityContext中
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authenticateResult);
+
+        //从认证结果中提取AdminDetail并返回
+        AdminDetail adminDetail = (AdminDetail) authenticateResult.getPrincipal();
+        log.debug("管理员登录成功，返回用户信息：id={}, username={}", adminDetail.getId(), adminDetail.getUsername());
+        return adminDetail;
     }
 
     @Override
