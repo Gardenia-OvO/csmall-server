@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +64,7 @@ public class AdminController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize(("hasAuthority('/ams/admin/read')"))
     @ApiOperation("查询管理员列表")
     @ApiOperationSupport(order = 300)
     @ApiImplicitParams({
@@ -77,9 +79,10 @@ public class AdminController {
     ) {
         log.debug("开始处理【查询管理员列表】的请求，参数：{}", pageNum);
 
-        log.debug("当事人用户名:{}",user.getUsername());
-
-        log.debug("当事人的ID：{}",user.getId());
+        if (user != null) {
+            log.debug("当事人用户名:{}", user.getUsername());
+            log.debug("当事人的ID：{}", user.getId());
+        }
 
         if (pageNum == null || pageNum < 1) {
             pageNum = 1;

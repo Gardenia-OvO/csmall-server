@@ -68,7 +68,7 @@ public class CategoryServiceImpl implements ICategoryService {
         if (count == 0) {
             String message = "删除类别失败，类别数据不存在！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.NOT_FOUND, message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
         // 检查是否有子级类别与该类别关联
         QueryWrapper<Category> queryWrapper02 = new QueryWrapper<>();
@@ -130,7 +130,7 @@ public class CategoryServiceImpl implements ICategoryService {
         CategoryStandardVO categoryStandardVO = categoryMapper.getStandardById(id);
         if(categoryStandardVO == null){
             log.warn("商品类别不存在");
-            throw new ServiceException(ServiceCode.NOT_FOUND,"商品类别不存在");
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,"商品类别不存在");
         }
         return categoryStandardVO;
     }
@@ -148,7 +148,7 @@ public class CategoryServiceImpl implements ICategoryService {
         if (count == 0){
             String message = "修改商品类别失败，商品类别数据不存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
         }
         //检查商品类别名称是否重复
         QueryWrapper<Category> queryWrapper02 = new QueryWrapper<>();

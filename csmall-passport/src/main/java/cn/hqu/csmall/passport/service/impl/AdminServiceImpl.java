@@ -26,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +43,8 @@ public class AdminServiceImpl implements IAdminService {
     private AdminRoleMapper adminRoleMapper;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
@@ -84,6 +87,8 @@ public class AdminServiceImpl implements IAdminService {
         Admin admin = new Admin();
         //将管理员信息从参数对象AdminAddNewParam中复制到实体类对象Admin中
         BeanUtils.copyProperties(adminAddNewParam,admin);
+        //对密码进行BCrypt加密
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         //设置管理员的创建时间与修改时间，保证数据的完整性
         admin.setLastLoginIp(null);
         admin.setLoginCount(0);
@@ -166,7 +171,7 @@ public class AdminServiceImpl implements IAdminService {
         if (!hasPermission) {
             String message = "仅系统管理员和超级管理员可修改管理员信息";
             log.warn(message);
-            throw new ServiceException(ServiceCode.FORBIDDEN, message);
+            throw new ServiceException(ServiceCode.ERR_FORBIDDEN, message);
         }
         log.debug("权限校验通过，当前用户：{}", auth.getName());
 
@@ -175,7 +180,7 @@ public class AdminServiceImpl implements IAdminService {
         if (existAdmin == null) {
             String message = "管理员不存在，修改失败";
             log.warn(message);
-            throw new ServiceException(ServiceCode.NOT_FOUND, message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
 
         // 检查手机号是否与其他管理员冲突（排除自身）

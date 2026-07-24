@@ -76,7 +76,7 @@ public class AlbumServiceImpl implements IAlbumService {
         if (count == 0){
             String message = "删除相册失败，相册数据不存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
         }
         //检查是否有图片与该相册相连
         QueryWrapper<Picture> queryWrapper02 = new QueryWrapper<>();
@@ -144,7 +144,7 @@ public class AlbumServiceImpl implements IAlbumService {
         AlbumStandardVO albumStandardVO = albumMapper.getStandardById(id);
         if(albumStandardVO == null){
             log.warn("相册不存在");
-            throw new ServiceException(ServiceCode.NOT_FOUND,"相册不存在");
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,"相册不存在");
         }
         return albumStandardVO;
     }
@@ -162,7 +162,7 @@ public class AlbumServiceImpl implements IAlbumService {
         if (count == 0){
             String message = "修改相册失败，相册数据不存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
         }
         //检查是否有图片与该相册相连
         QueryWrapper<Album> queryWrapper02 = new QueryWrapper<>();

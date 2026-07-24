@@ -4,14 +4,17 @@ import cn.hqu.csmall.passport.ex.ServiceException;
 import cn.hqu.csmall.passport.web.JsonResult;
 import cn.hqu.csmall.passport.web.ServiceCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.security.sasl.AuthenticationException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.Set;
@@ -70,6 +73,31 @@ public class GlobalExceptionHandler {
         log.debug("处理Throwable");
         log.error("未知异常", e);
         return JsonResult.fail(ServiceCode.ERR_KNOWN, "服务器内部错误，请稍后重试");
+    }
+
+    /**
+     * Spring Security 访问拒绝异常（@PreAuthorize 校验失败）
+     */
+    @ExceptionHandler
+    public JsonResult handleAccessDeniedException(AccessDeniedException e) {
+        log.debug("处理AccessDeniedException");
+        log.warn("访问被拒绝：{}", e.getMessage());
+        // 判断是否已登录：已登录返回403，未登录返回401
+        if (SecurityContextHolder.getContext().getAuthentication() != null
+                && SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+                && !"anonymousUser".equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
+            return JsonResult.fail(ServiceCode.ERR_FORBIDDEN, "您没有权限执行此操作");
+        }
+        return JsonResult.fail(ServiceCode.ERR_UNAUTHORIZED, "您当前未登录，请先登录");
+    }
+
+    @ExceptionHandler({
+            AuthenticationCredentialsNotFoundException.class
+    })
+    public JsonResult handleAuthenticationCredentialsNotFoundException(AuthenticationException e) {
+        log.debug("处理AuthenticationCredentialsNotFoundException");
+        log.warn("未登录访问受保护资源：{}", e.getMessage());
+        return JsonResult.fail(ServiceCode.ERR_UNAUTHORIZED, "您当前未登录，请先登录");
     }
 
     @ExceptionHandler({

@@ -77,7 +77,7 @@ public class BrandServiceImpl implements IBrandService {
         if (count == 0) {
             String message = "删除品牌失败，品牌数据不存在！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.NOT_FOUND, message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
         // 检查是否有SPU与该品牌关联
         QueryWrapper<Spu> queryWrapper02 = new QueryWrapper<>();
@@ -106,7 +106,7 @@ public class BrandServiceImpl implements IBrandService {
         if (count == 0){
             String message = "修改品牌失败，品牌数据不存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
         }
         //检查品牌名称是否重复
         QueryWrapper<Brand> queryWrapper02 = new QueryWrapper<>();
@@ -154,7 +154,7 @@ public class BrandServiceImpl implements IBrandService {
         BrandStandardVO brandStandardVO = brandMapper.getStandardById(id);
         if(brandStandardVO == null){
             log.warn("品牌不存在");
-            throw new ServiceException(ServiceCode.NOT_FOUND,"品牌不存在");
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,"品牌不存在");
         }
         return brandStandardVO;
     }

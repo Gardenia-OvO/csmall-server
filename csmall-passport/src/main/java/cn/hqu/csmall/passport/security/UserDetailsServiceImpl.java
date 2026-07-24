@@ -26,6 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         log.debug("Spring Security框架自动调用UserDetailsServiceImpl.loadUserByUsername");
         //根据用户名查询用户数据
         AdminLoginInfoVO logInfo = adminMapper.getLoginInfoByUsername(username);
+        log.debug("根据用户名{}查询用户数据，结果为{}",username,logInfo);
         if(logInfo==null){
             log.debug("此用户名没有匹配用户数据，将返回null");
             return null;
@@ -41,9 +42,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                                        .authorities("这是一个临时使用的山寨权限")
                                        .build();*/
         //封装权限信息
+        List<String> permissions = logInfo.getPermissions();
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("临时的山寨权限");
-        authorities.add(authority);
+       for (String permission : permissions) {
+           SimpleGrantedAuthority authority = new SimpleGrantedAuthority(permission);
+           authorities.add(authority);
+       }
         //将查询到的用户数据封装到AdminDetail对象中
         AdminDetail adminDetail = new AdminDetail(logInfo.getId(),
                 logInfo.getUsername(),logInfo.getPassword(),

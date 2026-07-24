@@ -70,7 +70,7 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         if (count == 0) {
             String message = "删除属性模板失败，属性模板数据不存在！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.NOT_FOUND, message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
         // 检查是否有SPU与该属性模板关联
         QueryWrapper<Spu> queryWrapper02 = new QueryWrapper<>();
@@ -99,7 +99,7 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         if (count == 0) {
             String message = "修改属性模版失败，属性模版数据不存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.NOT_FOUND, message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
         //检查属性模版名称是否重复
         QueryWrapper<AttributeTemplate> queryWrapper02 = new QueryWrapper<>();
@@ -168,7 +168,7 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         AttributeTemplateStandardVO result = attributeTemplateMapper.getStandardById(id);
         if (result == null) {
             log.warn("属性模版不存在");
-            throw new ServiceException(ServiceCode.NOT_FOUND, "属性模版不存在");
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, "属性模版不存在");
         }
         return result;
     }
