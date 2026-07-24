@@ -17,6 +17,8 @@ import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +26,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -138,7 +138,7 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public AdminDetail login(AdminLoginInfoParam adminLoginInfoParam) {
+    public String login(AdminLoginInfoParam adminLoginInfoParam) {
         log.debug("开始处理【管理员登录】的业务，参数：{}",adminLoginInfoParam);
         //将用户输入的用户名和密码封装成Authentication对象
         Authentication authentication =  new UsernamePasswordAuthenticationToken(
@@ -150,13 +150,27 @@ public class AdminServiceImpl implements IAdminService {
         log.debug("验证登录完成,认证结果：{}",authenticateResult);
 
         //将认证结果存入SecurityContext中
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(authenticateResult);
-
-        //从认证结果中提取AdminDetail并返回
-        AdminDetail adminDetail = (AdminDetail) authenticateResult.getPrincipal();
-        log.debug("管理员登录成功，返回用户信息：id={}, username={}", adminDetail.getId(), adminDetail.getUsername());
-        return adminDetail;
+        //SecurityContext context = SecurityContextHolder.getContext();
+        //context.setAuthentication(authenticateResult);*/
+        //生成JWT(令牌)
+        AdminDetail adminDetail = (AdminDetail)authenticateResult.getPrincipal();
+        String secretKey = "3dfswefasvzgdrthtdrbgdfaweg23453tvadvargfsdvgzestydrtagerngffj";
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id",adminDetail.getId());
+        claims.put("username",adminDetail.getUsername());
+        String jwt = Jwts.builder()
+                //设置Header头
+                .setHeaderParam("alg","HS256")
+                .setHeaderParam("typ","JWT")
+                //payload数据
+                .addClaims(claims)
+                //设置jwt有效期
+                .setExpiration(new Date(System.currentTimeMillis()+1000L*60*60*24*30))
+                //Signature Verification签名
+                .signWith(SignatureAlgorithm.HS256,secretKey)
+                .compact();
+        log.debug("登录认证通过，JWT令牌：{}",jwt);
+        return jwt;
     }
 
     @Override

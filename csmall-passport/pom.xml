@@ -21,6 +21,11 @@
         <spring-boot.version>2.6.13</spring-boot.version>
     </properties>
     <dependencies>
+        <!-- JJWT（Java JWT） -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+        </dependency>
         <!--fastJson依赖，将对象和JSON字符串互转-->
         <dependency>
             <groupId>com.alibaba</groupId>

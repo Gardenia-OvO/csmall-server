@@ -17,7 +17,8 @@ public interface IAdminService {
 
     PageData<AdminListItemVO> list(Integer pageNum);
 
-    AdminDetail login(AdminLoginInfoParam adminLoginInfoParam);
+    String login(AdminLoginInfoParam adminLoginInfoParam);
 
     void update(AdminUpdateParam adminUpdateParam);
+
 }

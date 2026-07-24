@@ -38,9 +38,9 @@ public class AdminController {
     @ApiOperationSupport(order = 500)   //
     public JsonResult login(@Valid @RequestBody AdminLoginInfoParam adminLoginInfoParam)  {
         log.debug("开始处理【管理员登录】的请求，参数：{}",adminLoginInfoParam);
-        AdminDetail adminDetail = adminService.login(adminLoginInfoParam);
+        String jwt = adminService.login(adminLoginInfoParam);
         log.debug("处理【管理员登录】的请求结束");
-        return JsonResult.ok(adminDetail);
+        return JsonResult.ok(jwt);
     }
 
     @PostMapping("/add-new")
