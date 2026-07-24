@@ -11,7 +11,7 @@
 
     <!-- AdminLoginInfoVO getLoginInfoByUsername(String username); -->
     <select id="getLoginInfoByUsername" resultType="cn.hqu.csmall.passport.pojo.vo.AdminLoginInfoVO">
-    SELECT username, password, enable
+    SELECT id,username, password, enable
     FROM ams_admin WHERE username=#{username}
     </select>
 

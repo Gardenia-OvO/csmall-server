@@ -4,6 +4,7 @@ import cn.hqu.csmall.passport.pojo.param.AdminAddNewParam;
 import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
 import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
+import cn.hqu.csmall.passport.security.AdminDetail;
 import cn.hqu.csmall.passport.service.IAdminService;
 import cn.hqu.csmall.passport.web.JsonResult;
 import cn.hqu.csmall.product.pojo.vo.PageData;
@@ -15,8 +16,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 
@@ -65,13 +68,21 @@ public class AdminController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
     })
-    public JsonResult list(@Range(min = 1, message = "查询管理员列表失败，请提供正确的页码值！")
-                           @RequestParam(defaultValue = "1") Integer pageNum) {
+    public JsonResult list(
+            @Range(min = 1, message = "查询管理员列表失败，请提供正确的页码值！")
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @ApiIgnore
+            @AuthenticationPrincipal
+            AdminDetail user
+    ) {
         log.debug("开始处理【查询管理员列表】的请求，参数：{}", pageNum);
+
         if (pageNum == null || pageNum < 1) {
             pageNum = 1;
         }
+
         PageData<AdminListItemVO> pageData = adminService.list(pageNum);
+
         return JsonResult.ok(pageData);
     }
 
