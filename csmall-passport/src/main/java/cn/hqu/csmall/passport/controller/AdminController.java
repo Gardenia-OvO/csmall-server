@@ -5,6 +5,7 @@ import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
 import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.security.AdminDetail;
+import cn.hqu.csmall.passport.security.LoginPrincipal;
 import cn.hqu.csmall.passport.service.IAdminService;
 import cn.hqu.csmall.passport.web.JsonResult;
 import cn.hqu.csmall.product.pojo.vo.PageData;
@@ -36,11 +37,11 @@ public class AdminController {
     @PostMapping("/login")
     @ApiOperation("管理员登录")
     @ApiOperationSupport(order = 500)   //
-    public JsonResult login(@Valid @RequestBody AdminLoginInfoParam adminLoginInfoParam)  {
-        log.debug("开始处理【管理员登录】的请求，参数：{}",adminLoginInfoParam);
-        String jwt = adminService.login(adminLoginInfoParam);
+    public JsonResult login(@Valid @RequestBody LoginPrincipal user)  {
+        log.debug("当事人用户名：{}", user.getUsername());
+        log.debug("当事人id：{}", user.getId());
         log.debug("处理【管理员登录】的请求结束");
-        return JsonResult.ok(jwt);
+        return JsonResult.ok(user);
     }
 
     @PostMapping("/add-new")
