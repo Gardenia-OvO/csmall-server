@@ -16,3 +16,7 @@ logging:
 
 server:
   port: 9181
+
+csmall:
+  jwt:
+    secret-key: sadsadvojsnanjdsoikppsalcmoaskmqfwqsdkzmalvkspncdksakbfaisbadscwcxzaldwvdcsnas

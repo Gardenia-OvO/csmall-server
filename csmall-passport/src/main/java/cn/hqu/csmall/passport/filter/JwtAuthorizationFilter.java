@@ -2,6 +2,8 @@ package cn.hqu.csmall.passport.filter;
 
 
 import cn.hqu.csmall.passport.security.LoginPrincipal;
+import com.alibaba.fastjson.JSON;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -26,6 +28,8 @@ import java.util.List;
 @Component
 @Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
+    @Value("${csmall.jwt.secret-key}")
+    private String secretKey;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -35,36 +39,42 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String jwt = request.getHeader("Authorization");
         log.debug("获取到的JWT是：{}",jwt);
         if(!StringUtils.hasText(jwt)){
-            //放行(请求头中没有头部）
             chain.doFilter(request,response);
             return;
         }
-        //ToDO 当前类型和AdminServiceImpl中都声明了相同变量SecretKey，这是不合理的
-        //ToDo 解析JWT的过程中可能出现异常需要处理
 
         //解析JWT
-        String secretKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OTUyNywidXNlcm5hbWUiOiJ6aGFuZ3NhbiJ9.bCQuAAQo0GoVyxHiLcg3tCk2UYl1l0_DtBM-4GX4300";
-        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt).getBody();
+        Claims claims;
+        try {
+            claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt).getBody();
+        } catch (Exception e) {
+            log.warn("解析JWT失败，JWT：{}，异常：{}", jwt, e.getMessage());
+            chain.doFilter(request, response);
+            return;
+        }
 
         Long id = claims.get("id", Long.class);
         String username = claims.get("username", String.class);
         log.debug("解析JWT得到id是：{}，username是：{}",id,username);
 
-        //根据JWT解析结果，封装认证对象
-        //Spring Security框架不介意当事人是什么类型，包含什么数据由程序员自己决定
-        //程序员根据controller需要的数据来封装一个类型
+        //封装当事人
         Object principals = new LoginPrincipal().setId(id).setUsername(username);
         Object credentials = null;
-        //ToDO 这里的权限应该是真权限，暂时用假权限代替
+
+        //从JWT中解析真实权限
         List<GrantedAuthority> authorities = new ArrayList<>();
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("山寨权限");
-        authorities.add(authority);
+        String permissionsJson = claims.get("permissions", String.class);
+        if (StringUtils.hasText(permissionsJson)) {
+            List<String> permissions = JSON.parseArray(permissionsJson, String.class);
+            for (String permission : permissions) {
+                authorities.add(new SimpleGrantedAuthority(permission));
+            }
+            log.debug("从JWT中解析到权限：{}", permissions);
+        }
+
         Authentication authentication = new UsernamePasswordAuthenticationToken(principals,credentials,authorities);
-        //将解析的结果封装为认证信息后，放在SpringSecurity的上下文中
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
-        //放行
         chain.doFilter(request,response);
-
     }
 }

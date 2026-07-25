@@ -38,12 +38,11 @@ public class AdminController {
     @ApiOperation("管理员登录")
     @ApiOperationSupport(order = 500)   //
     public JsonResult login(@Valid @RequestBody LoginPrincipal user)  {
-        log.debug("当事人用户名：{}", user.getUsername());
-        log.debug("当事人id：{}", user.getId());
+        log.debug("开始处理【管理员登录】的请求，当事人用户名：{}", user.getUsername());
+        String jwt = adminService.login(user);
         log.debug("处理【管理员登录】的请求结束");
-        return JsonResult.ok(user);
+        return JsonResult.ok(jwt);
     }
-
     @PostMapping("/add-new")
     @ApiOperation("添加管理员")
     @ApiOperationSupport(order = 100)   //

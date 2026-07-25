@@ -2,6 +2,8 @@ package cn.hqu.csmall.passport.service.impl;
 
 import cn.hqu.csmall.passport.ex.ServiceException;
 import cn.hqu.csmall.passport.security.AdminDetail;
+import cn.hqu.csmall.passport.security.LoginPrincipal;
+import com.alibaba.fastjson.JSON;
 import cn.hqu.csmall.passport.mapper.AdminMapper;
 import cn.hqu.csmall.passport.mapper.AdminRoleMapper;
 import cn.hqu.csmall.passport.pojo.entity.Admin;
@@ -10,6 +12,7 @@ import cn.hqu.csmall.passport.pojo.param.AdminAddNewParam;
 import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
 import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
+import cn.hqu.csmall.passport.pojo.vo.AdminLoginInfoVO;
 import cn.hqu.csmall.passport.service.IAdminService;
 import cn.hqu.csmall.passport.web.ServiceCode;
 import cn.hqu.csmall.product.pojo.vo.PageData;
@@ -22,6 +25,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,13 +49,13 @@ public class AdminServiceImpl implements IAdminService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Value("${csmall.jwt.secret-key}")
+    private String secretKey;
 
     @Transactional
     @Override
     public void addNew(AdminAddNewParam adminAddNewParam) {
         log.debug("开始处理【新增管理员】的业务，参数：{}",adminAddNewParam);
-        //检查管理员名称是否被占用，如果被占用，则抛出异常
-        //根据管理员名称查询管理员表中是否有同名管理员  QueryWrapper:条件对象  拼接where部分内容
         QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username",adminAddNewParam.getUsername());
         int count = adminMapper.selectCount(queryWrapper);
@@ -61,7 +65,6 @@ public class AdminServiceImpl implements IAdminService {
             log.warn(message);
             throw new ServiceException(ServiceCode.ERR_CONFLICT,message);
         }
-        //查询手机号是否被占用
         QueryWrapper<Admin> queryWrapper2 = new QueryWrapper<>();
         queryWrapper2.eq("phone", adminAddNewParam.getPhone());
         int count2 = adminMapper.selectCount(queryWrapper2);
@@ -71,8 +74,6 @@ public class AdminServiceImpl implements IAdminService {
             log.warn(message);
             throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
         }
-
-        //查询邮箱是否被占用
         QueryWrapper<Admin> queryWrapper3 = new QueryWrapper<>();
         queryWrapper3.eq("email", adminAddNewParam.getEmail());
         int count3 = adminMapper.selectCount(queryWrapper3);
@@ -82,14 +83,9 @@ public class AdminServiceImpl implements IAdminService {
             log.warn(message);
             throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
         }
-
-        //将管理员信息插入到管理员表中,新增管理员，用实体类Admin
         Admin admin = new Admin();
-        //将管理员信息从参数对象AdminAddNewParam中复制到实体类对象Admin中
         BeanUtils.copyProperties(adminAddNewParam,admin);
-        //对密码进行BCrypt加密
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
-        //设置管理员的创建时间与修改时间，保证数据的完整性
         admin.setLastLoginIp(null);
         admin.setLoginCount(0);
         admin.setGmtLastLogin(null);
@@ -108,8 +104,6 @@ public class AdminServiceImpl implements IAdminService {
             date.setGmtModified(LocalDateTime.now());
             adminRoles[(int)i] = date;
         }
-
-        //ToDo 参照以下修改完成别的操作
         int rows = adminRoleMapper.insertBatch(adminRoles);
         if(rows!=roleIds.length){
             String message = "插入管理员角色失败！服务器忙，请稍后再试！";
@@ -140,33 +134,26 @@ public class AdminServiceImpl implements IAdminService {
     @Override
     public String login(AdminLoginInfoParam adminLoginInfoParam) {
         log.debug("开始处理【管理员登录】的业务，参数：{}",adminLoginInfoParam);
-        //将用户输入的用户名和密码封装成Authentication对象
         Authentication authentication =  new UsernamePasswordAuthenticationToken(
                 adminLoginInfoParam.getUsername(),
                 adminLoginInfoParam.getPassword()
         );
-        //调用认证管理器对象的方法，进行认证
         Authentication authenticateResult = authenticationManager.authenticate(authentication);
         log.debug("验证登录完成,认证结果：{}",authenticateResult);
-
-        //将认证结果存入SecurityContext中
-        //SecurityContext context = SecurityContextHolder.getContext();
-        //context.setAuthentication(authenticateResult);*/
-        //生成JWT(令牌)
         AdminDetail adminDetail = (AdminDetail)authenticateResult.getPrincipal();
-        String secretKey = "3dfswefasvzgdrthtdrbgdfaweg23453tvadvargfsdvgzestydrtagerngffj";
         Map<String, Object> claims = new HashMap<>();
         claims.put("id",adminDetail.getId());
         claims.put("username",adminDetail.getUsername());
+        List<String> permissions = new ArrayList<>();
+        for (GrantedAuthority ga : adminDetail.getAuthorities()) {
+            permissions.add(ga.getAuthority());
+        }
+        claims.put("permissions", JSON.toJSONString(permissions));
         String jwt = Jwts.builder()
-                //设置Header头
                 .setHeaderParam("alg","HS256")
                 .setHeaderParam("typ","JWT")
-                //payload数据
                 .addClaims(claims)
-                //设置jwt有效期
                 .setExpiration(new Date(System.currentTimeMillis()+1000L*60*60*24*30))
-                //Signature Verification签名
                 .signWith(SignatureAlgorithm.HS256,secretKey)
                 .compact();
         log.debug("登录认证通过，JWT令牌：{}",jwt);
@@ -174,9 +161,32 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
+    public String login(LoginPrincipal loginPrincipal) {
+        log.debug("开始处理【管理员登录】的业务（LoginPrincipal），参数：{}", loginPrincipal);
+        AdminLoginInfoVO loginInfo = adminMapper.getLoginInfoByUsername(loginPrincipal.getUsername());
+        if (loginInfo == null) {
+            String message = "管理员不存在，请检查用户名";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", loginInfo.getId());
+        claims.put("username", loginInfo.getUsername());
+        claims.put("permissions", JSON.toJSONString(loginInfo.getPermissions()));
+        String jwt = Jwts.builder()
+                .setHeaderParam("alg", "HS256")
+                .setHeaderParam("typ", "JWT")
+                .addClaims(claims)
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+        log.debug("登录通过，JWT令牌：{}", jwt);
+        return jwt;
+    }
+
+    @Override
     public void update(AdminUpdateParam adminUpdateParam) {
         log.debug("开始处理【修改管理员】的业务，参数：{}", adminUpdateParam);
-        // 权限校验：仅系统管理员和超级管理员可修改
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
         boolean hasPermission = authorities.stream()
@@ -188,16 +198,12 @@ public class AdminServiceImpl implements IAdminService {
             throw new ServiceException(ServiceCode.ERR_FORBIDDEN, message);
         }
         log.debug("权限校验通过，当前用户：{}", auth.getName());
-
-        // 检查要修改的管理员是否存在
         Admin existAdmin = adminMapper.selectById(adminUpdateParam.getId());
         if (existAdmin == null) {
             String message = "管理员不存在，修改失败";
             log.warn(message);
             throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
-
-        // 检查手机号是否与其他管理员冲突（排除自身）
         QueryWrapper<Admin> phoneQuery = new QueryWrapper<>();
         phoneQuery.eq("phone", adminUpdateParam.getPhone());
         phoneQuery.ne("id", adminUpdateParam.getId());
@@ -207,8 +213,6 @@ public class AdminServiceImpl implements IAdminService {
             log.warn(message);
             throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
         }
-
-        // 检查邮箱是否与其他管理员冲突（排除自身）
         QueryWrapper<Admin> emailQuery = new QueryWrapper<>();
         emailQuery.eq("email", adminUpdateParam.getEmail());
         emailQuery.ne("id", adminUpdateParam.getId());
@@ -218,8 +222,6 @@ public class AdminServiceImpl implements IAdminService {
             log.warn(message);
             throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
         }
-
-        // 构造更新对象
         Admin admin = new Admin();
         BeanUtils.copyProperties(adminUpdateParam, admin);
         admin.setGmtModified(LocalDateTime.now());

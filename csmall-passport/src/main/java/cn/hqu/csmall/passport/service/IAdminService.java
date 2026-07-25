@@ -5,6 +5,7 @@ import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
 import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.security.AdminDetail;
+import cn.hqu.csmall.passport.security.LoginPrincipal;
 import cn.hqu.csmall.product.pojo.vo.PageData;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,8 @@ public interface IAdminService {
     PageData<AdminListItemVO> list(Integer pageNum);
 
     String login(AdminLoginInfoParam adminLoginInfoParam);
+
+    String login(LoginPrincipal loginPrincipal);
 
     void update(AdminUpdateParam adminUpdateParam);
 
