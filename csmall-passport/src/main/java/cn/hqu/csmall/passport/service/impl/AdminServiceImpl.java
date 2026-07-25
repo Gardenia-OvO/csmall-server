@@ -51,6 +51,11 @@ public class AdminServiceImpl implements IAdminService {
     private PasswordEncoder passwordEncoder;
     @Value("${csmall.jwt.secret-key}")
     private String secretKey;
+    //expire-in-minute
+    @Value("${csmall.jwt.expire-in-minute}")
+    private Long expireInMinute ;
+
+
 
     @Transactional
     @Override

@@ -20,3 +20,4 @@ server:
 csmall:
   jwt:
     secret-key: sadsadvojsnanjdsoikppsalcmoaskmqfwqsdkzmalvkspncdksakbfaisbadscwcxzaldwvdcsnas
+    expire-in-minute: 43200
