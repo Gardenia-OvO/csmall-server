@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class AdminLoginInfoParam implements Serializable {
 
     @NotNull(message = "用户名不能为空")
-    @ApiModelProperty(value = "管理员用户名",required = true,example = "test001")
+    @ApiModelProperty(value = "管理员用户名",required = true,example = "root")
     private String username;
 
     @NotNull(message = "密码不能为空")
