@@ -4,6 +4,11 @@ import cn.hqu.csmall.product.ex.ServiceException;
 import cn.hqu.csmall.product.web.JsonResult;
 import cn.hqu.csmall.product.web.ServiceCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -57,6 +62,33 @@ public class GlobalExceptionHandler {
         }
         return JsonResult.fail(ServiceCode.ERR_BAD_REQUEST, message);
     }
+
+    @ExceptionHandler({
+            BadCredentialsException.class,//密码错误异常
+            InternalAuthenticationServiceException.class//用户名不存在的异常
+    })
+    public JsonResult handleAuthenticationException(AuthenticationException e){
+        log.debug("程序运行中出选了AuthenticationException,将统一处理!");
+        String message="登录失败，用户名或者密码错误!";
+        log.warn("异常",e);
+        return JsonResult.fail(ServiceCode.ERR_UNAUTHORIZED, message);
+    }
+    @ExceptionHandler
+    public JsonResult handleDisabledException(DisabledException e){
+        log.debug("程序运行中出选了DisabledException,将统一处理!");
+        String message="登录失败，账户被禁用!";
+        log.warn("异常",e);
+        return JsonResult.fail(ServiceCode.ERR_UNAUTHORIZED_DISABLED, message);
+    }
+
+    @ExceptionHandler
+    public JsonResult handleAccessDeniedException(AccessDeniedException e){
+        log.debug("程序运行中出选了AccessDeniedException,将统一处理!");
+        String message="当前用户账户无此权限，禁止访问!";
+        log.warn("异常",e);
+        return JsonResult.fail(ServiceCode.ERR_FORBIDDEN, message);
+    }
+
 
     /**
      * 未预知的异常（兜底）

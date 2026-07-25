@@ -8,3 +8,7 @@ spring:
 logging:
   level:
     cn.hqu.csmall.product:  trace
+
+csmall:
+  jwt:
+    secret-key: sadsadvojsnanjdsoikppsalcmoaskmqfwqsdkzmalvkspncdksakbfaisbadscwcxzaldwvdcsnas

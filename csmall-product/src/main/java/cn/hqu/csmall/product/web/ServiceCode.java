@@ -1,15 +1,17 @@
 package cn.hqu.csmall.product.web;
 
-import lombok.Getter;
-
 public enum ServiceCode {
     OK(20000),
     CREATED(20100),
     ERR_UNAUTHORIZED(40100),
+    ERR_UNAUTHORIZED_DISABLED(40101),
     ERR_FORBIDDEN(40300),
     ERR_NOT_FOUND(40400),
     ERR_BAD_REQUEST(40000),
     ERR_CONFLICT(40900),
+    ERR_INSERT(50000),
+    ERR_UPDATE(50001),
+    ERR_DELETE(50002),
     ERR_KNOWN(99999);
 
     private Integer value;

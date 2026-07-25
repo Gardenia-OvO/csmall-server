@@ -6,6 +6,7 @@ import cn.hqu.csmall.product.pojo.param.AlbumUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
 import cn.hqu.csmall.product.pojo.vo.AlbumStandardVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
+import cn.hqu.csmall.product.security.LoginPrincipal;
 import cn.hqu.csmall.product.service.IAlbumService;
 import cn.hqu.csmall.product.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
@@ -16,8 +17,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 
@@ -70,7 +73,10 @@ public class AlbumController {
             @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
     })
     public JsonResult list(@Range(min = 1, message = "查询相册列表失败，请提供正确的页码值！")
-                           @RequestParam(defaultValue = "1") Integer pageNum) {
+                           @RequestParam(defaultValue = "1") Integer pageNum,
+                           @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        log.debug("当事人username:{}",user.getUsername());
+        log.debug("当事人id:{}",user.getId());
         log.debug("开始处理【查询相册列表】的业务，参数：{}", pageNum);
         if (pageNum == null || pageNum < 1) {
             pageNum = 1;
