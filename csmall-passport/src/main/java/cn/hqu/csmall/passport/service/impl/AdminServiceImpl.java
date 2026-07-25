@@ -2,7 +2,6 @@ package cn.hqu.csmall.passport.service.impl;
 
 import cn.hqu.csmall.passport.ex.ServiceException;
 import cn.hqu.csmall.passport.security.AdminDetail;
-import cn.hqu.csmall.passport.security.LoginPrincipal;
 import com.alibaba.fastjson.JSON;
 import cn.hqu.csmall.passport.mapper.AdminMapper;
 import cn.hqu.csmall.passport.mapper.AdminRoleMapper;
@@ -12,7 +11,6 @@ import cn.hqu.csmall.passport.pojo.param.AdminAddNewParam;
 import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
 import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
-import cn.hqu.csmall.passport.pojo.vo.AdminLoginInfoVO;
 import cn.hqu.csmall.passport.service.IAdminService;
 import cn.hqu.csmall.passport.web.ServiceCode;
 import cn.hqu.csmall.product.pojo.vo.PageData;
@@ -158,34 +156,10 @@ public class AdminServiceImpl implements IAdminService {
                 .setHeaderParam("alg","HS256")
                 .setHeaderParam("typ","JWT")
                 .addClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis()+1000L*60*60*24*30))
+                .setExpiration(new Date(System.currentTimeMillis() + expireInMinute * 60 * 1000))
                 .signWith(SignatureAlgorithm.HS256,secretKey)
                 .compact();
         log.debug("登录认证通过，JWT令牌：{}",jwt);
-        return jwt;
-    }
-
-    @Override
-    public String login(LoginPrincipal loginPrincipal) {
-        log.debug("开始处理【管理员登录】的业务（LoginPrincipal），参数：{}", loginPrincipal);
-        AdminLoginInfoVO loginInfo = adminMapper.getLoginInfoByUsername(loginPrincipal.getUsername());
-        if (loginInfo == null) {
-            String message = "管理员不存在，请检查用户名";
-            log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
-        }
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("id", loginInfo.getId());
-        claims.put("username", loginInfo.getUsername());
-        claims.put("permissions", JSON.toJSONString(loginInfo.getPermissions()));
-        String jwt = Jwts.builder()
-                .setHeaderParam("alg", "HS256")
-                .setHeaderParam("typ", "JWT")
-                .addClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-        log.debug("登录通过，JWT令牌：{}", jwt);
         return jwt;
     }
 

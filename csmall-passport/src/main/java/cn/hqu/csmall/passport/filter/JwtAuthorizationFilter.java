@@ -44,6 +44,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             chain.doFilter(request,response);
             return;
         }
+        //去除"Bearer "前缀
+        if (jwt.startsWith("Bearer ")) {
+            jwt = jwt.substring(7);
+            log.debug("去除Bearer前缀后的JWT是：{}", jwt);
+        }
 
         response.setContentType("application/json; charset=utf-8");//设置响应数据的类型和编码
 
