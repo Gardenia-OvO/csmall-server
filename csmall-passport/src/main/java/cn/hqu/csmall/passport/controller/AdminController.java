@@ -5,6 +5,7 @@ import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
 import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.security.AdminDetail;
+import cn.hqu.csmall.passport.security.LoginPrincipal;
 import cn.hqu.csmall.passport.service.IAdminService;
 import cn.hqu.csmall.passport.web.JsonResult;
 import cn.hqu.csmall.product.pojo.vo.PageData;
@@ -62,6 +63,22 @@ public class AdminController {
         return JsonResult.ok();
     }
 
+
+    @PostMapping("/delete")
+    @ApiOperation("删除管理员")
+    @PreAuthorize("hasAuthority('/ams/admin/delete')")
+    @ApiOperationSupport(order = 400)
+    @ApiImplicitParam(name = "id", value = "管理员id", required = true, dataType = "long")
+    public JsonResult delete(@Range(min = 1, message = "根据id删除管理员失败，请提供合法的id")
+                             @RequestParam Long id,
+                             @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        log.debug("当事人username:{}", user.getUsername());
+        log.debug("当事人id:{}", user.getId());
+        log.debug("开始处理【删除管理员】的请求，id:{}", id);
+        adminService.delete(id);
+        log.debug("处理【删除管理员】的请求，完成！");
+        return JsonResult.ok("删除管理员成功");
+    }
     @GetMapping("/list")
     @PreAuthorize(("hasAuthority('/ams/admin/read')"))
     @ApiOperation("查询管理员列表")

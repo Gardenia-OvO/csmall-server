@@ -21,4 +21,5 @@ public interface IAdminService {
 
     void update(AdminUpdateParam adminUpdateParam);
 
+    void delete(Long id);
 }

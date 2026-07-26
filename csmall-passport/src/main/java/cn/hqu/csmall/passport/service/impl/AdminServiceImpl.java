@@ -2,6 +2,7 @@ package cn.hqu.csmall.passport.service.impl;
 
 import cn.hqu.csmall.passport.ex.ServiceException;
 import cn.hqu.csmall.passport.security.AdminDetail;
+import cn.hqu.csmall.passport.security.LoginPrincipal;
 import com.alibaba.fastjson.JSON;
 import cn.hqu.csmall.passport.mapper.AdminMapper;
 import cn.hqu.csmall.passport.mapper.AdminRoleMapper;
@@ -49,11 +50,8 @@ public class AdminServiceImpl implements IAdminService {
     private PasswordEncoder passwordEncoder;
     @Value("${csmall.jwt.secret-key}")
     private String secretKey;
-    //expire-in-minute
     @Value("${csmall.jwt.expire-in-minute}")
-    private Long expireInMinute ;
-
-
+    private Long expireInMinute;
 
     @Transactional
     @Override
@@ -130,7 +128,7 @@ public class AdminServiceImpl implements IAdminService {
     @Override
     public PageData<AdminListItemVO> list(Integer pageNum) {
         Integer pageSize = 5;
-        log.debug("开始处理【查询管理员 列表】的业务，页码：{}，每页记录数(默认)：{}",pageNum,pageSize);
+        log.debug("开始处理【查询管理员列表】的业务，页码：{}，每页记录数(默认)：{}",pageNum,pageSize);
         return list(pageNum,pageSize);
     }
 
@@ -212,5 +210,44 @@ public class AdminServiceImpl implements IAdminService {
             throw new ServiceException(ServiceCode.ERR_UPDATE, message);
         }
         log.debug("修改管理员完成");
+    }
+
+    @Override
+    public void delete(Long id) {
+        log.debug("开始处理【删除管理员】的业务，id为:{}", id);
+        // 获取当前登录用户
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        LoginPrincipal currentUser = (LoginPrincipal) auth.getPrincipal();
+        log.debug("当前操作用户：{}", currentUser.getUsername());
+
+        // 防止删除自己
+        if (currentUser.getId().equals(id)) {
+            String message = "删除管理员失败，不允许删除自己！";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_FORBIDDEN, message);
+        }
+
+        // 检查管理员是否存在
+        Admin existAdmin = adminMapper.selectById(id);
+        if (existAdmin == null) {
+            String message = "删除管理员失败，管理员数据不存在！";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+
+        // 删除管理员与角色的关联数据
+        QueryWrapper<AdminRole> roleQuery = new QueryWrapper<>();
+        roleQuery.eq("admin_id", id);
+        adminRoleMapper.delete(roleQuery);
+        log.debug("已删除管理员ID={}的角色关联数据", id);
+
+        // 删除管理员
+        int rows = adminMapper.deleteById(id);
+        if (rows != 1) {
+            String message = "删除管理员失败，服务器忙，请稍后再试！";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERR_DELETE, message);
+        }
+        log.debug("处理【根据id删除管理员】的业务完成！");
     }
 }
