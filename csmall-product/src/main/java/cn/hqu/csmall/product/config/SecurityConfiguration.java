@@ -14,10 +14,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.ServletException;
@@ -63,6 +65,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 PrintWriter printWriter = response.getWriter();
                 String message = "您当前未登录，请先登录";
                 JsonResult jsonResult = JsonResult.fail(ServiceCode.ERR_UNAUTHORIZED, message);
+                String jsonString = JSON.toJSONString(jsonResult);
+                printWriter.write(jsonString);
+                printWriter.close();
+            }
+        });
+
+        // 处理已登录但无权限访问受保护的资源
+        http.exceptionHandling().accessDeniedHandler(new AccessDeniedHandler() {
+            @Override
+            public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
+                response.setContentType("application/json; charset=utf-8");
+                PrintWriter printWriter = response.getWriter();
+                String message = "当前用户账户无此权限，禁止访问！";
+                JsonResult jsonResult = JsonResult.fail(ServiceCode.ERR_FORBIDDEN, message);
                 String jsonString = JSON.toJSONString(jsonResult);
                 printWriter.write(jsonString);
                 printWriter.close();

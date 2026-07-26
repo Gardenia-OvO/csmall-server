@@ -6,6 +6,7 @@ import cn.hqu.csmall.product.pojo.param.CategoryUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.CategoryListItemVO;
 import cn.hqu.csmall.product.pojo.vo.CategoryStandardVO;
 import cn.hqu.csmall.product.pojo.vo.PageData;
+import cn.hqu.csmall.product.security.LoginPrincipal;
 import cn.hqu.csmall.product.service.ICategoryService;
 import cn.hqu.csmall.product.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
@@ -16,8 +17,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 
@@ -33,8 +37,12 @@ public class CategoryController {
 
     @PostMapping("/add-new")
     @ApiOperation("新增类别")
+    @PreAuthorize("hasAuthority('/pms/category/add-new')")
     @ApiOperationSupport(order = 100)
-    public JsonResult addNew(@Valid @RequestBody CategoryAddNewParam categoryAddNewParam) {
+    public JsonResult addNew(@Valid @RequestBody CategoryAddNewParam categoryAddNewParam,
+                             @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        log.debug("当事人username:{}", user.getUsername());
+        log.debug("当事人id:{}", user.getId());
         log.debug("开始处理【添加类别】的请求，参数:{}", categoryAddNewParam);
         categoryService.addNew(categoryAddNewParam);
         log.debug("处理【添加类别】的请求，完成！");
@@ -43,10 +51,14 @@ public class CategoryController {
 
     @PostMapping("/delete")
     @ApiOperation("删除类别")
+    @PreAuthorize("hasAuthority('/pms/category/delete')")
     @ApiOperationSupport(order = 200)
     @ApiImplicitParam(name = "id", value = "类别id", required = true, dataType = "long")
     public JsonResult delete(@Range(min = 1, message = "根据id删除类别，请提供合法的id")
-                             @RequestParam Long id) {
+                             @RequestParam Long id,
+                             @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        log.debug("当事人username:{}", user.getUsername());
+        log.debug("当事人id:{}", user.getId());
         log.debug("开始处理【删除类别】的请求，id:{}", id);
         categoryService.delete(id);
         log.debug("处理【删除类别】的请求，完成！");
@@ -55,8 +67,12 @@ public class CategoryController {
 
     @PostMapping("/update")
     @ApiOperation("修改商品类别")
+    @PreAuthorize("hasAuthority('/pms/category/update')")
     @ApiOperationSupport(order = 300)
-    public JsonResult update(@Valid @RequestBody CategoryUpdateParam categoryUpdateParam) {
+    public JsonResult update(@Valid @RequestBody CategoryUpdateParam categoryUpdateParam,
+                             @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        log.debug("当事人username:{}", user.getUsername());
+        log.debug("当事人id:{}", user.getId());
         log.debug("开始处理【修改商品类别】的请求，参数为：{}", categoryUpdateParam);
         categoryService.updateById(categoryUpdateParam.getId(), categoryUpdateParam);
         log.debug("处理【修改商品类别】的请求，完成！");
@@ -65,12 +81,16 @@ public class CategoryController {
 
     @GetMapping("/list")
     @ApiOperation("查询商品类别列表")
+    @PreAuthorize("hasAuthority('/pms/category/read')")
     @ApiOperationSupport(order = 420)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
     })
     public JsonResult list(@Range(min = 1, message = "查询商品类别列表失败，请提供正确的页码值！")
-                           @RequestParam(defaultValue = "1") Integer pageNum) {
+                           @RequestParam(defaultValue = "1") Integer pageNum,
+                           @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        log.debug("当事人username:{}", user.getUsername());
+        log.debug("当事人id:{}", user.getId());
         log.debug("开始处理【查询商品类别列表】的业务，参数：{}", pageNum);
         if (pageNum == null || pageNum < 1) {
             pageNum = 1;
@@ -82,6 +102,7 @@ public class CategoryController {
 
     @GetMapping("/search")
     @ApiOperation("搜索类别")
+    @PreAuthorize("hasAuthority('/pms/category/read')")
     @ApiOperationSupport(order = 430)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", value = "类别名称（精确匹配）", paramType = "query"),
@@ -91,7 +112,10 @@ public class CategoryController {
     public JsonResult search(@RequestParam(required = false) String name,
                              @RequestParam(required = false) Long id,
                              @Range(min = 1, message = "搜索类别失败，请提供正确的页码值！")
-                             @RequestParam(defaultValue = "1") Integer pageNum) {
+                             @RequestParam(defaultValue = "1") Integer pageNum,
+                             @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        log.debug("当事人username:{}", user.getUsername());
+        log.debug("当事人id:{}", user.getId());
         log.debug("开始处理【搜索类别】的请求，名称：{}，ID：{}，页码：{}", name, id, pageNum);
         if (pageNum == null || pageNum < 1) {
             pageNum = 1;
@@ -103,10 +127,14 @@ public class CategoryController {
 
     @GetMapping("/standard")
     @ApiOperation("查询类别详细信息")
+    @PreAuthorize("hasAuthority('/pms/category/read')")
     @ApiOperationSupport(order = 450)
     @ApiImplicitParam(name = "id", value = "类别id", required = true, dataType = "long")
     public JsonResult standard(@Range(min = 1, message = "根据id查询类别，请提供合法的id")
-                             @RequestParam Long id) {
+                             @RequestParam Long id,
+                             @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        log.debug("当事人username:{}", user.getUsername());
+        log.debug("当事人id:{}", user.getId());
         log.debug("开始处理【查询类别信息】的请求，id:{}", id);
         CategoryStandardVO result = categoryService.getStandardById(id);
         log.debug("处理【查询类别信息】的请求，完成！");
