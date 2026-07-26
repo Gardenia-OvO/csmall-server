@@ -5,7 +5,7 @@
 <mapper namespace="cn.hqu.csmall.passport.mapper.RoleMapper">
 
     <select id="list" resultType="cn.hqu.csmall.passport.pojo.vo.RoleListItemVO">
-        SELECT id, name, description, sort
+        SELECT id, name, description, sort, enable
         FROM ams_role ORDER BY sort
     </select>
 

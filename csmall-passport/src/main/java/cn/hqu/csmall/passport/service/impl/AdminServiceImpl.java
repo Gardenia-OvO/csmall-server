@@ -36,6 +36,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.List;
+import java.util.Arrays;
 
 @Slf4j
 @Service
@@ -104,7 +106,7 @@ public class AdminServiceImpl implements IAdminService {
             date.setGmtCreate(LocalDateTime.now());
             date.setGmtModified(LocalDateTime.now());
             adminRoles[(int)i] = date;
-        }
+                }
         int rows = adminRoleMapper.insertBatch(adminRoles);
         if(rows!=roleIds.length){
             String message = "插入管理员角色失败！服务器忙，请稍后再试！";
@@ -162,15 +164,15 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public void update(AdminUpdateParam adminUpdateParam) {
+    @Transactional    public void update(AdminUpdateParam adminUpdateParam) {
         log.debug("开始处理【修改管理员】的业务，参数：{}", adminUpdateParam);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
         boolean hasPermission = authorities.stream()
-                .anyMatch(a -> a.getAuthority().equals("系统管理员")
-                        || a.getAuthority().equals("超级管理员"));
+                .anyMatch(a -> a.getAuthority().equals("/ams/admin/update")
+                        );
         if (!hasPermission) {
-            String message = "仅系统管理员和超级管理员可修改管理员信息";
+            String message = "当前管理员无修改权限";
             log.warn(message);
             throw new ServiceException(ServiceCode.ERR_FORBIDDEN, message);
         }
@@ -209,6 +211,32 @@ public class AdminServiceImpl implements IAdminService {
             log.warn(message);
             throw new ServiceException(ServiceCode.ERR_UPDATE, message);
         }
+        // 如果传入了新的角色列表，则更新角色关联
+        List<Long> roleIds = adminUpdateParam.getRoleIds();
+        if (roleIds != null && !roleIds.isEmpty()) {
+            log.debug("开始更新管理员角色关联，角色ID：{}", Arrays.asList(roleIds));
+            // 删除旧的关联
+            QueryWrapper<AdminRole> roleQuery = new QueryWrapper<>();
+            roleQuery.eq("admin_id", adminUpdateParam.getId());
+            adminRoleMapper.delete(roleQuery);
+            // 插入新的关联
+            AdminRole[] adminRoles = new AdminRole[roleIds.size()];
+            for (int i = 0; i < roleIds.size(); i++) {
+                AdminRole date = new AdminRole();
+                date.setAdminId(adminUpdateParam.getId());
+                date.setRoleId(roleIds.get(i));
+                date.setGmtCreate(LocalDateTime.now());
+                date.setGmtModified(LocalDateTime.now());
+                adminRoles[(int)i] = date;
+            }
+            int roleRows = adminRoleMapper.insertBatch(adminRoles);
+            if (roleRows != roleIds.size()) {
+                String message = "更新管理员角色失败！服务器忙，请稍后再试！";
+                log.warn(message);
+                throw new ServiceException(ServiceCode.ERR_INSERT, message);
+            }
+            log.debug("更新管理员角色关联完成");
+                }
         log.debug("修改管理员完成");
     }
 

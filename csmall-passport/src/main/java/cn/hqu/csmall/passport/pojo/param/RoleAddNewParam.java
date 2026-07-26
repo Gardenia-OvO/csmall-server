@@ -33,4 +33,11 @@ public class RoleAddNewParam implements Serializable {
     @Range(min = 0, max = 99, message = "排序序号必须在0-99之间")
     @ApiModelProperty(value = "排序序号", required = true, example = "1")
     private Integer sort;
-}
+
+    /**
+     * 启用状态 0禁用 1启用
+     */
+    @NotNull(message = "添加角色失败，启用状态不能为空")
+    @Range(min = 0, max = 1, message = "启用状态必须在0-1之间")
+    @ApiModelProperty(value = "是否启用", required = true, example = "1")
+    private Integer enable;}

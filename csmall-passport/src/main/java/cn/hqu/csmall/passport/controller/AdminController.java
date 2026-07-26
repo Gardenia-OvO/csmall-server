@@ -54,6 +54,7 @@ public class AdminController {
     }
 
     @PostMapping("/update")
+    @PreAuthorize("hasAuthority('/ams/admin/update')")
     @ApiOperation("修改管理员")
     @ApiOperationSupport(order = 200)
     public JsonResult update(@Valid @RequestBody AdminUpdateParam adminUpdateParam) {

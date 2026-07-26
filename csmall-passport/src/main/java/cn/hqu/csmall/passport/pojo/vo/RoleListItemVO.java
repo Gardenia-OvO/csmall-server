@@ -10,4 +10,4 @@ public class RoleListItemVO implements Serializable {
     private String name;
     private String description;
     private Integer sort;
-}
+    private Integer enable;}

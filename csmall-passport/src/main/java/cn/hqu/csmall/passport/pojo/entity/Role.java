@@ -37,6 +37,10 @@ public class Role implements Serializable {
     private Integer sort;
 
     /**
+     * 是否启用 0禁用 1启用
+     */
+    private Integer enable;
+    /**
      * 创建时间
      */
     private LocalDateTime gmtCreate;

@@ -1,6 +1,7 @@
 package cn.hqu.csmall.passport.controller;
 
 import cn.hqu.csmall.passport.pojo.param.RoleAddNewParam;
+import cn.hqu.csmall.passport.pojo.param.RoleUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.RoleListItemVO;
 import cn.hqu.csmall.passport.service.IRoleService;
 import cn.hqu.csmall.passport.web.JsonResult;
@@ -36,6 +37,17 @@ public class RoleController {
         roleService.addNew(roleAddNewParam);
         log.debug("处理【添加角色】的业务结束");
         return JsonResult.created("新增角色成功");
+    }
+
+    @PostMapping("/update")
+    @ApiOperation("修改角色")
+    @PreAuthorize("hasAuthority('/ams/admin/update')")
+    @ApiOperationSupport(order = 200)
+    public JsonResult update(@Valid @RequestBody RoleUpdateParam roleUpdateParam) {
+        log.debug("开始处理【修改角色】的请求，参数：{}", roleUpdateParam);
+        roleService.update(roleUpdateParam);
+        log.debug("处理【修改角色】的请求，完成！");
+        return JsonResult.ok();
     }
 
     @GetMapping("/list")
