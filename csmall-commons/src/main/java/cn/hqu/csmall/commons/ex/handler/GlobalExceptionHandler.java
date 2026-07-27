@@ -5,10 +5,12 @@ import cn.hqu.csmall.commons.web.JsonResult;
 import cn.hqu.csmall.commons.web.ServiceCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -95,8 +97,26 @@ public class GlobalExceptionHandler {
         log.warn("程序运行过程中出现AccessDeniedException，将统一处理！");
         log.warn("异常类型：{}", e.getClass().getName());
         log.warn("异常信息：{}", e.getMessage());
-        String message = "拒绝访问，您当前登录的账号无此操作权限！";
-        return JsonResult.fail(ServiceCode.ERROR_FORBIDDEN, message);
+        // 判断是否已登录：已登录返回403，未登录返回401
+        if (SecurityContextHolder.getContext().getAuthentication() != null
+                && SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+                && !"anonymousUser".equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
+            String message = "拒绝访问，您当前登录的账号无此操作权限！";
+            return JsonResult.fail(ServiceCode.ERROR_FORBIDDEN, message);
+        }
+        String message = "您当前未登录，请先登录！";
+        return JsonResult.fail(ServiceCode.ERROR_UNAUTHORIZED, message);
+    }
+
+    @ExceptionHandler({
+            AuthenticationCredentialsNotFoundException.class
+    })
+    public JsonResult<Void> handleAuthenticationCredentialsNotFoundException(AuthenticationException e) {
+        log.warn("程序运行过程中出现AuthenticationCredentialsNotFoundException，将统一处理！");
+        log.warn("异常类型：{}", e.getClass().getName());
+        log.warn("异常信息：{}", e.getMessage());
+        String message = "您当前未登录，请先登录！";
+        return JsonResult.fail(ServiceCode.ERROR_UNAUTHORIZED, message);
     }
 
     // 注意：以下方法存在的意义主要在于：避免因为某个异常未被处理，导致服务器端响应500错误

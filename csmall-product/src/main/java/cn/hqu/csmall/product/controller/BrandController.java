@@ -1,14 +1,14 @@
 package cn.hqu.csmall.product.controller;
 
 
+import cn.hqu.csmall.commons.pojo.vo.PageData;
+import cn.hqu.csmall.commons.security.LoginPrincipal;
+import cn.hqu.csmall.commons.web.JsonResult;
 import cn.hqu.csmall.product.pojo.param.BrandAddNewParam;
 import cn.hqu.csmall.product.pojo.param.BrandUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.BrandListItemVO;
 import cn.hqu.csmall.product.pojo.vo.BrandStandardVO;
-import cn.hqu.csmall.product.pojo.vo.PageData;
-import cn.hqu.csmall.product.security.LoginPrincipal;
 import cn.hqu.csmall.product.service.IBrandService;
-import cn.hqu.csmall.product.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;

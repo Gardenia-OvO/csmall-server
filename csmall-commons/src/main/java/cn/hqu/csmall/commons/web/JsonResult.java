@@ -3,6 +3,7 @@ package cn.hqu.csmall.commons.web;
 import cn.hqu.csmall.commons.ex.ServiceException;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
@@ -13,6 +14,7 @@ import java.io.Serializable;
  * @version 0.0.1
  */
 @Data
+@Accessors(chain = true)
 public class JsonResult<T> implements Serializable {
 
     /**
@@ -30,6 +32,19 @@ public class JsonResult<T> implements Serializable {
      */
     @ApiModelProperty("数据")
     private T data;
+
+    /**
+     * 生成表示"创建成功"的响应对象
+     *
+     * @param message 提示文本
+     * @return 表示"创建成功"的响应对象
+     */
+    public static JsonResult<Void> created(String message) {
+        JsonResult<Void> jsonResult = new JsonResult<>();
+        jsonResult.state = ServiceCode.CREATED.getValue();
+        jsonResult.message = message;
+        return jsonResult;
+    }
 
     /**
      * 生成表示"成功"的响应对象

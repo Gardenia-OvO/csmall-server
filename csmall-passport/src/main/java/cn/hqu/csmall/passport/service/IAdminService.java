@@ -5,7 +5,7 @@ import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
 import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.security.AdminDetail;
-import cn.hqu.csmall.product.pojo.vo.PageData;
+import cn.hqu.csmall.commons.pojo.vo.PageData;
 import org.springframework.transaction.annotation.Transactional;
 
 

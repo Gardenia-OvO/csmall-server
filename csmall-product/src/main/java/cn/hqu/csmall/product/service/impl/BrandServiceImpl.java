@@ -1,7 +1,7 @@
 package cn.hqu.csmall.product.service.impl;
 
-import cn.hqu.csmall.product.ex.ServiceException;
-import cn.hqu.csmall.product.web.ServiceCode;
+import cn.hqu.csmall.commons.ex.ServiceException;
+import cn.hqu.csmall.commons.web.ServiceCode;
 import cn.hqu.csmall.product.mapper.BrandMapper;
 import cn.hqu.csmall.product.mapper.SpuMapper;
 import cn.hqu.csmall.product.pojo.entity.Brand;
@@ -10,9 +10,9 @@ import cn.hqu.csmall.product.pojo.param.BrandAddNewParam;
 import cn.hqu.csmall.product.pojo.param.BrandUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.BrandListItemVO;
 import cn.hqu.csmall.product.pojo.vo.BrandStandardVO;
-import cn.hqu.csmall.product.pojo.vo.PageData;
+import cn.hqu.csmall.commons.pojo.vo.PageData;
+import cn.hqu.csmall.commons.util.PageInfoToPageDataConverter;
 import cn.hqu.csmall.product.service.IBrandService;
-import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -44,7 +44,7 @@ public class BrandServiceImpl implements IBrandService {
         if(count > 0){
             String message = "品牌名称已经被占用，请更换";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
         //select * from tb_album where name = #{name}
 
@@ -77,7 +77,7 @@ public class BrandServiceImpl implements IBrandService {
         if (count == 0) {
             String message = "删除品牌失败，品牌数据不存在！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, message);
         }
         // 检查是否有SPU与该品牌关联
         QueryWrapper<Spu> queryWrapper02 = new QueryWrapper<>();
@@ -87,7 +87,7 @@ public class BrandServiceImpl implements IBrandService {
         if (count > 0) {
             String message = "删除品牌失败，该品牌存在关联SPU！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
         brandMapper.deleteById(id);
         log.debug("处理【根据id删除品牌】的业务完成！");
@@ -106,7 +106,7 @@ public class BrandServiceImpl implements IBrandService {
         if (count == 0){
             String message = "修改品牌失败，品牌数据不存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND,message);
         }
         //检查品牌名称是否重复
         QueryWrapper<Brand> queryWrapper02 = new QueryWrapper<>();
@@ -119,7 +119,7 @@ public class BrandServiceImpl implements IBrandService {
         if (count >0 ){
             String message = "修改品牌失败，品牌名称已存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT,message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT,message);
         }
 
         Brand brand = new Brand();
@@ -154,7 +154,7 @@ public class BrandServiceImpl implements IBrandService {
         BrandStandardVO brandStandardVO = brandMapper.getStandardById(id);
         if(brandStandardVO == null){
             log.warn("品牌不存在");
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,"品牌不存在");
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND,"品牌不存在");
         }
         return brandStandardVO;
     }

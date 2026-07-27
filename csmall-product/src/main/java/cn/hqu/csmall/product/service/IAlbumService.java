@@ -1,10 +1,10 @@
 package cn.hqu.csmall.product.service;
 
+import cn.hqu.csmall.commons.pojo.vo.PageData;
 import cn.hqu.csmall.product.pojo.param.AlbumAddNewParam;
 import cn.hqu.csmall.product.pojo.param.AlbumUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
 import cn.hqu.csmall.product.pojo.vo.AlbumStandardVO;
-import cn.hqu.csmall.product.pojo.vo.PageData;
 
 /**
  * 相册业务接口

@@ -1,9 +1,9 @@
 package cn.hqu.csmall.passport.config;
 
 
-import cn.hqu.csmall.passport.filter.JwtAuthorizationFilter;
-import cn.hqu.csmall.passport.web.JsonResult;
-import cn.hqu.csmall.passport.web.ServiceCode;
+import cn.hqu.csmall.commons.filter.JwtAuthorizationFilter;
+import cn.hqu.csmall.commons.web.JsonResult;
+import cn.hqu.csmall.commons.web.ServiceCode;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +62,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 response.setContentType("application/json; charset=utf-8");
                 PrintWriter printWriter = response.getWriter();
                 String message = "您当前未登录，请先登录";
-                JsonResult jsonResult = JsonResult.fail(ServiceCode.ERR_UNAUTHORIZED, message);
+                JsonResult jsonResult = JsonResult.fail(ServiceCode.ERROR_UNAUTHORIZED, message);
                 String jsonString = JSON.toJSONString(jsonResult);
                 printWriter.write(jsonString);
                 printWriter.close();

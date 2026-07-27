@@ -1,11 +1,12 @@
 package cn.hqu.csmall.commons.ex;
 
 import cn.hqu.csmall.commons.web.ServiceCode;
+import lombok.Getter;
 
 public class ServiceException extends RuntimeException{
+
+    @Getter
     private ServiceCode serviceCode;
-
-
 
     public ServiceException(){
     }
@@ -18,12 +19,16 @@ public class ServiceException extends RuntimeException{
         super(message, cause);
     }
 
+    public ServiceException(Throwable cause){
+        super(cause);
+    }
+
     public ServiceException(ServiceCode serviceCode, String message){
         super(message);
         this.serviceCode = serviceCode;
     }
 
-    public ServiceCode getServiceCode(){
-        return serviceCode;
+    public ServiceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace){
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

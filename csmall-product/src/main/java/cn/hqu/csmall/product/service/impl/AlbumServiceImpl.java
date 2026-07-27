@@ -9,14 +9,14 @@ import cn.hqu.csmall.product.pojo.param.AlbumUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.AlbumStandardVO;
 import cn.hqu.csmall.product.service.IAlbumService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import cn.hqu.csmall.product.ex.ServiceException;
-import cn.hqu.csmall.product.web.ServiceCode;
+import cn.hqu.csmall.commons.ex.ServiceException;
+import cn.hqu.csmall.commons.web.ServiceCode;
+import cn.hqu.csmall.commons.pojo.vo.PageData;
+import cn.hqu.csmall.commons.util.PageInfoToPageDataConverter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
-import cn.hqu.csmall.product.pojo.vo.PageData;
-import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -46,7 +46,7 @@ public class AlbumServiceImpl implements IAlbumService {
         if(count > 0){
             String message = "相册名称已经被占用，请更换";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
         //select * from tb_album where name = #{name}
 
@@ -76,7 +76,7 @@ public class AlbumServiceImpl implements IAlbumService {
         if (count == 0){
             String message = "删除相册失败，相册数据不存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND,message);
         }
         //检查是否有图片与该相册相连
         QueryWrapper<Picture> queryWrapper02 = new QueryWrapper<>();
@@ -87,7 +87,7 @@ public class AlbumServiceImpl implements IAlbumService {
         if (count >0 ){
             String message = "删除相册失败，该相册存在关联图片!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT,message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT,message);
         }
         albumMapper.deleteById(id);
         log.debug("处理【根据id删除相册】的业务完成！");
@@ -144,7 +144,7 @@ public class AlbumServiceImpl implements IAlbumService {
         AlbumStandardVO albumStandardVO = albumMapper.getStandardById(id);
         if(albumStandardVO == null){
             log.warn("相册不存在");
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,"相册不存在");
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND,"相册不存在");
         }
         return albumStandardVO;
     }
@@ -162,7 +162,7 @@ public class AlbumServiceImpl implements IAlbumService {
         if (count == 0){
             String message = "修改相册失败，相册数据不存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND,message);
         }
         //检查是否有图片与该相册相连
         QueryWrapper<Album> queryWrapper02 = new QueryWrapper<>();
@@ -175,7 +175,7 @@ public class AlbumServiceImpl implements IAlbumService {
         if (count >0 ){
             String message = "修改相册失败，相册名称已存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT,message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT,message);
         }
 
         Album album = new Album();

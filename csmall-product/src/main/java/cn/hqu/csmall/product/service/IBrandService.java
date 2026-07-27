@@ -1,12 +1,12 @@
 package cn.hqu.csmall.product.service;
 
 
-import cn.hqu.csmall.product.ex.ServiceException;
+import cn.hqu.csmall.commons.ex.ServiceException;
+import cn.hqu.csmall.commons.pojo.vo.PageData;
 import cn.hqu.csmall.product.pojo.param.BrandAddNewParam;
 import cn.hqu.csmall.product.pojo.param.BrandUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.BrandListItemVO;
 import cn.hqu.csmall.product.pojo.vo.BrandStandardVO;
-import cn.hqu.csmall.product.pojo.vo.PageData;
 
 //品牌业务接口
 public interface IBrandService {

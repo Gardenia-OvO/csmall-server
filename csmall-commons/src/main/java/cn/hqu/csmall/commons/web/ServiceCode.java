@@ -13,6 +13,10 @@ public enum ServiceCode {
      */
     OK(20000),
     /**
+     * 成功：创建
+     */
+    CREATED(20100),
+    /**
      * 错误：请求参数格式有误
      */
     ERROR_BAD_REQUEST(40000),

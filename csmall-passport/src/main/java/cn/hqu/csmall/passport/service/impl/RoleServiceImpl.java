@@ -1,15 +1,15 @@
 package cn.hqu.csmall.passport.service.impl;
 
-import cn.hqu.csmall.passport.ex.ServiceException;
+import cn.hqu.csmall.commons.ex.ServiceException;
+import cn.hqu.csmall.commons.web.ServiceCode;
+import cn.hqu.csmall.commons.pojo.vo.PageData;
+import cn.hqu.csmall.commons.util.PageInfoToPageDataConverter;
 import cn.hqu.csmall.passport.mapper.RoleMapper;
 import cn.hqu.csmall.passport.pojo.entity.Role;
 import cn.hqu.csmall.passport.pojo.param.RoleAddNewParam;
 import cn.hqu.csmall.passport.pojo.param.RoleUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.RoleListItemVO;
 import cn.hqu.csmall.passport.service.IRoleService;
-import cn.hqu.csmall.passport.web.ServiceCode;
-import cn.hqu.csmall.product.pojo.vo.PageData;
-import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -39,7 +39,7 @@ public class RoleServiceImpl implements IRoleService {
         if (count > 0) {
             String message = "角色名称被占用，请更换名称后重试";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
 
         Role role = new Role();
@@ -81,7 +81,7 @@ public class RoleServiceImpl implements IRoleService {
         if (existRole == null) {
             String message = "修改角色失败，角色数据不存在！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, message);
         }
         // 如果修改了名称，检查是否与其他角色重复
         if (roleUpdateParam.getName() != null && !roleUpdateParam.getName().isEmpty()) {
@@ -92,7 +92,7 @@ public class RoleServiceImpl implements IRoleService {
             if (count > 0) {
                 String message = "修改角色失败，角色名称已存在！";
                 log.warn(message);
-                throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+                throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
             }
         }
         // 构造更新对象

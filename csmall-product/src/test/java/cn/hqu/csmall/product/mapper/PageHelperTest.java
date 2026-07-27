@@ -1,8 +1,8 @@
 package cn.hqu.csmall.product.mapper;
 
 import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
-import cn.hqu.csmall.product.pojo.vo.PageData;
-import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
+import cn.hqu.csmall.commons.pojo.vo.PageData;
+import cn.hqu.csmall.commons.util.PageInfoToPageDataConverter;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.junit.jupiter.api.Test;

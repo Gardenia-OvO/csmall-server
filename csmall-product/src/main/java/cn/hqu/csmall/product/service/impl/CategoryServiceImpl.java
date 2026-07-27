@@ -1,16 +1,16 @@
 package cn.hqu.csmall.product.service.impl;
 
-import cn.hqu.csmall.product.ex.ServiceException;
+import cn.hqu.csmall.commons.ex.ServiceException;
+import cn.hqu.csmall.commons.web.ServiceCode;
+import cn.hqu.csmall.commons.pojo.vo.PageData;
 import cn.hqu.csmall.product.pojo.param.CategoryUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.CategoryListItemVO;
 import cn.hqu.csmall.product.pojo.vo.CategoryStandardVO;
-import cn.hqu.csmall.product.pojo.vo.PageData;
-import cn.hqu.csmall.product.web.ServiceCode;
 import cn.hqu.csmall.product.mapper.CategoryMapper;
 import cn.hqu.csmall.product.pojo.entity.Category;
 import cn.hqu.csmall.product.pojo.param.CategoryAddNewParam;
 import cn.hqu.csmall.product.service.ICategoryService;
-import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
+import cn.hqu.csmall.commons.util.PageInfoToPageDataConverter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -68,7 +68,7 @@ public class CategoryServiceImpl implements ICategoryService {
         if (count == 0) {
             String message = "删除类别失败，类别数据不存在！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, message);
         }
         // 检查是否有子级类别与该类别关联
         QueryWrapper<Category> queryWrapper02 = new QueryWrapper<>();
@@ -78,7 +78,7 @@ public class CategoryServiceImpl implements ICategoryService {
         if (count > 0) {
             String message = "删除类别失败，该类别存在子级类别！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
         categoryMapper.deleteById(id);
         log.debug("处理【根据id删除类别】的业务完成！");
@@ -130,7 +130,7 @@ public class CategoryServiceImpl implements ICategoryService {
         CategoryStandardVO categoryStandardVO = categoryMapper.getStandardById(id);
         if(categoryStandardVO == null){
             log.warn("商品类别不存在");
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,"商品类别不存在");
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND,"商品类别不存在");
         }
         return categoryStandardVO;
     }
@@ -148,7 +148,7 @@ public class CategoryServiceImpl implements ICategoryService {
         if (count == 0){
             String message = "修改商品类别失败，商品类别数据不存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND,message);
         }
         //检查商品类别名称是否重复
         QueryWrapper<Category> queryWrapper02 = new QueryWrapper<>();
@@ -161,7 +161,7 @@ public class CategoryServiceImpl implements ICategoryService {
         if (count >0 ){
             String message = "修改商品类别失败，商品类别名称已存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT,message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT,message);
         }
 
         Category category = new Category();

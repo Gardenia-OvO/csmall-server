@@ -1,15 +1,15 @@
 package cn.hqu.csmall.product.service.impl;
 
-import cn.hqu.csmall.product.ex.ServiceException;
+import cn.hqu.csmall.commons.ex.ServiceException;
+import cn.hqu.csmall.commons.web.ServiceCode;
+import cn.hqu.csmall.commons.pojo.vo.PageData;
+import cn.hqu.csmall.commons.util.PageInfoToPageDataConverter;
 import cn.hqu.csmall.product.mapper.AttributeTemplateMapper;
 import cn.hqu.csmall.product.mapper.SpuMapper;
 import cn.hqu.csmall.product.pojo.entity.AttributeTemplate;
 import cn.hqu.csmall.product.pojo.entity.Spu;
 import cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO;
 import cn.hqu.csmall.product.pojo.vo.AttributeTemplateStandardVO;
-import cn.hqu.csmall.product.pojo.vo.PageData;
-import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
-import cn.hqu.csmall.product.web.ServiceCode;
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateAddNewParam;
 import cn.hqu.csmall.product.pojo.param.AttributeTemplateUpdateParam;
 import cn.hqu.csmall.product.service.IAttributeTemplateService;
@@ -45,7 +45,7 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         if (count > 0) {
             String message = "属性模板名称已经被占用，请更换";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT,message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT,message);
         }
 
         // 向数据库中插入属性模板数据
@@ -70,7 +70,7 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         if (count == 0) {
             String message = "删除属性模板失败，属性模板数据不存在！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, message);
         }
         // 检查是否有SPU与该属性模板关联
         QueryWrapper<Spu> queryWrapper02 = new QueryWrapper<>();
@@ -80,7 +80,7 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         if (count > 0) {
             String message = "删除属性模板失败，该属性模板存在关联SPU！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
         attributeTemplateMapper.deleteById(id);
         log.debug("处理【根据id删除属性模板】的业务完成！");
@@ -99,7 +99,7 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         if (count == 0) {
             String message = "修改属性模版失败，属性模版数据不存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, message);
         }
         //检查属性模版名称是否重复
         QueryWrapper<AttributeTemplate> queryWrapper02 = new QueryWrapper<>();
@@ -111,7 +111,7 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         if (count > 0) {
             String message = "修改属性模版失败，属性模版名称已存在!";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
 
         AttributeTemplate attributeTemplate = new AttributeTemplate();
@@ -168,7 +168,7 @@ public class AttributeTemplateServiceImpl implements IAttributeTemplateService {
         AttributeTemplateStandardVO result = attributeTemplateMapper.getStandardById(id);
         if (result == null) {
             log.warn("属性模版不存在");
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, "属性模版不存在");
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, "属性模版不存在");
         }
         return result;
     }

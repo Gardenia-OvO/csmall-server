@@ -1,6 +1,7 @@
 package cn.hqu.csmall.commons.security;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
  * @version 0.0.1
  */
 @Data
+@Accessors(chain = true)
 public class LoginPrincipal implements Serializable {
 
     /**

@@ -15,6 +15,12 @@
 
 
     <dependencies>
+        <!-- 酷鲨商城-通用模块 -->
+        <dependency>
+            <groupId>cn.hqu</groupId>
+            <artifactId>csmall-commons</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <!--jwt依赖项-->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

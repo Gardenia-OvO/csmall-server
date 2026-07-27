@@ -1,8 +1,11 @@
 package cn.hqu.csmall.passport.service.impl;
 
-import cn.hqu.csmall.passport.ex.ServiceException;
+import cn.hqu.csmall.commons.ex.ServiceException;
+import cn.hqu.csmall.commons.security.LoginPrincipal;
+import cn.hqu.csmall.commons.web.ServiceCode;
+import cn.hqu.csmall.commons.pojo.vo.PageData;
+import cn.hqu.csmall.commons.util.PageInfoToPageDataConverter;
 import cn.hqu.csmall.passport.security.AdminDetail;
-import cn.hqu.csmall.passport.security.LoginPrincipal;
 import com.alibaba.fastjson.JSON;
 import cn.hqu.csmall.passport.mapper.AdminMapper;
 import cn.hqu.csmall.passport.mapper.AdminRoleMapper;
@@ -13,9 +16,6 @@ import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
 import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.service.IAdminService;
-import cn.hqu.csmall.passport.web.ServiceCode;
-import cn.hqu.csmall.product.pojo.vo.PageData;
-import cn.hqu.csmall.product.util.PageInfoToPageDataConverter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -66,7 +66,7 @@ public class AdminServiceImpl implements IAdminService {
         if (count > 0){
             String message = "管理员名称被占用，请更换名称后重试";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT,message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT,message);
         }
         QueryWrapper<Admin> queryWrapper2 = new QueryWrapper<>();
         queryWrapper2.eq("phone", adminAddNewParam.getPhone());
@@ -75,7 +75,7 @@ public class AdminServiceImpl implements IAdminService {
         if (count2 > 0) {
             String message = "管理员手机号被占用，请更换手机号后重试";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
         QueryWrapper<Admin> queryWrapper3 = new QueryWrapper<>();
         queryWrapper3.eq("email", adminAddNewParam.getEmail());
@@ -84,7 +84,7 @@ public class AdminServiceImpl implements IAdminService {
         if (count3 > 0) {
             String message = "管理员邮箱被占用，请更换邮箱后重试";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
         Admin admin = new Admin();
         BeanUtils.copyProperties(adminAddNewParam,admin);
@@ -111,7 +111,7 @@ public class AdminServiceImpl implements IAdminService {
         if(rows!=roleIds.length){
             String message = "插入管理员角色失败！服务器忙，请稍后再试！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_INSERT,message);
+            throw new ServiceException(ServiceCode.ERROR_INSERT,message);
         }
         log.debug("新的管理员数据插入数据库中，完成！");
     }
@@ -174,14 +174,14 @@ public class AdminServiceImpl implements IAdminService {
         if (!hasPermission) {
             String message = "当前管理员无修改权限";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_FORBIDDEN, message);
+            throw new ServiceException(ServiceCode.ERROR_FORBIDDEN, message);
         }
         log.debug("权限校验通过，当前用户：{}", auth.getName());
         Admin existAdmin = adminMapper.selectById(adminUpdateParam.getId());
         if (existAdmin == null) {
             String message = "管理员不存在，修改失败";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, message);
         }
         QueryWrapper<Admin> phoneQuery = new QueryWrapper<>();
         phoneQuery.eq("phone", adminUpdateParam.getPhone());
@@ -190,7 +190,7 @@ public class AdminServiceImpl implements IAdminService {
         if (phoneCount > 0) {
             String message = "管理员手机号被占用，请更换手机号后重试";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
         QueryWrapper<Admin> emailQuery = new QueryWrapper<>();
         emailQuery.eq("email", adminUpdateParam.getEmail());
@@ -199,7 +199,7 @@ public class AdminServiceImpl implements IAdminService {
         if (emailCount > 0) {
             String message = "管理员邮箱被占用，请更换邮箱后重试";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
         Admin admin = new Admin();
         BeanUtils.copyProperties(adminUpdateParam, admin);
@@ -209,7 +209,7 @@ public class AdminServiceImpl implements IAdminService {
         if (rows != 1) {
             String message = "修改管理员失败，服务器忙，请稍后再试";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_UPDATE, message);
+            throw new ServiceException(ServiceCode.ERROR_UPDATE, message);
         }
         // 如果传入了新的角色列表，则更新角色关联
         List<Long> roleIds = adminUpdateParam.getRoleIds();
@@ -233,7 +233,7 @@ public class AdminServiceImpl implements IAdminService {
             if (roleRows != roleIds.size()) {
                 String message = "更新管理员角色失败！服务器忙，请稍后再试！";
                 log.warn(message);
-                throw new ServiceException(ServiceCode.ERR_INSERT, message);
+                throw new ServiceException(ServiceCode.ERROR_INSERT, message);
             }
             log.debug("更新管理员角色关联完成");
                 }
@@ -252,7 +252,7 @@ public class AdminServiceImpl implements IAdminService {
         if (currentUser.getId().equals(id)) {
             String message = "删除管理员失败，不允许删除自己！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_FORBIDDEN, message);
+            throw new ServiceException(ServiceCode.ERROR_FORBIDDEN, message);
         }
 
         // 检查管理员是否存在
@@ -260,7 +260,7 @@ public class AdminServiceImpl implements IAdminService {
         if (existAdmin == null) {
             String message = "删除管理员失败，管理员数据不存在！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, message);
         }
 
         // 删除管理员与角色的关联数据
@@ -274,7 +274,7 @@ public class AdminServiceImpl implements IAdminService {
         if (rows != 1) {
             String message = "删除管理员失败，服务器忙，请稍后再试！";
             log.warn(message);
-            throw new ServiceException(ServiceCode.ERR_DELETE, message);
+            throw new ServiceException(ServiceCode.ERROR_DELETE, message);
         }
         log.debug("处理【根据id删除管理员】的业务完成！");
     }

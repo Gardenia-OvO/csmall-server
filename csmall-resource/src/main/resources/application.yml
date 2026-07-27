@@ -6,3 +6,11 @@ spring:
 
 knife4j:
   enable: true
+  base-package: cn.hqu.csmall.resource.controller
+  group-name: resource
+  host: http://localhost:9082
+  title: 酷鲨商城在线API文档--资源管理
+  description: 酷鲨商城-资源管理
+  contact-name: tedu
+  contact-url: http://www.tedu.cn
+  contact-email: java@tedu.cn

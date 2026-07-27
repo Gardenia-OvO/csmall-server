@@ -1,8 +1,10 @@
-package cn.hqu.csmall.resource.config;
+package cn.hqu.csmall.commons.config;
 
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -15,7 +17,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 /**
- * Knife4j配置类
+ * Knife4j配置类（属性驱动，各模块通过 application.yml 配置）
  *
  * @author java@tedu.cn
  * @version 0.0.1
@@ -23,48 +25,38 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 @Slf4j
 @Configuration
 @EnableSwagger2WebMvc
+@ConditionalOnProperty("knife4j.base-package")
 public class Knife4jConfiguration {
 
-    /**
-     * 【重要】指定Controller包路径
-     */
-    private String basePackage = "cn.hqu.csmall.resource.controller";
-    /**
-     * 分组名称
-     */
-    private String groupName = "resource";
-    /**
-     * 主机名
-     */
-    private String host = "http://java.tedu.cn";
-    /**
-     * 标题
-     */
-    private String title = "酷鲨商城在线API文档--资源服务";
-    /**
-     * 简介
-     */
-    private String description = "酷鲨商城在线API文档--资源服务";
-    /**
-     * 服务条款URL
-     */
-    private String termsOfServiceUrl = "http://www.apache.org/licenses/LICENSE-2.0";
-    /**
-     * 联系人
-     */
-    private String contactName = "Java教学研发部";
-    /**
-     * 联系网址
-     */
-    private String contactUrl = "http://java.tedu.cn";
-    /**
-     * 联系邮箱
-     */
-    private String contactEmail = "java@tedu.cn";
-    /**
-     * 版本号
-     */
-    private String version = "1.0.0";
+    @Value("${knife4j.base-package}")
+    private String basePackage;
+
+    @Value("${knife4j.group-name}")
+    private String groupName;
+
+    @Value("${knife4j.host}")
+    private String host;
+
+    @Value("${knife4j.title}")
+    private String title;
+
+    @Value("${knife4j.description}")
+    private String description;
+
+    @Value("${knife4j.terms-of-service-url:http://www.apache.org/licenses/LICENSE-2.0}")
+    private String termsOfServiceUrl;
+
+    @Value("${knife4j.contact-name}")
+    private String contactName;
+
+    @Value("${knife4j.contact-url}")
+    private String contactUrl;
+
+    @Value("${knife4j.contact-email}")
+    private String contactEmail;
+
+    @Value("${knife4j.version:1.0.0}")
+    private String version;
 
     @Autowired
     private OpenApiExtensionResolver openApiExtensionResolver;

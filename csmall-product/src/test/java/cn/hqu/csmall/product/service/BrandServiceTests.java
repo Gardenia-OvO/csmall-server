@@ -1,7 +1,7 @@
 package cn.hqu.csmall.product.service;
 
 
-import cn.hqu.csmall.product.ex.ServiceException;
+import cn.hqu.csmall.commons.ex.ServiceException;
 import cn.hqu.csmall.product.pojo.param.BrandAddNewParam;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

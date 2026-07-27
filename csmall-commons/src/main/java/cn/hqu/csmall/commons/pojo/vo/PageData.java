@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -24,4 +25,14 @@ public class PageData<T> implements Serializable {
 
     //列表数据
     private List<T> list;
+
+    /**
+     * 返回一个空的PageData对象（用于搜索结果为空的情况）
+     *
+     * @param <T> 数据列表中的元素类型
+     * @return 空的PageData对象
+     */
+    public static <T> PageData<T> empty() {
+        return new PageData<T>().setList(Collections.emptyList());
+    }
 }

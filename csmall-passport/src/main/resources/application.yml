@@ -15,6 +15,7 @@ spring:
 #指定mapper文件位置
 mybatis:
   mapper-location:  classpath:mapper/*.xml
+  mapper-base-package: cn.hqu.csmall.passport.mapper
 
 # MyBatis-Plus配置
 mybatis-plus:
@@ -27,6 +28,14 @@ mybatis-plus:
 #启用knife4j
 knife4j:
   enable: true
+  base-package: cn.hqu.csmall.passport.controller
+  group-name: passport
+  host: http://localhost:9181
+  title: 酷鲨商城在线API文档
+  description: 酷鲨商城-管理员认证与授权
+  contact-name: tedu
+  contact-url: http://www.tedu.cn
+  contact-email: java@tedu.cn
 
 #服务器端口
 server:

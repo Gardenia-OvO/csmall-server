@@ -3,7 +3,7 @@ package cn.hqu.csmall.passport.service;
 import cn.hqu.csmall.passport.pojo.param.RoleAddNewParam;
 import cn.hqu.csmall.passport.pojo.param.RoleUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.RoleListItemVO;
-import cn.hqu.csmall.product.pojo.vo.PageData;
+import cn.hqu.csmall.commons.pojo.vo.PageData;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
