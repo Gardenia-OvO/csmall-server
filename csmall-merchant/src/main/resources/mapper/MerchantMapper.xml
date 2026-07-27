@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hqu.csmall.merchant.mapper.MerchantMapper">
+
+    <select id="list" resultType="cn.hqu.csmall.merchant.pojo.vo.MerchantListItemVO">
+        SELECT id, name, contact_person AS contactPerson, phone, status, sort, sales
+        FROM mms_merchant
+        ORDER BY sort ASC, id ASC
+    </select>
+
+    <select id="getStandardById" resultType="cn.hqu.csmall.merchant.pojo.vo.MerchantStandardVO">
+        SELECT id, name, contact_person AS contactPerson, phone, email, address,
+               logo, description, status, sort, sales
+        FROM mms_merchant
+        WHERE id = #{id}
+    </select>
+
+    <select id="search" resultType="cn.hqu.csmall.merchant.pojo.vo.MerchantListItemVO">
+        SELECT id, name, contact_person AS contactPerson, phone, status, sort, sales
+        FROM mms_merchant
+        <where>
+            <if test="name != null and name != ''">
+                AND name = #{name}
+            </if>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+        </where>
+        ORDER BY sort ASC, id ASC
+    </select>
+
+</mapper>

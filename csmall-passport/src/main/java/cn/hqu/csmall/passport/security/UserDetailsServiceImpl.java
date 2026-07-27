@@ -61,7 +61,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                // PMS - 属性模板管理
                "/pms/attribute-template/read", "/pms/attribute-template/add-new", "/pms/attribute-template/update", "/pms/attribute-template/delete",
                // PMS - 相册管理
-               "/pms/album/read", "/pms/album/add-new", "/pms/album/update", "/pms/album/delete"
+               "/pms/album/read", "/pms/album/add-new", "/pms/album/update", "/pms/album/delete",
+               // MMS - 商家管理
+               "/mms/merchant/read", "/mms/merchant/add-new", "/mms/merchant/update", "/mms/merchant/delete"
            };
            for (String perm : allPermissions) {
                authorities.add(new SimpleGrantedAuthority(perm));

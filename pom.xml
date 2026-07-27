@@ -18,6 +18,7 @@
         <module>csmall-passport</module>
         <module>csmall-commons</module>
         <module>csmall-resource</module>
+        <module>csmall-merchant</module>
     </modules>
 
     <!--项目属性信息-->
