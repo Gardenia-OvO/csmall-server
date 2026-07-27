@@ -19,6 +19,7 @@
         <module>csmall-commons</module>
         <module>csmall-resource</module>
         <module>csmall-merchant</module>
+        <module>csmall-order</module>
     </modules>
 
     <!--项目属性信息-->

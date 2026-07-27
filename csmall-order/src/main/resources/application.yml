@@ -1,0 +1,43 @@
+spring:
+  profiles:
+    active: dev
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      max-active: 10
+  main:
+    allow-circular-references: true
+
+mybatis:
+  mapper-location: classpath:mapper/*.xml
+  mapper-base-package: cn.hqu.csmall.order.mapper
+
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+knife4j:
+  enable: true
+  base-package: cn.hqu.csmall.order.controller
+  group-name: order
+  host: localhost:9184
+  title: 酷鲨商城在线API文档
+  description: 酷鲨商城-订单管理
+  contact-name: tedu
+  contact-url: http://www.tedu.cn
+  contact-email: java@tedu.cn
+
+csmall:
+  jwt:
+    secret-key: sadsadvojsnanjdsoikppsalcmoaskmqfwqsdkzmalvkspncdksakbfaisbadscwcxzaldwvdcsnas
+    expire-in-minute: 43200
+
+server:
+  port: 9184

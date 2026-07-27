@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hqu.csmall.order.mapper.OrderMapper">
+
+    <select id="list" resultType="cn.hqu.csmall.order.pojo.vo.OrderListItemVO">
+        SELECT id, order_no AS orderNo, buyer_name AS buyerName, buyer_phone AS buyerPhone,
+               product_title AS productTitle, quantity, total_amount AS totalAmount, status
+        FROM oms_order ORDER BY id DESC
+    </select>
+
+    <select id="getStandardById" resultType="cn.hqu.csmall.order.pojo.vo.OrderStandardVO">
+        SELECT id, order_no AS orderNo, buyer_name AS buyerName, buyer_phone AS buyerPhone,
+               buyer_address AS buyerAddress, product_title AS productTitle, quantity,
+               unit_price AS unitPrice, total_amount AS totalAmount, status, remark
+        FROM oms_order WHERE id = #{id}
+    </select>
+
+    <select id="search" resultType="cn.hqu.csmall.order.pojo.vo.OrderListItemVO">
+        SELECT id, order_no AS orderNo, buyer_name AS buyerName, buyer_phone AS buyerPhone,
+               product_title AS productTitle, quantity, total_amount AS totalAmount, status
+        FROM oms_order
+        <where>
+            <if test="orderNo != null and orderNo != ''">AND order_no = #{orderNo}</if>
+            <if test="id != null">AND id = #{id}</if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+</mapper>
