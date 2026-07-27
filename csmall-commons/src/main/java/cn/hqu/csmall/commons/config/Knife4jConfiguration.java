@@ -1,8 +1,6 @@
 package cn.hqu.csmall.commons.config;
 
-import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -58,25 +56,20 @@ public class Knife4jConfiguration {
     @Value("${knife4j.version:1.0.0}")
     private String version;
 
-    @Autowired
-    private OpenApiExtensionResolver openApiExtensionResolver;
-
     public Knife4jConfiguration() {
         log.debug("创建配置类对象：Knife4jConfiguration");
     }
 
     @Bean
     public Docket docket() {
-        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+        return new Docket(DocumentationType.SWAGGER_2)
                 .host(host)
                 .apiInfo(apiInfo())
                 .groupName(groupName)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(basePackage))
                 .paths(PathSelectors.any())
-                .build()
-                .extensions(openApiExtensionResolver.buildExtensions(groupName));
-        return docket;
+                .build();
     }
 
     private ApiInfo apiInfo() {
