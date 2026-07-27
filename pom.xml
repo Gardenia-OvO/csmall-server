@@ -16,6 +16,7 @@
     <modules>
         <module>csmall-product</module>
         <module>csmall-passport</module>
+        <module>csmall-commons</module>
     </modules>
 
     <!--项目属性信息-->
