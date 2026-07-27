@@ -8,6 +8,8 @@ import cn.hqu.csmall.product.pojo.param.CategoryUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.CategoryListItemVO;
 import cn.hqu.csmall.product.pojo.vo.CategoryStandardVO;
 
+import java.util.List;
+
 //类别业务接口
 public interface ICategoryService {
 
@@ -26,4 +28,6 @@ public interface ICategoryService {
     PageData<CategoryListItemVO> search(String name, Long id, Integer pageNum);
 
     CategoryStandardVO getStandardById(Long id);
+
+    List<CategoryListItemVO> getChildrenByParentId(Long parentId);
 }

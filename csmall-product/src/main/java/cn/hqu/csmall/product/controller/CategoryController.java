@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -139,6 +140,22 @@ public class CategoryController {
         CategoryStandardVO result = categoryService.getStandardById(id);
         log.debug("处理【查询类别信息】的请求，完成！");
         return JsonResult.ok(result);
+    }
+
+    @GetMapping("/children")
+    @ApiOperation("根据父级类别查询子级类别列表")
+    @PreAuthorize("hasAuthority('/pms/category/read')")
+    @ApiOperationSupport(order = 460)
+    @ApiImplicitParam(name = "parentId", value = "父级类别id", required = true, dataType = "long")
+    public JsonResult children(@Range(min = 0, message = "根据父级id查询子级类别，请提供合法的父级id")
+                               @RequestParam Long parentId,
+                               @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        log.debug("当事人username:{}", user.getUsername());
+        log.debug("当事人id:{}", user.getId());
+        log.debug("开始处理【根据父级类别查询子级类别列表】的请求，parentId:{}", parentId);
+        List<CategoryListItemVO> list = categoryService.getChildrenByParentId(parentId);
+        log.debug("处理【根据父级类别查询子级类别列表】的请求，完成！");
+        return JsonResult.ok(list);
     }
 
 }

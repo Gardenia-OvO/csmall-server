@@ -32,4 +32,11 @@
         </if>
         ORDER BY sort
     </select>
+
+    <select id="getChildrenByParentId" resultType="cn.hqu.csmall.product.pojo.vo.CategoryListItemVO">
+        SELECT id, parent_id AS parentId, name, keywords, sort, enable
+        FROM pms_category
+        WHERE parent_id=#{parentId}
+        ORDER BY sort DESC, id DESC
+    </select>
 </mapper>

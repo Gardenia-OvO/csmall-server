@@ -6,8 +6,14 @@ import cn.hqu.csmall.commons.pojo.vo.PageData;
 import cn.hqu.csmall.product.pojo.param.CategoryUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.CategoryListItemVO;
 import cn.hqu.csmall.product.pojo.vo.CategoryStandardVO;
+import cn.hqu.csmall.product.mapper.BrandCategoryMapper;
+import cn.hqu.csmall.product.mapper.CategoryAttributeTemplateMapper;
 import cn.hqu.csmall.product.mapper.CategoryMapper;
+import cn.hqu.csmall.product.mapper.SpuMapper;
+import cn.hqu.csmall.product.pojo.entity.BrandCategory;
 import cn.hqu.csmall.product.pojo.entity.Category;
+import cn.hqu.csmall.product.pojo.entity.CategoryAttributeTemplate;
+import cn.hqu.csmall.product.pojo.entity.Spu;
 import cn.hqu.csmall.product.pojo.param.CategoryAddNewParam;
 import cn.hqu.csmall.product.service.ICategoryService;
 import cn.hqu.csmall.commons.util.PageInfoToPageDataConverter;
@@ -28,60 +34,151 @@ public class CategoryServiceImpl implements ICategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
 
+    @Autowired
+    private BrandCategoryMapper brandCategoryMapper;
+
+    @Autowired
+    private CategoryAttributeTemplateMapper categoryAttributeTemplateMapper;
+
+    @Autowired
+    private SpuMapper spuMapper;
+
     @Override
     public void addNew(CategoryAddNewParam categoryAddNewParam) throws ServiceException {
         log.debug("开始处理【新增类别】的业务，参数为:{}", categoryAddNewParam);
-        //检测类别名称是否被占用
-        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", categoryAddNewParam.getName());
-        int count = categoryMapper.selectCount(queryWrapper);
-        log.debug("根据类别名称查询类别表中是否有同名类别，检测结果为：{}", count);
-        if (count > 0) {
-            String message = "类别名称已经被占用，请更换";
-            log.warn(message);
-            throw new ServiceException(message);
+
+        // 父级ID为null时默认为0（根级目录）
+        Long parentId = categoryAddNewParam.getParentId();
+        if (parentId == null) {
+            parentId = 0L;
+            categoryAddNewParam.setParentId(0L);
         }
 
-        //将类别信息插入到数据库中
+        // 检查父级类别是否存在，并计算depth
+        Integer depth = 1;              // 默认根级深度
+        Category parentCategory = null; // 保存父级类别，后续更新isParent时复用
+        if (parentId != 0) {
+            parentCategory = categoryMapper.selectById(parentId);
+            if (parentCategory == null) {
+                String message = "添加类别失败，父级类别不存在！";
+                log.warn(message);
+                throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, message);
+            }
+            log.debug("父级类别信息：{}", parentCategory);
+            depth = parentCategory.getDepth() + 1;
+        }
+
+        // 检测类别名称在同一个父级下是否重复
+        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name", categoryAddNewParam.getName())
+                .eq("parent_id", parentId);
+        int count = categoryMapper.selectCount(queryWrapper);
+        log.debug("根据类别名称和父级ID查询，检测结果为：{}", count);
+        if (count > 0) {
+            String message = "添加类别失败，该父级下已存在同名类别！";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
+        }
+
+        // 将类别信息插入到数据库中
         Category category = new Category();
         BeanUtils.copyProperties(categoryAddNewParam, category);
-        // 父级ID为null时默认为0（根级目录）
-        if (category.getParentId() == null) {
-            category.setParentId(0L);
-        }
-        //设置创建时间和修改时间
+        category.setDepth(depth);
+        category.setIsParent(0);
         category.setGmtCreate(LocalDateTime.now());
         category.setGmtModified(LocalDateTime.now());
         log.debug("准备插入类别信息到数据库中，类别信息为：{}", category);
         categoryMapper.insert(category);
         log.debug("新增类别成功");
+
+        // 如果父级类别的isParent为0，则需要更新为1（复用之前的查询结果）
+        if (parentId != 0 && parentCategory.getIsParent() == 0) {
+            Category updateParent = new Category();
+            updateParent.setId(parentId);
+            updateParent.setIsParent(1);
+            updateParent.setGmtModified(LocalDateTime.now());
+            categoryMapper.updateById(updateParent);
+            log.debug("已将父级类别(id={})的isParent更新为1", parentId);
+        }
     }
 
     @Override
     public void delete(Long id) {
         log.debug("开始处理【删除类别】的业务，id为:{}", id);
-        // 检查类别是否存在
-        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", id);
-        int count = categoryMapper.selectCount(queryWrapper);
-        log.debug("根据类别id查询类别表中是否存在该类别，检测结果为：{}", count);
-        if (count == 0) {
+
+        // 检查类别是否存在（通过getStandardById判断，不存在会抛异常）
+        CategoryStandardVO standardVO = categoryMapper.getStandardById(id);
+        if (standardVO == null) {
             String message = "删除类别失败，类别数据不存在！";
             log.warn(message);
             throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, message);
         }
-        // 检查是否有子级类别与该类别关联
-        QueryWrapper<Category> queryWrapper02 = new QueryWrapper<>();
-        queryWrapper02.eq("parent_id", id);
-        count = categoryMapper.selectCount(queryWrapper02);
-        log.debug("根据类别ID查询是否存在子级类别，查询结果：{}", count);
-        if (count > 0) {
+        log.debug("类别存在，信息：{}", standardVO);
+
+        // 获取完整的Category实体，用于后续的isParent和parentId判断
+        Category currentCategory = categoryMapper.selectById(id);
+
+        // 检查是否有子级类别（通过is_parent字段判断）
+        if (currentCategory.getIsParent() == 1) {
             String message = "删除类别失败，该类别存在子级类别！";
             log.warn(message);
             throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
+
+        // 检查类别是否关联了品牌
+        QueryWrapper<BrandCategory> brandCategoryWrapper = new QueryWrapper<>();
+        brandCategoryWrapper.eq("category_id", id);
+        int count = brandCategoryMapper.selectCount(brandCategoryWrapper);
+        log.debug("根据类别ID查询品牌关联数量：{}", count);
+        if (count > 0) {
+            String message = "删除类别失败，该类别存在关联品牌！";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
+        }
+
+        // 检查类别是否关联了属性模板
+        QueryWrapper<CategoryAttributeTemplate> catAttrWrapper = new QueryWrapper<>();
+        catAttrWrapper.eq("category_id", id);
+        count = categoryAttributeTemplateMapper.selectCount(catAttrWrapper);
+        log.debug("根据类别ID查询属性模板关联数量：{}", count);
+        if (count > 0) {
+            String message = "删除类别失败，该类别存在关联属性模板！";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
+        }
+
+        // 检查是否有SPU关联了该类别
+        QueryWrapper<Spu> spuWrapper = new QueryWrapper<>();
+        spuWrapper.eq("category_id", id);
+        count = spuMapper.selectCount(spuWrapper);
+        log.debug("根据类别ID查询SPU关联数量：{}", count);
+        if (count > 0) {
+            String message = "删除类别失败，该类别存在关联SPU！";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
+        }
+
+        Long parentId = currentCategory.getParentId();
+
+        // 执行删除
         categoryMapper.deleteById(id);
         log.debug("处理【根据id删除类别】的业务完成！");
+
+        // 如果删除的是父级中的最后一个子级，更新父级的is_parent为0
+        if (parentId != null && parentId != 0) {
+            QueryWrapper<Category> childrenWrapper = new QueryWrapper<>();
+            childrenWrapper.eq("parent_id", parentId);
+            count = categoryMapper.selectCount(childrenWrapper);
+            log.debug("父级类别(id={})剩余子级数量：{}", parentId, count);
+            if (count == 0) {
+                Category updateParent = new Category();
+                updateParent.setId(parentId);
+                updateParent.setIsParent(0);
+                updateParent.setGmtModified(LocalDateTime.now());
+                categoryMapper.updateById(updateParent);
+                log.debug("已将父级类别(id={})的isParent更新为0", parentId);
+            }
+        }
     }
 
     @Override
@@ -133,6 +230,14 @@ public class CategoryServiceImpl implements ICategoryService {
             throw new ServiceException(ServiceCode.ERROR_NOT_FOUND,"商品类别不存在");
         }
         return categoryStandardVO;
+    }
+
+    @Override
+    public List<CategoryListItemVO> getChildrenByParentId(Long parentId) {
+        log.debug("开始处理【根据父级ID查询子级类别列表】的业务，parentId：{}", parentId);
+        List<CategoryListItemVO> list = categoryMapper.getChildrenByParentId(parentId);
+        log.debug("处理【根据父级ID查询子级类别列表】的业务完成，结果数量：{}", list.size());
+        return list;
     }
 
     @Override
