@@ -4,6 +4,7 @@ import cn.hqu.csmall.merchant.pojo.entity.Merchant;
 import cn.hqu.csmall.merchant.pojo.vo.MerchantListItemVO;
 import cn.hqu.csmall.merchant.pojo.vo.MerchantStandardVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,5 +16,5 @@ public interface MerchantMapper extends BaseMapper<Merchant> {
 
     MerchantStandardVO getStandardById(Long id);
 
-    List<MerchantListItemVO> search(String name, Long id);
+    List<MerchantListItemVO> search(@Param("name") String name, @Param("id") Long id);
 }

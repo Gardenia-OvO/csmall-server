@@ -20,7 +20,7 @@
                product_title AS productTitle, quantity, total_amount AS totalAmount, status
         FROM oms_order
         <where>
-            <if test="orderNo != null and orderNo != ''">AND order_no = #{orderNo}</if>
+            <if test="orderNo != null and orderNo != ''">AND order_no LIKE CONCAT('%', #{orderNo}, '%')</if>
             <if test="id != null">AND id = #{id}</if>
         </where>
         ORDER BY id DESC

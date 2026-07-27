@@ -104,8 +104,8 @@ public class AlbumController {
     @PreAuthorize("hasAuthority('/pms/album/read')")
     @ApiOperationSupport(order = 430)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "相册名称（精确匹配）", paramType = "query"),
-            @ApiImplicitParam(name = "id", value = "相册ID（精确匹配）", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "name", value = "相册名称（关键词搜索）", paramType = "query"),
+            @ApiImplicitParam(name = "id", value = "相册ID（关键词搜索）", paramType = "query", dataType = "long"),
             @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
     })
     public JsonResult search(@RequestParam(required = false) String name,

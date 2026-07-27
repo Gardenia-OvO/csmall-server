@@ -20,6 +20,7 @@
         <module>csmall-resource</module>
         <module>csmall-merchant</module>
         <module>csmall-order</module>
+        <module>csmall-marketing</module>
     </modules>
 
     <!--项目属性信息-->

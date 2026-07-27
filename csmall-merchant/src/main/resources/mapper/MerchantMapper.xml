@@ -20,7 +20,7 @@
         FROM mms_merchant
         <where>
             <if test="name != null and name != ''">
-                AND name = #{name}
+                AND name LIKE CONCAT('%', #{name}, '%')
             </if>
             <if test="id != null">
                 AND id = #{id}

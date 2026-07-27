@@ -135,8 +135,8 @@ public class MerchantController {
     @PreAuthorize("hasAuthority('/mms/merchant/read')")
     @ApiOperationSupport(order = 430)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "商家名称（精确匹配）", paramType = "query"),
-            @ApiImplicitParam(name = "id", value = "商家ID（精确匹配）", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "name", value = "商家名称（关键词搜索）", paramType = "query"),
+            @ApiImplicitParam(name = "id", value = "商家ID（关键词搜索）", paramType = "query", dataType = "long"),
             @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
     })
     public JsonResult search(@RequestParam(required = false) String name,

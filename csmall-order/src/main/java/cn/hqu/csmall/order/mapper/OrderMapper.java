@@ -4,6 +4,7 @@ import cn.hqu.csmall.order.pojo.entity.Order;
 import cn.hqu.csmall.order.pojo.vo.OrderListItemVO;
 import cn.hqu.csmall.order.pojo.vo.OrderStandardVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -11,5 +12,5 @@ import java.util.List;
 public interface OrderMapper extends BaseMapper<Order> {
     List<OrderListItemVO> list();
     OrderStandardVO getStandardById(Long id);
-    List<OrderListItemVO> search(String orderNo, Long id);
+    List<OrderListItemVO> search(@Param("orderNo") String orderNo, @Param("id") Long id);
 }
