@@ -182,6 +182,33 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
+    public void setEnable(Long id) {
+        updateEnableById(id, 1);
+    }
+
+    @Override
+    public void setDisable(Long id) {
+        updateEnableById(id, 0);
+    }
+
+    private void updateEnableById(Long id, Integer enable) {
+        String message = ENABLE_TEXT[enable] + "类别失败，类别数据不存在！";
+        log.debug("开始处理【{}类别】的业务，id:{}", ENABLE_TEXT[enable], id);
+        // 检查类别是否存在
+        CategoryStandardVO standardVO = categoryMapper.getStandardById(id);
+        if (standardVO == null) {
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, message);
+        }
+        Category category = new Category();
+        category.setId(id);
+        category.setEnable(enable);
+        category.setGmtModified(LocalDateTime.now());
+        categoryMapper.updateById(category);
+        log.debug("处理【{}类别】的业务完成！", ENABLE_TEXT[enable]);
+    }
+
+    @Override
     public PageData<CategoryListItemVO> list(Integer pageNum, Integer pageSize) {
         log.debug("开始处理【查询类别列表】的业务，页码：{}，每页记录数：{}", pageNum, pageSize);
         PageHelper.startPage(pageNum, pageSize);

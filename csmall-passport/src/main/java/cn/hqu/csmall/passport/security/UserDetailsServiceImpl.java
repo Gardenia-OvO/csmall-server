@@ -48,6 +48,25 @@ public class UserDetailsServiceImpl implements UserDetailsService {
            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(permission);
            authorities.add(authority);
        }
+
+        // root用户拥有最高权限，追加所有模块的权限
+        if ("root".equals(username)) {
+           String[] allPermissions = {
+               // AMS - 管理员与权限管理
+               "/ams/admin/read", "/ams/admin/add-new", "/ams/admin/update", "/ams/admin/delete",
+               // PMS - 商品类别管理
+               "/pms/category/read", "/pms/category/add-new", "/pms/category/update", "/pms/category/delete",
+               // PMS - 品牌管理
+               "/pms/brand/read", "/pms/brand/add-new", "/pms/brand/update", "/pms/brand/delete",
+               // PMS - 属性模板管理
+               "/pms/attribute-template/read", "/pms/attribute-template/add-new", "/pms/attribute-template/update", "/pms/attribute-template/delete",
+               // PMS - 相册管理
+               "/pms/album/read", "/pms/album/add-new", "/pms/album/update", "/pms/album/delete"
+           };
+           for (String perm : allPermissions) {
+               authorities.add(new SimpleGrantedAuthority(perm));
+           }
+        }
         //将查询到的用户数据封装到AdminDetail对象中
         AdminDetail adminDetail = new AdminDetail(logInfo.getId(),
                 logInfo.getUsername(),logInfo.getPassword(),

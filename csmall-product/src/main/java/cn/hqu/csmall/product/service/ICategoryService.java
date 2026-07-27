@@ -13,11 +13,17 @@ import java.util.List;
 //类别业务接口
 public interface ICategoryService {
 
+    String[] ENABLE_TEXT = {"禁用", "启用"};
+
     void addNew(CategoryAddNewParam categoryAddNewParam) throws ServiceException;
 
     void delete(Long id);
 
     void updateById(Long id, CategoryUpdateParam categoryUpdateParam);
+
+    void setEnable(Long id);
+
+    void setDisable(Long id);
 
     PageData<CategoryListItemVO> list(Integer pageNum, Integer pageSize);
 

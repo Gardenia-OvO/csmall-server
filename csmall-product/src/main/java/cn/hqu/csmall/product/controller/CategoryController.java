@@ -66,6 +66,38 @@ public class CategoryController {
         return JsonResult.ok("删除类别成功");
     }
 
+    @PostMapping("/enable")
+    @ApiOperation("启用类别")
+    @PreAuthorize("hasAuthority('/pms/category/update')")
+    @ApiOperationSupport(order = 250)
+    @ApiImplicitParam(name = "id", value = "类别id", required = true, dataType = "long")
+    public JsonResult enable(@Range(min = 1, message = "启用类别失败，请提供合法的id")
+                             @RequestParam Long id,
+                             @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        log.debug("当事人username:{}", user.getUsername());
+        log.debug("当事人id:{}", user.getId());
+        log.debug("开始处理【启用类别】的请求，id:{}", id);
+        categoryService.setEnable(id);
+        log.debug("处理【启用类别】的请求，完成！");
+        return JsonResult.ok("启用类别成功");
+    }
+
+    @PostMapping("/disable")
+    @ApiOperation("禁用类别")
+    @PreAuthorize("hasAuthority('/pms/category/update')")
+    @ApiOperationSupport(order = 260)
+    @ApiImplicitParam(name = "id", value = "类别id", required = true, dataType = "long")
+    public JsonResult disable(@Range(min = 1, message = "禁用类别失败，请提供合法的id")
+                              @RequestParam Long id,
+                              @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        log.debug("当事人username:{}", user.getUsername());
+        log.debug("当事人id:{}", user.getId());
+        log.debug("开始处理【禁用类别】的请求，id:{}", id);
+        categoryService.setDisable(id);
+        log.debug("处理【禁用类别】的请求，完成！");
+        return JsonResult.ok("禁用类别成功");
+    }
+
     @PostMapping("/update")
     @ApiOperation("修改商品类别")
     @PreAuthorize("hasAuthority('/pms/category/update')")
