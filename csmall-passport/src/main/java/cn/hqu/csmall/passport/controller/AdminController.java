@@ -2,6 +2,7 @@ package cn.hqu.csmall.passport.controller;
 
 import cn.hqu.csmall.passport.pojo.param.AdminAddNewParam;
 import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
+import cn.hqu.csmall.passport.pojo.param.AdminPasswordUpdateParam;
 import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.security.AdminDetail;
@@ -62,6 +63,20 @@ public class AdminController {
         adminService.update(adminUpdateParam);
         log.debug("处理【修改管理员】的请求结束");
         return JsonResult.ok();
+    }
+
+    @PostMapping("/change-password")
+    @ApiOperation("修改管理员密码")
+    @PreAuthorize("hasAuthority('/ams/admin/update')")
+    @ApiOperationSupport(order = 250)
+    public JsonResult changePassword(@Valid @RequestBody AdminPasswordUpdateParam adminPasswordUpdateParam,
+                                     @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        log.debug("当事人username:{}", user.getUsername());
+        log.debug("当事人id:{}", user.getId());
+        log.debug("开始处理【修改管理员密码】的请求，参数：{}", adminPasswordUpdateParam);
+        adminService.changePassword(adminPasswordUpdateParam);
+        log.debug("处理【修改管理员密码】的请求完成！");
+        return JsonResult.ok("修改管理员密码成功");
     }
 
 

@@ -1,11 +1,10 @@
 package cn.hqu.csmall.product.service;
 
-
 import cn.hqu.csmall.commons.ex.ServiceException;
 import cn.hqu.csmall.commons.pojo.vo.PageData;
-import cn.hqu.csmall.product.pojo.param.BrandAddNewParam;
-import cn.hqu.csmall.product.pojo.param.BrandUpdateParam;
-import cn.hqu.csmall.product.pojo.vo.BrandListItemVO;
+import cn.hqu.csmall.product.pojo.param.AttributeTemplateAddNewParam;
+import cn.hqu.csmall.product.pojo.param.AttributeTemplateUpdateParam;
+import cn.hqu.csmall.product.pojo.vo.AttributeTemplateListItemVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,20 +12,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 @SpringBootTest
-public class BrandServiceTests {
+public class AttributeTemplateServiceTests {
+
     @Autowired
-    private IBrandService brandService;
+    private IAttributeTemplateService service;
 
     @Test
     public void testAddNewSuccess() {
-        BrandAddNewParam param = new BrandAddNewParam();
-        param.setName("测试品牌02");
-        param.setPinyin("ceshipinpai02");
-        param.setKeywords("测试,品牌");
+        AttributeTemplateAddNewParam param = new AttributeTemplateAddNewParam();
+        param.setName("测试属性模板01");
+        param.setPinyin("ceshishuxingmoban01");
+        param.setKeywords("测试,属性模板");
         param.setSort(1);
-        param.setEnable(1);
         try {
-            brandService.addNew(param);
+            service.addNew(param);
             System.out.println("添加成功！");
         } catch (ServiceException e) {
             System.out.println(e.getMessage());
@@ -40,13 +39,12 @@ public class BrandServiceTests {
 
     @Test
     public void testAddNewDuplicateName() {
-        BrandAddNewParam param = new BrandAddNewParam();
-        param.setName("测试品牌02");  // 与上面用同一个名称
-        param.setPinyin("ceshipinpai02");
+        AttributeTemplateAddNewParam param = new AttributeTemplateAddNewParam();
+        param.setName("测试属性模板01");  // 重复名称
+        param.setPinyin("ceshishuxingmoban02");
         param.setSort(1);
-        param.setEnable(1);
         try {
-            brandService.addNew(param);
+            service.addNew(param);
             System.out.println("添加成功！");
         } catch (ServiceException e) {
             System.out.println("预期异常：" + e.getMessage());
@@ -61,7 +59,7 @@ public class BrandServiceTests {
     public void testDeleteSuccess() {
         try {
             Long id = 1L;
-            brandService.delete(id);
+            service.delete(id);
             System.out.println("删除成功！");
         } catch (ServiceException e) {
             System.out.println(e.getMessage());
@@ -77,7 +75,7 @@ public class BrandServiceTests {
     public void testDeleteNotFound() {
         try {
             Long id = 99999999L;
-            brandService.delete(id);
+            service.delete(id);
             System.out.println("删除成功！");
         } catch (ServiceException e) {
             System.out.println("预期异常：" + e.getMessage());
@@ -92,15 +90,12 @@ public class BrandServiceTests {
     public void testUpdateSuccess() {
         try {
             Long id = 1L;
-            BrandUpdateParam data = new BrandUpdateParam();
-            data.setName("更新后的品牌");
+            AttributeTemplateUpdateParam data = new AttributeTemplateUpdateParam();
+            data.setName("更新后的属性模板");
             data.setPinyin("gengxinhou");
-            data.setLogo("http://example.com/logo.png");
-            data.setDescription("更新描述");
-            data.setKeywords("更新,品牌");
+            data.setKeywords("更新,测试");
             data.setSort(50);
-            data.setEnable(1);
-            brandService.updateById(id, data);
+            service.updateById(id, data);
             System.out.println("修改成功！");
         } catch (ServiceException e) {
             System.out.println(e.getMessage());
@@ -113,18 +108,37 @@ public class BrandServiceTests {
     }
 
     @Test
+    public void testUpdateNotFound() {
+        try {
+            Long id = 99999999L;
+            AttributeTemplateUpdateParam data = new AttributeTemplateUpdateParam();
+            data.setName("不存在的模板");
+            data.setPinyin("bucunzai");
+            data.setKeywords("测试");
+            data.setSort(1);
+            service.updateById(id, data);
+            System.out.println("修改成功！");
+        } catch (ServiceException e) {
+            System.out.println("预期异常：" + e.getMessage());
+        } catch (Throwable e) {
+            System.out.println("未知错误！");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void testList() {
         Integer pageNum = 1;
-        PageData<BrandListItemVO> pageData = brandService.list(pageNum);
-        List<BrandListItemVO> list = pageData.getList();
+        PageData<AttributeTemplateListItemVO> pageData = service.list(pageNum);
+        List<AttributeTemplateListItemVO> list = pageData.getList();
         System.out.println("查询列表数量: " + list.size());
         System.out.println("总记录数: " + pageData.getTotal());
         System.out.println("总页数: " + pageData.getMaxPage());
         System.out.println("当前页码: " + pageData.getCurrentPage());
         System.out.println("每页记录数: " + pageData.getPageSize());
-        for (BrandListItemVO item : list) {
+        for (AttributeTemplateListItemVO item : list) {
             System.out.println(item);
         }
     }
-
 }

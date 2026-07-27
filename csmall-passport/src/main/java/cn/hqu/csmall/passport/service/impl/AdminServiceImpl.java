@@ -13,6 +13,7 @@ import cn.hqu.csmall.passport.pojo.entity.Admin;
 import cn.hqu.csmall.passport.pojo.entity.AdminRole;
 import cn.hqu.csmall.passport.pojo.param.AdminAddNewParam;
 import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
+import cn.hqu.csmall.passport.pojo.param.AdminPasswordUpdateParam;
 import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.service.IAdminService;
@@ -183,23 +184,29 @@ public class AdminServiceImpl implements IAdminService {
             log.warn(message);
             throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, message);
         }
-        QueryWrapper<Admin> phoneQuery = new QueryWrapper<>();
-        phoneQuery.eq("phone", adminUpdateParam.getPhone());
-        phoneQuery.ne("id", adminUpdateParam.getId());
-        int phoneCount = adminMapper.selectCount(phoneQuery);
-        if (phoneCount > 0) {
-            String message = "管理员手机号被占用，请更换手机号后重试";
-            log.warn(message);
-            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
+        // 仅当传入了新手机号时，才检查手机号是否被占用
+        if (adminUpdateParam.getPhone() != null) {
+            QueryWrapper<Admin> phoneQuery = new QueryWrapper<>();
+            phoneQuery.eq("phone", adminUpdateParam.getPhone());
+            phoneQuery.ne("id", adminUpdateParam.getId());
+            int phoneCount = adminMapper.selectCount(phoneQuery);
+            if (phoneCount > 0) {
+                String message = "管理员手机号被占用，请更换手机号后重试";
+                log.warn(message);
+                throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
+            }
         }
-        QueryWrapper<Admin> emailQuery = new QueryWrapper<>();
-        emailQuery.eq("email", adminUpdateParam.getEmail());
-        emailQuery.ne("id", adminUpdateParam.getId());
-        int emailCount = adminMapper.selectCount(emailQuery);
-        if (emailCount > 0) {
-            String message = "管理员邮箱被占用，请更换邮箱后重试";
-            log.warn(message);
-            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
+        // 仅当传入了新邮箱时，才检查邮箱是否被占用
+        if (adminUpdateParam.getEmail() != null) {
+            QueryWrapper<Admin> emailQuery = new QueryWrapper<>();
+            emailQuery.eq("email", adminUpdateParam.getEmail());
+            emailQuery.ne("id", adminUpdateParam.getId());
+            int emailCount = adminMapper.selectCount(emailQuery);
+            if (emailCount > 0) {
+                String message = "管理员邮箱被占用，请更换邮箱后重试";
+                log.warn(message);
+                throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
+            }
         }
         Admin admin = new Admin();
         BeanUtils.copyProperties(adminUpdateParam, admin);
@@ -278,4 +285,29 @@ public class AdminServiceImpl implements IAdminService {
         }
         log.debug("处理【根据id删除管理员】的业务完成！");
     }
+
+    @Override
+    public void changePassword(AdminPasswordUpdateParam adminPasswordUpdateParam) {
+        log.debug("开始处理【修改管理员密码】的业务，参数：{}", adminPasswordUpdateParam);
+        // 检查管理员是否存在
+        Admin existAdmin = adminMapper.selectById(adminPasswordUpdateParam.getId());
+        if (existAdmin == null) {
+            String message = "修改密码失败，管理员数据不存在！";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, message);
+        }
+        // 加密新密码并更新
+        Admin admin = new Admin();
+        admin.setId(adminPasswordUpdateParam.getId());
+        admin.setPassword(passwordEncoder.encode(adminPasswordUpdateParam.getPassword()));
+        admin.setGmtModified(LocalDateTime.now());
+        int rows = adminMapper.updateById(admin);
+        if (rows != 1) {
+            String message = "修改管理员密码失败，服务器忙，请稍后再试！";
+            log.warn(message);
+            throw new ServiceException(ServiceCode.ERROR_UPDATE, message);
+        }
+        log.debug("处理【修改管理员密码】的业务完成！");
+    }
+
 }

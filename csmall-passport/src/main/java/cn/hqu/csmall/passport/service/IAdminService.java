@@ -2,6 +2,7 @@ package cn.hqu.csmall.passport.service;
 
 import cn.hqu.csmall.passport.pojo.param.AdminAddNewParam;
 import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
+import cn.hqu.csmall.passport.pojo.param.AdminPasswordUpdateParam;
 import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.security.AdminDetail;
@@ -22,4 +23,6 @@ public interface IAdminService {
     void update(AdminUpdateParam adminUpdateParam);
 
     void delete(Long id);
+
+    void changePassword(AdminPasswordUpdateParam adminPasswordUpdateParam);
 }
