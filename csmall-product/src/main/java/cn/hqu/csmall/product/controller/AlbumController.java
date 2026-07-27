@@ -62,7 +62,7 @@ public class AlbumController {
         log.debug("开始处理【删除相册】的请求，id:{}", id);
         albumService.deleteById(id);
         log.debug("处理【删除相册】的请求，完成！");
-        return JsonResult.ok();
+        return JsonResult.ok("删除相册成功");
     }
 
     @PostMapping("/update")
@@ -116,7 +116,6 @@ public class AlbumController {
         log.debug("当事人username:{}", user.getUsername());
         log.debug("当事人id:{}", user.getId());
         log.debug("开始处理【搜索相册】的请求，名称：{}，ID：{}，页码：{}", name, id, pageNum);
-        log.debug("开始处理【搜索相册】的请求，名称：{}，ID：{}，页码：{}", name, id, pageNum);
         if (pageNum == null || pageNum < 1) {
             pageNum = 1;
         }
@@ -135,7 +134,6 @@ public class AlbumController {
                              @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
         log.debug("当事人username:{}", user.getUsername());
         log.debug("当事人id:{}", user.getId());
-        log.debug("开始处理【查询相册信息】的请求，id:{}", id);
         log.debug("开始处理【查询相册信息】的请求，id:{}", id);
         AlbumStandardVO result = albumService.getStandardById(id);
         log.debug("处理【查询相册信息】的请求，完成！");
