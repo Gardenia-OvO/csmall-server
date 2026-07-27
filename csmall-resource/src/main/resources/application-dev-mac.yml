@@ -1,0 +1,30 @@
+server:
+  port: 9082
+
+spring:
+  web:
+    resources:
+      static-locations: classpath:static, file:${csmall.upload.base-dir}
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+logging:
+  level:
+    cn.hqu.csmall: trace
+
+# 当前项目的自定义配置
+csmall:
+  # 文件上传
+  upload:
+    # 对外访问的主机
+    host: http://localhost:${server.port}/
+    # 上传的根级文件夹
+    base-dir: ~/files/csmall-upload
+    # 商品图片
+    product-image:
+      # 允许的文件类型
+      types: image/jpeg,image/png
+      # 最大尺寸，单位：MB
+      max-size: 5

@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: dev-mac
+  jackson:
+    default-property-inclusion: non_null
+
+knife4j:
+  enable: true

@@ -17,6 +17,7 @@
         <module>csmall-product</module>
         <module>csmall-passport</module>
         <module>csmall-commons</module>
+        <module>csmall-resource</module>
     </modules>
 
     <!--项目属性信息-->
@@ -43,6 +44,12 @@
     <!--依赖管理版本信息-->
     <dependencyManagement>
         <dependencies>
+            <!-- 酷鲨商城内部模块 -->
+            <dependency>
+                <groupId>cn.hqu</groupId>
+                <artifactId>csmall-commons</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
             <!-- JJWT（Java JWT） -->
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
@@ -119,5 +126,28 @@
         </dependencies>
     </dependencyManagement>
     <!--构建项目的配置，build标签用来打包-->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>
