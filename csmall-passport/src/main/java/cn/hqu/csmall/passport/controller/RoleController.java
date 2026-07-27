@@ -1,5 +1,6 @@
 package cn.hqu.csmall.passport.controller;
 
+import cn.hqu.csmall.commons.security.LoginPrincipal;
 import cn.hqu.csmall.passport.pojo.param.RoleAddNewParam;
 import cn.hqu.csmall.passport.pojo.param.RoleUpdateParam;
 import cn.hqu.csmall.passport.pojo.vo.RoleListItemVO;
@@ -15,8 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 
@@ -48,6 +51,22 @@ public class RoleController {
         roleService.update(roleUpdateParam);
         log.debug("处理【修改角色】的请求，完成！");
         return JsonResult.ok();
+    }
+
+    @PostMapping("/delete")
+    @ApiOperation("删除角色")
+    @PreAuthorize("hasAuthority('/ams/admin/delete')")
+    @ApiOperationSupport(order = 400)
+    @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "long")
+    public JsonResult delete(@Range(min = 1, message = "根据id删除角色失败，请提供合法的id")
+                             @RequestParam Long id,
+                             @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        log.debug("当事人username:{}", user.getUsername());
+        log.debug("当事人id:{}", user.getId());
+        log.debug("开始处理【删除角色】的请求，id:{}", id);
+        roleService.delete(id);
+        log.debug("处理【删除角色】的请求，完成！");
+        return JsonResult.ok("删除角色成功");
     }
 
     @GetMapping("/list")

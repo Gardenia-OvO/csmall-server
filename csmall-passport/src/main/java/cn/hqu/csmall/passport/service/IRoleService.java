@@ -15,4 +15,6 @@ public interface IRoleService {
     PageData<RoleListItemVO> list(Integer pageNum);
 
     void update(RoleUpdateParam roleUpdateParam);
+
+    void delete(Long id);
 }
