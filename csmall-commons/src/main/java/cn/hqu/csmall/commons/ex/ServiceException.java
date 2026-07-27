@@ -1,7 +1,6 @@
 package cn.hqu.csmall.commons.ex;
 
 import cn.hqu.csmall.commons.web.ServiceCode;
-import cn.hqu.csmall.product.web.ServiceCode;
 
 public class ServiceException extends RuntimeException{
     private ServiceCode serviceCode;
