@@ -21,10 +21,10 @@ csmall:
     # 对外访问的主机
     host: http://localhost:${server.port}/
     # 上传的根级文件夹
-    base-dir: ~/files/csmall-upload
+    base-dir: /Users/ahs/files/csmall-upload
     # 商品图片
     product-image:
       # 允许的文件类型
       types: image/jpeg,image/png
       # 最大尺寸，单位：MB
-      max-size: 5
+      max-size: 50

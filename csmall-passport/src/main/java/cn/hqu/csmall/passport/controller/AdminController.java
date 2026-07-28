@@ -4,12 +4,19 @@ import cn.hqu.csmall.passport.pojo.param.AdminAddNewParam;
 import cn.hqu.csmall.passport.pojo.param.AdminLoginInfoParam;
 import cn.hqu.csmall.passport.pojo.param.AdminPasswordUpdateParam;
 import cn.hqu.csmall.passport.pojo.param.AdminUpdateParam;
+import cn.hqu.csmall.passport.pojo.entity.Admin;
+import cn.hqu.csmall.passport.mapper.AdminMapper;
 import cn.hqu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.hqu.csmall.passport.security.AdminDetail;
 import cn.hqu.csmall.commons.security.LoginPrincipal;
 import cn.hqu.csmall.commons.web.JsonResult;
+import cn.hqu.csmall.commons.web.ServiceCode;
+import cn.hqu.csmall.commons.ex.ServiceException;
 import cn.hqu.csmall.commons.pojo.vo.PageData;
 import cn.hqu.csmall.passport.service.IAdminService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import java.time.LocalDateTime;
+import java.util.Map;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -34,6 +41,10 @@ import javax.validation.Valid;
 public class AdminController {
     @Autowired
     private IAdminService adminService;
+    @Autowired
+    private AdminMapper adminMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     @ApiOperation("管理员登录")
@@ -123,6 +134,69 @@ public class AdminController {
         PageData<AdminListItemVO> pageData = adminService.list(pageNum);
 
         return JsonResult.ok(pageData);
+    }
+
+    // ========== 个人中心 ==========
+
+    @GetMapping("/me")
+    @ApiOperation("获取当前登录用户信息")
+    @ApiOperationSupport(order = 590)
+    public JsonResult me(@ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        Admin admin = adminMapper.selectById(user.getId());
+        Map<String, Object> result = new java.util.HashMap<>();
+        result.put("id", admin.getId());
+        result.put("username", admin.getUsername());
+        result.put("nickname", admin.getNickname());
+        result.put("phone", admin.getPhone());
+        result.put("email", admin.getEmail());
+        result.put("description", admin.getDescription());
+        result.put("avatar", admin.getAvatar());
+        return JsonResult.ok(result);
+    }
+
+    @PostMapping("/update-profile")
+    @ApiOperation("修改个人资料")
+    @ApiOperationSupport(order = 600)
+    public JsonResult updateProfile(@RequestBody Map<String, String> profile,
+                                    @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        Admin admin = adminMapper.selectById(user.getId());
+        if (profile.containsKey("nickname")) admin.setNickname(profile.get("nickname"));
+        if (profile.containsKey("phone")) admin.setPhone(profile.get("phone"));
+        if (profile.containsKey("email")) admin.setEmail(profile.get("email"));
+        if (profile.containsKey("description")) admin.setDescription(profile.get("description"));
+        admin.setGmtModified(LocalDateTime.now());
+        adminMapper.updateById(admin);
+        return JsonResult.ok("资料修改成功");
+    }
+
+    @PostMapping("/update-avatar")
+    @ApiOperation("修改头像")
+    @ApiOperationSupport(order = 610)
+    public JsonResult updateAvatar(@RequestBody Map<String, String> body,
+                                   @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        Admin admin = adminMapper.selectById(user.getId());
+        admin.setAvatar(body.get("avatar"));
+        admin.setGmtModified(LocalDateTime.now());
+        adminMapper.updateById(admin);
+        return JsonResult.ok("头像修改成功");
+    }
+
+    @PostMapping("/change-own-password")
+    @ApiOperation("修改自己的密码")
+    @ApiOperationSupport(order = 620)
+    public JsonResult changeOwnPassword(@RequestBody Map<String, String> body,
+                                        @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        String oldPassword = body.get("oldPassword");
+        String newPassword = body.get("newPassword");
+        if (oldPassword == null || newPassword == null)
+            throw new ServiceException(ServiceCode.ERROR_BAD_REQUEST, "新旧密码不能为空");
+        Admin admin = adminMapper.selectById(user.getId());
+        if (!passwordEncoder.matches(oldPassword, admin.getPassword()))
+            throw new ServiceException(ServiceCode.ERROR_BAD_REQUEST, "原密码错误");
+        admin.setPassword(passwordEncoder.encode(newPassword));
+        admin.setGmtModified(LocalDateTime.now());
+        adminMapper.updateById(admin);
+        return JsonResult.ok("密码修改成功");
     }
 
 }

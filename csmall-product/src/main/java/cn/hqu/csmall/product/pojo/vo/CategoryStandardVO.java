@@ -15,4 +15,6 @@ public class CategoryStandardVO implements Serializable {
     private String keywords;
     private Integer sort;
     private Integer enable;
+    private Integer depth;
+    private Integer isParent;
 }

@@ -11,17 +11,17 @@
     </insert>
 
     <select id="list" resultType="cn.hqu.csmall.product.pojo.vo.CategoryListItemVO">
-        SELECT id, parent_id AS parentId, name, keywords, sort, enable
+        SELECT id, parent_id AS parentId, name, keywords, sort, enable, depth, is_parent AS isParent
         FROM pms_category ORDER BY sort
     </select>
 
     <select id="getStandardById" resultType="cn.hqu.csmall.product.pojo.vo.CategoryStandardVO">
-        SELECT id, parent_id AS parentId, name, keywords, sort, enable
+        SELECT id, parent_id AS parentId, name, keywords, sort, enable, depth, is_parent AS isParent
         FROM pms_category WHERE id=#{id}
     </select>
 
     <select id="search" resultType="cn.hqu.csmall.product.pojo.vo.CategoryListItemVO">
-        SELECT id, parent_id AS parentId, name, keywords, sort, enable
+        SELECT id, parent_id AS parentId, name, keywords, sort, enable, depth, is_parent AS isParent
         FROM pms_category
         WHERE 1=1
         <if test="name != null and name != ''">
@@ -37,9 +37,9 @@
     </select>
 
     <select id="getChildrenByParentId" resultType="cn.hqu.csmall.product.pojo.vo.CategoryListItemVO">
-        SELECT id, parent_id AS parentId, name, keywords, sort, enable
+        SELECT id, parent_id AS parentId, name, keywords, sort, enable, depth, is_parent AS isParent
         FROM pms_category
         WHERE parent_id=#{parentId}
-        ORDER BY sort DESC, id DESC
+        ORDER BY sort, id
     </select>
 </mapper>
