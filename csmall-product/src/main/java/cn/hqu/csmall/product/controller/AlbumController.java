@@ -8,7 +8,10 @@ import cn.hqu.csmall.product.pojo.param.AlbumAddNewParam;
 import cn.hqu.csmall.product.pojo.param.AlbumUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.AlbumListItemVO;
 import cn.hqu.csmall.product.pojo.vo.AlbumStandardVO;
+import cn.hqu.csmall.product.pojo.param.PictureAddNewParam;
+import cn.hqu.csmall.product.pojo.vo.PictureListItemVO;
 import cn.hqu.csmall.product.service.IAlbumService;
+import cn.hqu.csmall.product.service.IPictureService;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -34,6 +37,9 @@ public class AlbumController {
 
     @Autowired
     private IAlbumService albumService;
+
+    @Autowired
+    private IPictureService pictureService;
 
     @PostMapping("/add-new")
     @ApiOperation("新增相册")
@@ -138,6 +144,37 @@ public class AlbumController {
         AlbumStandardVO result = albumService.getStandardById(id);
         log.debug("处理【查询相册信息】的请求，完成！");
         return JsonResult.ok(result);
+    }
+
+    // ========== 图片管理 ==========
+
+    @PostMapping("/picture/add-new")
+    @ApiOperation("添加图片到相册")
+    @PreAuthorize("hasAuthority('/pms/album/add-new')")
+    @ApiOperationSupport(order = 500)
+    public JsonResult addPicture(@Valid @RequestBody PictureAddNewParam param,
+                                 @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        pictureService.addNew(param);
+        return JsonResult.created("添加图片成功");
+    }
+
+    @GetMapping("/picture/list-by-album")
+    @ApiOperation("根据相册ID查询图片列表")
+    @PreAuthorize("hasAuthority('/pms/album/read')")
+    @ApiOperationSupport(order = 510)
+    @ApiImplicitParam(name = "albumId", value = "相册id", required = true, dataType = "long")
+    public JsonResult listPictures(@RequestParam Long albumId) {
+        return JsonResult.ok(pictureService.listByAlbumId(albumId));
+    }
+
+    @PostMapping("/picture/delete")
+    @ApiOperation("删除图片")
+    @PreAuthorize("hasAuthority('/pms/album/delete')")
+    @ApiOperationSupport(order = 520)
+    @ApiImplicitParam(name = "id", value = "图片id", required = true, dataType = "long")
+    public JsonResult deletePicture(@Range(min = 1) @RequestParam Long id) {
+        pictureService.delete(id);
+        return JsonResult.ok("删除图片成功");
     }
 
 }
