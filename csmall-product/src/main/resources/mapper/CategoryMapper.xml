@@ -30,6 +30,9 @@
         <if test="id != null">
             AND id = #{id}
         </if>
+        <if test="parentId != null">
+            AND parent_id = #{parentId}
+        </if>
         ORDER BY sort
     </select>
 

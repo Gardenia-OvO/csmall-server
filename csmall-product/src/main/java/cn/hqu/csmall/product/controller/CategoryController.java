@@ -140,20 +140,22 @@ public class CategoryController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", value = "类别名称（关键词搜索）", paramType = "query"),
             @ApiImplicitParam(name = "id", value = "类别ID（关键词搜索）", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "parentId", value = "父级类别ID", paramType = "query", dataType = "long"),
             @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
     })
     public JsonResult search(@RequestParam(required = false) String name,
                              @RequestParam(required = false) Long id,
+                             @RequestParam(required = false) Long parentId,
                              @Range(min = 1, message = "搜索类别失败，请提供正确的页码值！")
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
         log.debug("当事人username:{}", user.getUsername());
         log.debug("当事人id:{}", user.getId());
-        log.debug("开始处理【搜索类别】的请求，名称：{}，ID：{}，页码：{}", name, id, pageNum);
+        log.debug("开始处理【搜索类别】的请求，名称：{}，ID：{}，parentId：{}，页码：{}", name, id, parentId, pageNum);
         if (pageNum == null || pageNum < 1) {
             pageNum = 1;
         }
-        PageData<CategoryListItemVO> pageData = categoryService.search(name, id, pageNum);
+        PageData<CategoryListItemVO> pageData = categoryService.search(name, id, parentId, pageNum);
         return JsonResult.ok(pageData);
     }
 

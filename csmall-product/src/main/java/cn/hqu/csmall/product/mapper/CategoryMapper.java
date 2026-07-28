@@ -18,7 +18,7 @@ public interface CategoryMapper extends BaseMapper<Category> {
 
     CategoryStandardVO getStandardById(Long id);
 
-    List<CategoryListItemVO> search(@Param("name") String name, @Param("id") Long id);
+    List<CategoryListItemVO> search(@Param("name") String name, @Param("id") Long id, @Param("parentId") Long parentId);
 
     List<CategoryListItemVO> getChildrenByParentId(@Param("parentId") Long parentId);
 }

@@ -227,14 +227,14 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public PageData<CategoryListItemVO> search(String name, Long id, Integer pageNum, Integer pageSize) {
-        log.debug("开始处理【搜索类别】的业务，名称：{}，ID：{}，页码：{}，每页记录数：{}", name, id, pageNum, pageSize);
-        if ((name == null || name.trim().isEmpty()) && id == null) {
-            log.debug("搜索参数（名称和ID）均为空，返回空结果");
+    public PageData<CategoryListItemVO> search(String name, Long id, Long parentId, Integer pageNum, Integer pageSize) {
+        log.debug("开始处理【搜索类别】的业务，名称：{}，ID：{}，parentId：{}，页码：{}，每页记录数：{}", name, id, parentId, pageNum, pageSize);
+        if ((name == null || name.trim().isEmpty()) && id == null && parentId == null) {
+            log.debug("搜索参数均为空，返回空结果");
             return PageData.empty();
         }
         PageHelper.startPage(pageNum, pageSize);
-        List<CategoryListItemVO> list = categoryMapper.search(name, id);
+        List<CategoryListItemVO> list = categoryMapper.search(name, id, parentId);
         PageInfo<CategoryListItemVO> pageInfo = new PageInfo<>(list);
         PageData<CategoryListItemVO> pageData = PageInfoToPageDataConverter.convert(pageInfo);
         log.debug("处理【搜索类别】的业务完成，结果：{}", pageData);
@@ -242,10 +242,10 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public PageData<CategoryListItemVO> search(String name, Long id, Integer pageNum) {
+    public PageData<CategoryListItemVO> search(String name, Long id, Long parentId, Integer pageNum) {
         Integer pageSize = 5;
-        log.debug("开始处理【搜索类别】的业务，名称：{}，ID：{}，页码：{}，每页记录数(默认)：{}", name, id, pageNum, pageSize);
-        return search(name, id, pageNum, pageSize);
+        log.debug("开始处理【搜索类别】的业务，名称：{}，ID：{}，parentId：{}，页码：{}，每页记录数(默认)：{}", name, id, parentId, pageNum, pageSize);
+        return search(name, id, parentId, pageNum, pageSize);
     }
 
     @Override
