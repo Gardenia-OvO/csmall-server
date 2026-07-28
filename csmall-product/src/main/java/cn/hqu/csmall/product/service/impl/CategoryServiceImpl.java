@@ -6,6 +6,7 @@ import cn.hqu.csmall.commons.pojo.vo.PageData;
 import cn.hqu.csmall.product.pojo.param.CategoryUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.CategoryListItemVO;
 import cn.hqu.csmall.product.pojo.vo.CategoryStandardVO;
+import cn.hqu.csmall.product.pojo.vo.CategoryTreeVO;
 import cn.hqu.csmall.product.mapper.BrandCategoryMapper;
 import cn.hqu.csmall.product.mapper.CategoryAttributeTemplateMapper;
 import cn.hqu.csmall.product.mapper.CategoryMapper;
@@ -265,6 +266,28 @@ public class CategoryServiceImpl implements ICategoryService {
         List<CategoryListItemVO> list = categoryMapper.getChildrenByParentId(parentId);
         log.debug("处理【根据父级ID查询子级类别列表】的业务完成，结果数量：{}", list.size());
         return list;
+    }
+
+    @Override
+    public List<CategoryTreeVO> getTree() {
+        List<Category> all = categoryMapper.selectList(null);
+        return buildTree(all, 0L);
+    }
+
+    private List<CategoryTreeVO> buildTree(List<Category> all, Long parentId) {
+        List<CategoryTreeVO> result = new java.util.ArrayList<>();
+        for (Category c : all) {
+            if (c.getParentId().equals(parentId)) {
+                CategoryTreeVO vo = new CategoryTreeVO();
+                vo.setValue(c.getId());
+                vo.setLabel(c.getName());
+                if (c.getIsParent() == 1) {
+                    vo.setChildren(buildTree(all, c.getId()));
+                }
+                result.add(vo);
+            }
+        }
+        return result;
     }
 
     @Override

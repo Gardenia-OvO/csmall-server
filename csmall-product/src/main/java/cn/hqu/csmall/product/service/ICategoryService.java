@@ -7,6 +7,7 @@ import cn.hqu.csmall.product.pojo.param.CategoryAddNewParam;
 import cn.hqu.csmall.product.pojo.param.CategoryUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.CategoryListItemVO;
 import cn.hqu.csmall.product.pojo.vo.CategoryStandardVO;
+import cn.hqu.csmall.product.pojo.vo.CategoryTreeVO;
 
 import java.util.List;
 
@@ -36,4 +37,6 @@ public interface ICategoryService {
     CategoryStandardVO getStandardById(Long id);
 
     List<CategoryListItemVO> getChildrenByParentId(Long parentId);
+
+    List<CategoryTreeVO> getTree();
 }

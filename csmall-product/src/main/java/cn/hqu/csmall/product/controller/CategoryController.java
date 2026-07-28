@@ -192,4 +192,12 @@ public class CategoryController {
         return JsonResult.ok(list);
     }
 
+    @GetMapping("/tree")
+    @ApiOperation("获取分类树")
+    @PreAuthorize("hasAuthority('/pms/category/read')")
+    @ApiOperationSupport(order = 470)
+    public JsonResult tree() {
+        return JsonResult.ok(categoryService.getTree());
+    }
+
 }
