@@ -26,6 +26,8 @@ public class Brand implements Serializable {
     private Integer productCount;
     private Integer commentCount;
     private Integer positiveCommentCount;
+    @TableField("gmt_create")
     private LocalDateTime gmtCreated;
+    @TableField("gmt_modified")
     private LocalDateTime gmtModified;
 }

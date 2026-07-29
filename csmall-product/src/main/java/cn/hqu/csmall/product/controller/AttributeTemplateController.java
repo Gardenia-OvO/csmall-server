@@ -81,18 +81,20 @@ public class AttributeTemplateController {
     @PreAuthorize("hasAuthority('/pms/attribute-template/read')")
     @ApiOperationSupport(order = 420)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
+            @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页记录数", paramType = "query")
     })
     public JsonResult list(@Range(min = 1, message = "查询属性模版列表失败，请提供正确的页码值！")
                            @RequestParam(defaultValue = "1") Integer pageNum,
+                           @RequestParam(defaultValue = "5") Integer pageSize,
                            @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
         log.debug("当事人username:{}", user.getUsername());
         log.debug("当事人id:{}", user.getId());
-        log.debug("开始处理【查询属性模版列表】的业务，参数：{}", pageNum);
+        log.debug("开始处理【查询属性模版列表】的业务，页码：{}，每页记录数：{}", pageNum, pageSize);
         if (pageNum == null || pageNum < 1) {
             pageNum = 1;
         }
-        PageData<AttributeTemplateListItemVO> pageData = attributeTemplateService.list(pageNum);
+        PageData<AttributeTemplateListItemVO> pageData = attributeTemplateService.list(pageNum, pageSize);
         return JsonResult.ok(pageData).setMessage("查询属性模板列表成功");
     }
 

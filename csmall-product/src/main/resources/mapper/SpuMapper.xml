@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hqu.csmall.product.mapper.SpuMapper">
+
+    <select id="list" resultType="cn.hqu.csmall.product.pojo.vo.SpuListItemVO">
+        SELECT id, name, type_number, title, description,
+               list_price, stock, stock_threshold, unit, brand_id,
+               brand_name, category_id, category_name, attribute_template_id, album_id,
+               pictures, keywords, tags, sales, comment_count,
+               positive_comment_count, sort, is_deleted, is_published, is_new_arrival,
+               is_recommend, is_checked, check_user
+        FROM pms_spu
+        WHERE is_deleted = 0
+        ORDER BY sort DESC, id DESC
+    </select>
+
+    <select id="getStandardById" resultType="cn.hqu.csmall.product.pojo.vo.SpuStandardVO">
+        SELECT id, name, type_number, title, description,
+               list_price, stock, stock_threshold, unit, brand_id,
+               brand_name, category_id, category_name, attribute_template_id, album_id,
+               pictures, keywords, tags, sales, comment_count,
+               positive_comment_count, sort, is_deleted, is_published, is_new_arrival,
+               is_recommend, is_checked, check_user, gmt_check
+        FROM pms_spu
+        WHERE id = #{id}
+    </select>
+
+    <select id="getFullInfoById" resultType="cn.hqu.csmall.product.pojo.vo.SpuFullInfoVO">
+        SELECT s.id, s.name, s.type_number, s.title, s.description,
+               s.list_price, s.stock, s.stock_threshold, s.unit, s.brand_id,
+               s.brand_name, s.category_id, s.category_name, s.attribute_template_id, s.album_id,
+               s.pictures, s.keywords, s.tags, s.sales, s.comment_count,
+               s.positive_comment_count, s.sort, s.is_deleted, s.is_published, s.is_new_arrival,
+               s.is_recommend, s.is_checked, s.check_user, s.gmt_check,
+               d.detail
+        FROM pms_spu s
+        LEFT JOIN pms_spu_detail d ON s.id = d.spu_id
+        WHERE s.id = #{id}
+    </select>
+
+</mapper>
