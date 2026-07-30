@@ -40,4 +40,8 @@ public class RoleAddNewParam implements Serializable {
     @NotNull(message = "添加角色失败，启用状态不能为空")
     @Range(min = 0, max = 1, message = "启用状态必须在0-1之间")
     @ApiModelProperty(value = "是否启用", required = true, example = "1")
-    private Integer enable;}
+    private Integer enable;
+
+    @ApiModelProperty(value = "权限ID列表")
+    private Long[] permissionIds;
+}

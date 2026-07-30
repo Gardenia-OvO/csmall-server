@@ -33,6 +33,9 @@ public class RoleServiceImpl implements IRoleService {
     @Autowired
     private AdminRoleMapper adminRoleMapper;
 
+    @Autowired
+    private cn.hqu.csmall.passport.mapper.RolePermissionMapper rolePermissionMapper;
+
     @Transactional
     @Override
     public void addNew(RoleAddNewParam roleAddNewParam) {
@@ -57,6 +60,15 @@ public class RoleServiceImpl implements IRoleService {
         role.setGmtModified(LocalDateTime.now());
         log.debug("准备将新的角色数据插入数据库中，角色信息：{}", role);
         roleMapper.insert(role);
+        // 插入角色-权限关联
+        if (roleAddNewParam.getPermissionIds() != null && roleAddNewParam.getPermissionIds().length > 0) {
+            for (Long permId : roleAddNewParam.getPermissionIds()) {
+                cn.hqu.csmall.passport.pojo.entity.RolePermission rp = new cn.hqu.csmall.passport.pojo.entity.RolePermission();
+                rp.setRoleId(role.getId());
+                rp.setPermissionId(permId);
+                rolePermissionMapper.insert(rp);
+            }
+        }
         log.debug("新的角色数据插入数据库中，完成！");
     }
 
