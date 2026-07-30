@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hqu.csmall.product.mapper.AttributeMapper">
+
+    <select id="getStandardById" resultType="cn.hqu.csmall.product.pojo.vo.AttributeStandardVO">
+        SELECT id, template_id, name, description, type, input_type,
+               value_list, unit, sort, is_allow_customize
+        FROM pms_attribute WHERE id = #{id}
+    </select>
+
+    <select id="listByTemplateId" resultType="cn.hqu.csmall.product.pojo.vo.AttributeListItemVO">
+        SELECT id, name, description, type, input_type,
+               value_list, unit, sort, is_allow_customize
+        FROM pms_attribute
+        WHERE template_id = #{templateId}
+        ORDER BY sort, id
+    </select>
+
+</mapper>
