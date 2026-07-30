@@ -16,6 +16,8 @@ public interface ISpuService {
 
     void delete(Long id);
 
+    void check(Long id, String checkUser);
+
     SpuStandardVO getStandardById(Long id);
 
     SpuFullInfoVO getFullInfoById(Long id);

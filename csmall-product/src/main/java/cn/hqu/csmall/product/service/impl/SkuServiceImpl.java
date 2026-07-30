@@ -5,9 +5,11 @@ import cn.hqu.csmall.commons.web.ServiceCode;
 import cn.hqu.csmall.product.mapper.SkuMapper;
 import cn.hqu.csmall.product.pojo.entity.Sku;
 import cn.hqu.csmall.product.pojo.param.SkuAddNewParam;
+import cn.hqu.csmall.product.pojo.param.SkuUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.SkuListItemVO;
 import cn.hqu.csmall.product.pojo.vo.SkuStandardVO;
 import cn.hqu.csmall.product.service.ISkuService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +31,24 @@ public class SkuServiceImpl implements ISkuService {
         sku.setSales(0);
         sku.setCommentCount(0);
         sku.setPositiveCommentCount(0);
-        int rows = skuMapper.insert(sku);
-        if (rows != 1) throw new ServiceException(ServiceCode.ERROR_INSERT, "添加SKU失败");
+        skuMapper.insert(sku);
+    }
+
+    @Override
+    public void updateById(Long id, SkuUpdateParam param) {
+        if (skuMapper.selectCount(new QueryWrapper<Sku>().eq("id", id)) == 0)
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, "SKU不存在");
+        Sku sku = new Sku();
+        BeanUtils.copyProperties(param, sku);
+        sku.setId(id);
+        skuMapper.updateById(sku);
+    }
+
+    @Override
+    public void delete(Long id) {
+        if (skuMapper.selectCount(new QueryWrapper<Sku>().eq("id", id)) == 0)
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, "SKU不存在");
+        skuMapper.deleteById(id);
     }
 
     @Override

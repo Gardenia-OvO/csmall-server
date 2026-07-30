@@ -86,10 +86,10 @@ public class RoleController {
     @ApiOperationSupport(order = 300)
     @ApiImplicitParams({@ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")})
     public JsonResult list(@Range(min = 1) @RequestParam(defaultValue = "1") Integer pageNum,
+                           @RequestParam(defaultValue = "5") Integer pageSize,
                            @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
         if (pageNum == null || pageNum < 1) pageNum = 1;
-        PageData<RoleListItemVO> pageData = roleService.list(pageNum);
-        return JsonResult.ok(pageData);
+        return JsonResult.ok(roleService.list(pageNum, pageSize));
     }
 
     @GetMapping("/permissions")

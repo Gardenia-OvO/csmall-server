@@ -25,6 +25,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -177,6 +178,20 @@ public class SpuServiceImpl implements ISpuService {
         }
         spuMapper.deleteById(id);
         log.debug("删除SPU成功");
+    }
+
+    @Override
+    public void check(Long id, String checkUser) {
+        QueryWrapper<Spu> qw = new QueryWrapper<>();
+        qw.eq("id", id);
+        if (spuMapper.selectCount(qw) == 0)
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, "SPU不存在");
+        Spu spu = new Spu();
+        spu.setId(id);
+        spu.setIsChecked(1);
+        spu.setCheckUser(checkUser);
+        spu.setGmtCheck(LocalDateTime.now());
+        spuMapper.updateById(spu);
     }
 
     @Override

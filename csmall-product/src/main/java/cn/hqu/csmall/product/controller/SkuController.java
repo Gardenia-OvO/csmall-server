@@ -3,6 +3,7 @@ package cn.hqu.csmall.product.controller;
 import cn.hqu.csmall.commons.security.LoginPrincipal;
 import cn.hqu.csmall.commons.web.JsonResult;
 import cn.hqu.csmall.product.pojo.param.SkuAddNewParam;
+import cn.hqu.csmall.product.pojo.param.SkuUpdateParam;
 import cn.hqu.csmall.product.pojo.vo.SkuListItemVO;
 import cn.hqu.csmall.product.pojo.vo.SkuStandardVO;
 import cn.hqu.csmall.product.service.ISkuService;
@@ -40,6 +41,29 @@ public class SkuController {
                              @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
         skuService.addNew(param);
         return JsonResult.created("新增SKU成功");
+    }
+
+    @PostMapping("/{id}/update")
+    @PreAuthorize("hasAuthority('/pms/product/update')")
+    @ApiOperation("修改SKU")
+    @ApiOperationSupport(order = 200)
+    @ApiImplicitParam(name = "id", value = "SKU ID", required = true, dataType = "long")
+    public JsonResult update(@PathVariable @Range(min = 1) Long id,
+                             @RequestBody SkuUpdateParam param,
+                             @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        skuService.updateById(id, param);
+        return JsonResult.ok();
+    }
+
+    @PostMapping("/{id}/delete")
+    @PreAuthorize("hasAuthority('/pms/product/delete')")
+    @ApiOperation("删除SKU")
+    @ApiOperationSupport(order = 300)
+    @ApiImplicitParam(name = "id", value = "SKU ID", required = true, dataType = "long")
+    public JsonResult delete(@PathVariable @Range(min = 1) Long id,
+                             @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        skuService.delete(id);
+        return JsonResult.ok("删除SKU成功");
     }
 
     @GetMapping("/{id}")

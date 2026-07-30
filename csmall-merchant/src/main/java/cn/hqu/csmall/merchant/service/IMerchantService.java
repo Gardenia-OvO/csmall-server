@@ -20,6 +20,8 @@ public interface IMerchantService {
 
     void disable(Long id);
 
+    void enable(Long id);
+
     PageData<MerchantListItemVO> list(Integer pageNum, Integer pageSize);
 
     PageData<MerchantListItemVO> list(Integer pageNum);

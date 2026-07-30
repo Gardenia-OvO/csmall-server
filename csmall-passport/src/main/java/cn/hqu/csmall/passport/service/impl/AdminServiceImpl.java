@@ -99,6 +99,10 @@ public class AdminServiceImpl implements IAdminService {
         adminMapper.insert(admin);
         log.debug("新的管理员数据插入数据库中，完成！");
         Long[] roleIds = adminAddNewParam.getRoleIds();
+        if (roleIds == null || roleIds.length == 0) {
+            log.warn("管理员新增未选择角色");
+            return;
+        }
         AdminRole[] adminRoles = new AdminRole[roleIds.length];
         for (long i = 0; i < roleIds.length; i++) {
             AdminRole date = new AdminRole();

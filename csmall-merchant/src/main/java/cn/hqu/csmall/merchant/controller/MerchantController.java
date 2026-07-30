@@ -110,6 +110,17 @@ public class MerchantController {
         return JsonResult.ok("禁用商家成功");
     }
 
+    @PostMapping("/enable")
+    @ApiOperation("启用商家")
+    @PreAuthorize("hasAuthority('/mms/merchant/update')")
+    @ApiOperationSupport(order = 370)
+    @ApiImplicitParam(name = "id", value = "商家id", required = true, dataType = "long")
+    public JsonResult enable(@Range(min = 1) @RequestParam Long id,
+                             @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        merchantService.enable(id);
+        return JsonResult.ok("启用商家成功");
+    }
+
     @GetMapping("/list")
     @ApiOperation("查询商家列表")
     @PreAuthorize("hasAuthority('/mms/merchant/read')")

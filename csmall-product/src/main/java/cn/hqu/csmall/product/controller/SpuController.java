@@ -61,6 +61,17 @@ public class SpuController {
         return JsonResult.ok("删除SPU成功");
     }
 
+    @PostMapping("/{id}/check")
+    @PreAuthorize("hasAuthority('/pms/product/update')")
+    @ApiOperation("审核SPU")
+    @ApiOperationSupport(order = 250)
+    @ApiImplicitParam(name = "id", value = "SPU ID", required = true, dataType = "long")
+    public JsonResult check(@PathVariable @Range(min = 1) Long id,
+                            @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
+        spuService.check(id, user.getUsername());
+        return JsonResult.ok("审核通过");
+    }
+
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('/pms/product/update')")
     @ApiOperation("修改SPU")

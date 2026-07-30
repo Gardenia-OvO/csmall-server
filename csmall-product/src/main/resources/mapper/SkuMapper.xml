@@ -3,7 +3,8 @@
 <mapper namespace="cn.hqu.csmall.product.mapper.SkuMapper">
 
     <select id="listBySpuId" resultType="cn.hqu.csmall.product.pojo.vo.SkuListItemVO">
-        SELECT id, spu_id, title, bar_code, price, stock, sales, sort
+        SELECT id, spu_id, title, bar_code, price, stock, stock_threshold,
+               sales, comment_count, positive_comment_count, specifications, sort
         FROM pms_sku
         WHERE spu_id = #{spuId}
         ORDER BY sort DESC, id DESC

@@ -143,6 +143,21 @@ public class MerchantServiceImpl implements IMerchantService {
     }
 
     @Override
+    public void enable(Long id) {
+        log.debug("开始处理【启用商家】的业务，id为:{}", id);
+        Merchant merchant = merchantMapper.selectById(id);
+        if (merchant == null) {
+            throw new ServiceException(ServiceCode.ERROR_NOT_FOUND, "启用商家失败，商家数据不存在！");
+        }
+        Merchant updateMerchant = new Merchant();
+        updateMerchant.setId(id);
+        updateMerchant.setStatus(1);
+        updateMerchant.setGmtModified(LocalDateTime.now());
+        merchantMapper.updateById(updateMerchant);
+        log.debug("处理【启用商家】的业务完成！");
+    }
+
+    @Override
     public PageData<MerchantListItemVO> list(Integer pageNum, Integer pageSize) {
         log.debug("开始处理【查询商家列表】的业务，页码：{}，每页记录数：{}", pageNum, pageSize);
         PageHelper.startPage(pageNum, pageSize);
