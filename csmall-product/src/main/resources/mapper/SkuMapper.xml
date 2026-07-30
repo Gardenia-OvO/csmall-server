@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hqu.csmall.product.mapper.SkuMapper">
+
+    <select id="listBySpuId" resultType="cn.hqu.csmall.product.pojo.vo.SkuListItemVO">
+        SELECT id, spu_id, title, bar_code, price, stock, sales, sort
+        FROM pms_sku
+        WHERE spu_id = #{spuId}
+        ORDER BY sort DESC, id DESC
+    </select>
+
+    <select id="getStandardById" resultType="cn.hqu.csmall.product.pojo.vo.SkuStandardVO">
+        SELECT id, spu_id, title, bar_code, attribute_template_id, specifications,
+               album_id, pictures, price, stock, stock_threshold,
+               sales, comment_count, positive_comment_count, sort
+        FROM pms_sku
+        WHERE id = #{id}
+    </select>
+
+</mapper>

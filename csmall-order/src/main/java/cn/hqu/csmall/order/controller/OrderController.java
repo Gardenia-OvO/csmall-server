@@ -82,9 +82,10 @@ public class OrderController {
     @ApiOperation("查询订单列表")
     @PreAuthorize("hasAuthority('/oms/order/read')")
     @ApiOperationSupport(order = 420)
-    public JsonResult list(@Range(min = 1) @RequestParam(defaultValue = "1") Integer pageNum) {
+    public JsonResult list(@Range(min = 1) @RequestParam(defaultValue = "1") Integer pageNum,
+                           @RequestParam(defaultValue = "5") Integer pageSize) {
         if (pageNum == null || pageNum < 1) pageNum = 1;
-        return JsonResult.ok(orderService.list(pageNum));
+        return JsonResult.ok(orderService.list(pageNum, pageSize));
     }
 
     @GetMapping("/search")

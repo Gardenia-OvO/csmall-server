@@ -117,17 +117,12 @@ public class MerchantController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "页码", paramType = "query")
     })
-    public JsonResult list(@Range(min = 1, message = "查询商家列表失败，请提供正确的页码值！")
-                           @RequestParam(defaultValue = "1") Integer pageNum,
+    public JsonResult list(@Range(min = 1) @RequestParam(defaultValue = "1") Integer pageNum,
+                           @RequestParam(defaultValue = "5") Integer pageSize,
                            @ApiIgnore @AuthenticationPrincipal LoginPrincipal user) {
-        log.debug("当事人username:{}", user.getUsername());
-        log.debug("当事人id:{}", user.getId());
-        log.debug("开始处理【查询商家列表】的业务，参数：{}", pageNum);
-        if (pageNum == null || pageNum < 1) {
-            pageNum = 1;
-        }
-        PageData<MerchantListItemVO> pageData = merchantService.list(pageNum);
-        return JsonResult.ok(pageData);
+        log.debug("开始处理【查询商家列表】的业务，页码：{}，每页：{}", pageNum, pageSize);
+        if (pageNum == null || pageNum < 1) pageNum = 1;
+        return JsonResult.ok(merchantService.list(pageNum, pageSize));
     }
 
     @GetMapping("/search")
